@@ -1,10 +1,17 @@
-# Projeto
+# **Projeto**
 Repositório criado para a UC Projeto do Mestrado em Bioinformática
 
-https://github.com/cole-trapnell-lab/sdg-zfish - artigo 2
+<ins>**Autores**:</ins>  
 
-Tarefas em curso:
+*Diogo Esteves & David Henriques*
 
-- revisao da bibliografia e escrita do artigo intercalar (prioritário)
 
-- Protocolo (step-by-step) de como gerar as figuras (R, bioconductor, monocle 3, instalação dos packages, obtenção e carregamento dos datasets, analise estatistica e geração das figurasdo artigo 2)
+<ins>**Tarefas em curso**<ins>:
+
+- Revisão da bibliografia e escrita do artigo intercalar <ins>**(prioritário)**<ins>
+
+- Protocolo (step-by-step) de como gerar as figuras (R, bioconductor, monocle 3, instalação dos packages, obtenção e carregamento dos datasets, análise estatística e criação das figuras do artigo 2)
+
+**Para gerar as figuras do artigo 2**:  
+Neste repositório é possível encontrar figuras provenientes de dados e código de:
+(https://github.com/cole-trapnell-lab/sdg-zfish)
