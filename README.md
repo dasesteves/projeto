@@ -19,6 +19,6 @@ Repositório criado para a UC Projeto do Mestrado em Bioinformática
 - **Obter a pasta "data"** a partir do link do Git supra-mencionado, **colocar a pasta "data" na mesma pasta onde temos o ficheiro R** que vai gerar as figuras (obtido aqui ou no link fornecido antes)
 - Abrir a pasta data e **extrair os ficheiros com terminação .gz**
 - **Correr código até** obter "erro" e **ser requerido colocar mais datasets**, estes **datasets podem ser obtidos em**: *https://cole-trapnell-lab.github.io/zscape/*
-- Os datasets após o download, precisam ser *extraídos*, e os ficheiros extraidos devem ser colocados na pasta dos ficheiros R (fora da pasta "data")
+- Os datasets após o download, precisam ser *extraídos*, e os ficheiros extraídos devem ser colocados na pasta dos ficheiros R (fora da pasta "data") e devem ser renomeados para o nome indicado no comando que deu origem ao erro por falta do dataset (geralmente é só apagar "zscape_" do nome do ficheiro)
 
 <ins>**Ps.**</ins> este é o metodo de o codigo funcionar sem fazer grandes alterações, no entanto pode ser tudo simplificado/otimizado para ser "corrido" mais facilmente.
