@@ -1760,41 +1760,169 @@ the chunk or by placing your cursor inside it and pressing
 <em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucGxvdChjYXJzKVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+plot(cars)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCFyZXF1aXJlKFwiQmlvY01hbmFnZXJcIiwgcXVpZXRseSA9IFRSVUUpKVxuICAgIGluc3RhbGwucGFja2FnZXMoXCJCaW9jTWFuYWdlclwiKVxuYGBgIn0= --&gt;
+
+```r
+if (!require(&quot;BiocManager&quot;, quietly = TRUE))
+    install.packages(&quot;BiocManager&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCFyZXF1aXJlKFwiQmlvY01hbmFnZXJcIiwgcXVpZXRseSA9IFRSVUUpKVxuICAgIGluc3RhbGwucGFja2FnZXMoXCJCaW9jTWFuYWdlclwiKVxuQmlvY01hbmFnZXI6Omluc3RhbGwodmVyc2lvbiA9IFwiMy4xOFwiKVxuYGBgIn0= -->
-<pre class="r"><code>if (!require(&quot;BiocManager&quot;, quietly = TRUE))
-    install.packages(&quot;BiocManager&quot;)
-BiocManager::install(version = &quot;3.18&quot;)</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiV0FSTklORzogUnRvb2xzIGlzIHJlcXVpcmVkIHRvIGJ1aWxkIFIgcGFja2FnZXMgYnV0IGlzIG5vdCBjdXJyZW50bHkgaW5zdGFsbGVkLiBQbGVhc2UgZG93bmxvYWQgYW5kIGluc3RhbGwgdGhlIGFwcHJvcHJpYXRlIHZlcnNpb24gb2YgUnRvb2xzIGJlZm9yZSBwcm9jZWVkaW5nOlxuXG5odHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvUnRvb2xzL1xuSW5zdGFsbGluZyBwYWNrYWdlIGludG8g4oCYQzovVXNlcnMvZGFzZXMvQXBwRGF0YS9Mb2NhbC9SL3dpbi1saWJyYXJ5LzQuM+KAmVxuKGFzIOKAmGxpYuKAmSBpcyB1bnNwZWNpZmllZClcbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vd2luZG93cy9jb250cmliLzQuMy9CaW9jTWFuYWdlcl8xLjMwLjIyLnppcCdcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24vemlwJyBsZW5ndGggNDk1NTk4IGJ5dGVzICg0ODMgS0IpXG5kb3dubG9hZGVkIDQ4MyBLQlxuIn0= -->
+<pre><code>WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+Installing package into ‘C:/Users/dases/AppData/Local/R/win-library/4.3’
+(as ‘lib’ is unspecified)
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/BiocManager_1.30.22.zip&#39;
+Content type &#39;application/zip&#39; length 495598 bytes (483 KB)
+downloaded 483 KB</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhCaW9jTWFuYWdlcuKAmSBzdWNjZXNzZnVsbHkgdW5wYWNrZWQgYW5kIE1ENSBzdW1zIGNoZWNrZWRcblxuVGhlIGRvd25sb2FkZWQgYmluYXJ5IHBhY2thZ2VzIGFyZSBpblxuXHRDOlxcVXNlcnNcXGRhc2VzXFxBcHBEYXRhXFxMb2NhbFxcVGVtcFxcUnRtcHNKcm1CU1xcZG93bmxvYWRlZF9wYWNrYWdlc1xuIn0= -->
+<pre><code>package ‘BiocManager’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+    C:\Users\dases\AppData\Local\Temp\RtmpsJrmBS\downloaded_packages</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQmlvY01hbmFnZXI6Omluc3RhbGwodmVyc2lvbiA9IFwiMy4xOFwiKVxuYGBgIn0= -->
+<pre class="r"><code>BiocManager::install(version = &quot;3.18&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJ2dldE9wdGlvbihcInJlcG9zXCIpJyByZXBsYWNlcyBCaW9jb25kdWN0b3Igc3RhbmRhcmRcbnJlcG9zaXRvcmllcywgc2VlICdoZWxwKFwicmVwb3NpdG9yaWVzXCIsIHBhY2thZ2UgPVxuXCJCaW9jTWFuYWdlclwiKScgZm9yIGRldGFpbHMuXG5SZXBsYWNlbWVudCByZXBvc2l0b3JpZXM6XG4gICAgQ1JBTjogaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL1xuQmlvY29uZHVjdG9yIHZlcnNpb24gMy4xOCAoQmlvY01hbmFnZXIgMS4zMC4yMiksIFJcbiAgNC4zLjEgKDIwMjMtMDYtMTYgdWNydClcbkluc3RhbGxhdGlvbiBwYXRocyBub3Qgd3JpdGVhYmxlLCB1bmFibGUgdG8gdXBkYXRlXG4gIHBhY2thZ2VzXG4gIHBhdGg6IEM6L1Byb2dyYW0gRmlsZXMvUi9SLTQuMy4xL2xpYnJhcnlcbiAgcGFja2FnZXM6XG4gICAgYm9vdCwgY2x1c3RlciwgZm9yZWlnbiwgS2VyblNtb290aCwgbGF0dGljZSwgTUFTUyxcbiAgICBNYXRyaXgsIG1nY3YsIG5sbWUsIHJwYXJ0LCBzcGF0aWFsLCBzdXJ2aXZhbFxuIn0= -->
-<pre><code>&#39;getOption(&quot;repos&quot;)&#39; replaces Bioconductor standard
-repositories, see &#39;help(&quot;repositories&quot;, package =
+<!-- rnb-output-begin eyJkYXRhIjoiJ2dldE9wdGlvbihcInJlcG9zXCIpJyByZXBsYWNlcyBCaW9jb25kdWN0b3Igc3RhbmRhcmQgcmVwb3NpdG9yaWVzLCBzZWUgJ2hlbHAoXCJyZXBvc2l0b3JpZXNcIiwgcGFja2FnZSA9XG5cIkJpb2NNYW5hZ2VyXCIpJyBmb3IgZGV0YWlscy5cblJlcGxhY2VtZW50IHJlcG9zaXRvcmllczpcbiAgICBDUkFOOiBodHRwczovL2NyYW4ucnN0dWRpby5jb20vXG5CaW9jb25kdWN0b3IgdmVyc2lvbiAzLjE4IChCaW9jTWFuYWdlciAxLjMwLjIyKSwgUiA0LjMuMiAoMjAyMy0xMC0zMSB1Y3J0KVxuSW5zdGFsbGluZyBwYWNrYWdlKHMpICdCaW9jVmVyc2lvbidcbldhcm5pbmc6IGRvd25sb2FkZWQgbGVuZ3RoIDAgIT0gcmVwb3J0ZWQgbGVuZ3RoIDBXYXJuaW5nOiBjYW5ub3Qgb3BlbiBVUkwgJ2h0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy8zLjE4L2RhdGEvYW5ub3RhdGlvbi9iaW4vd2luZG93cy9jb250cmliLzQuMy9QQUNLQUdFUy5yZHMnOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvZGF0YS9hbm5vdGF0aW9uL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLmd6JzogSFRUUCBzdGF0dXMgd2FzICc0MDQgTm90IEZvdW5kJ1dhcm5pbmc6IGRvd25sb2FkZWQgbGVuZ3RoIDAgIT0gcmVwb3J0ZWQgbGVuZ3RoIDBXYXJuaW5nOiBjYW5ub3Qgb3BlbiBVUkwgJ2h0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy8zLjE4L2RhdGEvZXhwZXJpbWVudC9iaW4vd2luZG93cy9jb250cmliLzQuMy9QQUNLQUdFUy5yZHMnOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvZGF0YS9leHBlcmltZW50L2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLmd6JzogSFRUUCBzdGF0dXMgd2FzICc0MDQgTm90IEZvdW5kJ1dhcm5pbmc6IGRvd25sb2FkZWQgbGVuZ3RoIDAgIT0gcmVwb3J0ZWQgbGVuZ3RoIDBXYXJuaW5nOiBjYW5ub3Qgb3BlbiBVUkwgJ2h0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy8zLjE4L3dvcmtmbG93cy9iaW4vd2luZG93cy9jb250cmliLzQuMy9QQUNLQUdFUy5yZHMnOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvd29ya2Zsb3dzL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLmd6JzogSFRUUCBzdGF0dXMgd2FzICc0MDQgTm90IEZvdW5kJ1dhcm5pbmc6IGRvd25sb2FkZWQgbGVuZ3RoIDAgIT0gcmVwb3J0ZWQgbGVuZ3RoIDBXYXJuaW5nOiBjYW5ub3Qgb3BlbiBVUkwgJ2h0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy8zLjE4L2Jvb2tzL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLnJkcyc6IEhUVFAgc3RhdHVzIHdhcyAnNDA0IE5vdCBGb3VuZCdXYXJuaW5nOiBkb3dubG9hZGVkIGxlbmd0aCAwICE9IHJlcG9ydGVkIGxlbmd0aCAwV2FybmluZzogY2Fubm90IG9wZW4gVVJMICdodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvMy4xOC9ib29rcy9iaW4vd2luZG93cy9jb250cmliLzQuMy9QQUNLQUdFUy5neic6IEhUVFAgc3RhdHVzIHdhcyAnNDA0IE5vdCBGb3VuZCd0cnlpbmcgVVJMICdodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvMy4xOC9iaW9jL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL0Jpb2NWZXJzaW9uXzMuMTguMS56aXAnXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3ppcCcgbGVuZ3RoIDgzMjAgYnl0ZXNcbmRvd25sb2FkZWQgODMyMCBieXRlc1xuIn0= -->
+<pre><code>&#39;getOption(&quot;repos&quot;)&#39; replaces Bioconductor standard repositories, see &#39;help(&quot;repositories&quot;, package =
 &quot;BiocManager&quot;)&#39; for details.
 Replacement repositories:
     CRAN: https://cran.rstudio.com/
-Bioconductor version 3.18 (BiocManager 1.30.22), R
-  4.3.1 (2023-06-16 ucrt)
-Installation paths not writeable, unable to update
-  packages
-  path: C:/Program Files/R/R-4.3.1/library
+Bioconductor version 3.18 (BiocManager 1.30.22), R 4.3.2 (2023-10-31 ucrt)
+Installing package(s) &#39;BiocVersion&#39;
+Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/annotation/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/annotation/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/experiment/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/experiment/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/workflows/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/workflows/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/books/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/books/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;trying URL &#39;https://bioconductor.org/packages/3.18/bioc/bin/windows/contrib/4.3/BiocVersion_3.18.1.zip&#39;
+Content type &#39;application/zip&#39; length 8320 bytes
+downloaded 8320 bytes</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhCaW9jVmVyc2lvbuKAmSBzdWNjZXNzZnVsbHkgdW5wYWNrZWQgYW5kIE1ENSBzdW1zIGNoZWNrZWRcblxuVGhlIGRvd25sb2FkZWQgYmluYXJ5IHBhY2thZ2VzIGFyZSBpblxuXHRDOlxcVXNlcnNcXGRhc2VzXFxBcHBEYXRhXFxMb2NhbFxcVGVtcFxcUnRtcHNKcm1CU1xcZG93bmxvYWRlZF9wYWNrYWdlc1xuIn0= -->
+<pre><code>package ‘BiocVersion’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+    C:\Users\dases\AppData\Local\Temp\RtmpsJrmBS\downloaded_packages</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSW5zdGFsbGF0aW9uIHBhdGhzIG5vdCB3cml0ZWFibGUsIHVuYWJsZSB0byB1cGRhdGUgcGFja2FnZXNcbiAgcGF0aDogQzovUHJvZ3JhbSBGaWxlcy9SL1ItNC4zLjIvbGlicmFyeVxuICBwYWNrYWdlczpcbiAgICBib290LCBjbHVzdGVyLCBmb3JlaWduLCBsYXR0aWNlLCBNQVNTLCBNYXRyaXgsIG1nY3YsIG5sbWUsIHJwYXJ0LCBzdXJ2aXZhbFxuT2xkIHBhY2thZ2VzOiAnZGlnZXN0JywgJ2dncGxvdDInLCAnZ2x1ZScsICdybGFuZycsICdybWFya2Rvd24nLCAnc3lzdGVtZm9udHMnLCAnd2l0aHInLCAneGZ1bidcbiJ9 -->
+<pre><code>Installation paths not writeable, unable to update packages
+  path: C:/Program Files/R/R-4.3.2/library
   packages:
-    boot, cluster, foreign, KernSmooth, lattice, MASS,
-    Matrix, mgcv, nlme, rpart, spatial, survival</code></pre>
+    boot, cluster, foreign, lattice, MASS, Matrix, mgcv, nlme, rpart, survival
+Old packages: &#39;digest&#39;, &#39;ggplot2&#39;, &#39;glue&#39;, &#39;rlang&#39;, &#39;rmarkdown&#39;, &#39;systemfonts&#39;, &#39;withr&#39;, &#39;xfun&#39;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiVXBkYXRlIGFsbC9zb21lL25vbmU/IFthL3Mvbl06IFxuIn0= -->
+<pre><code>Update all/some/none? [a/s/n]: </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYVxuYGBgIn0= -->
+<pre class="r"><code>a</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhnZ3Bsb3Qy4oCZIGlzIGluIHVzZSBhbmQgd2lsbCBub3QgYmUgaW5zdGFsbGVkV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvZGF0YS9hbm5vdGF0aW9uL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLnJkcyc6IEhUVFAgc3RhdHVzIHdhcyAnNDA0IE5vdCBGb3VuZCdXYXJuaW5nOiBkb3dubG9hZGVkIGxlbmd0aCAwICE9IHJlcG9ydGVkIGxlbmd0aCAwV2FybmluZzogY2Fubm90IG9wZW4gVVJMICdodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvMy4xOC9kYXRhL2Fubm90YXRpb24vYmluL3dpbmRvd3MvY29udHJpYi80LjMvUEFDS0FHRVMuZ3onOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvZGF0YS9leHBlcmltZW50L2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLnJkcyc6IEhUVFAgc3RhdHVzIHdhcyAnNDA0IE5vdCBGb3VuZCdXYXJuaW5nOiBkb3dubG9hZGVkIGxlbmd0aCAwICE9IHJlcG9ydGVkIGxlbmd0aCAwV2FybmluZzogY2Fubm90IG9wZW4gVVJMICdodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvMy4xOC9kYXRhL2V4cGVyaW1lbnQvYmluL3dpbmRvd3MvY29udHJpYi80LjMvUEFDS0FHRVMuZ3onOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvd29ya2Zsb3dzL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLnJkcyc6IEhUVFAgc3RhdHVzIHdhcyAnNDA0IE5vdCBGb3VuZCdXYXJuaW5nOiBkb3dubG9hZGVkIGxlbmd0aCAwICE9IHJlcG9ydGVkIGxlbmd0aCAwV2FybmluZzogY2Fubm90IG9wZW4gVVJMICdodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvMy4xOC93b3JrZmxvd3MvYmluL3dpbmRvd3MvY29udHJpYi80LjMvUEFDS0FHRVMuZ3onOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnV2FybmluZzogZG93bmxvYWRlZCBsZW5ndGggMCAhPSByZXBvcnRlZCBsZW5ndGggMFdhcm5pbmc6IGNhbm5vdCBvcGVuIFVSTCAnaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzLzMuMTgvYm9va3MvYmluL3dpbmRvd3MvY29udHJpYi80LjMvUEFDS0FHRVMucmRzJzogSFRUUCBzdGF0dXMgd2FzICc0MDQgTm90IEZvdW5kJ1dhcm5pbmc6IGRvd25sb2FkZWQgbGVuZ3RoIDAgIT0gcmVwb3J0ZWQgbGVuZ3RoIDBXYXJuaW5nOiBjYW5ub3Qgb3BlbiBVUkwgJ2h0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy8zLjE4L2Jvb2tzL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL1BBQ0tBR0VTLmd6JzogSFRUUCBzdGF0dXMgd2FzICc0MDQgTm90IEZvdW5kJ1xuIn0= -->
+<pre><code>Warning: package ‘ggplot2’ is in use and will not be installedWarning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/annotation/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/annotation/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/experiment/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/data/experiment/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/workflows/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/workflows/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/books/bin/windows/contrib/4.3/PACKAGES.rds&#39;: HTTP status was &#39;404 Not Found&#39;Warning: downloaded length 0 != reported length 0Warning: cannot open URL &#39;https://bioconductor.org/packages/3.18/books/bin/windows/contrib/4.3/PACKAGES.gz&#39;: HTTP status was &#39;404 Not Found&#39;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gIFRoZXJlIGlzIGEgYmluYXJ5IHZlcnNpb24gYXZhaWxhYmxlIGJ1dCB0aGUgc291cmNlIHZlcnNpb24gaXMgbGF0ZXI6XG4ifQ== -->
+<pre><code>
+  There is a binary version available but the source version is later:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6Mywic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyAzXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJtMVE3VTRESVJEY0hzZVpZdnlLejNIRXhtaDhBT01ER0UzNnI2RWNyVVJ1dVFDbjl1V3IzSGtrTGVrUHdzN3N6ckRNNi9QeW5pMFpBQkFvU1FHRXhoTG8rOXRML1FSUUZoSE1vSVQ1Y1AvRW9kdHhFdUQ2b0VFWC9JNC9uQ0lmWThGR2NqeEhkaFJGcS95a0loTlpyVFVLdDB2STI5NUpOYUViVktyeEsybmJUaHNSdE1YTWNlN3NOejkwVFkxenYvTkJ0UnVMd2VkYlNDTjhQczhhRVFUZnVHZ1YwVDZUbk5sdWVEeUtpaUdOS2hQUFhFWmM5VGdzMWRUeW84ZlBlcEcxU1lmYjQ1amc0a1JOL3Jjb2ZpZDVsVEpTdU5XWU1xSkdySlZKem8zNm1zckxHTTJZRE8rY3hwRCtHVm5QZ3cwaVNaaTBKakhqejJIL0I1L3VxZ1FpQWdBQSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["binary"],"name":[1],"type":["chr"],"align":["left"]},{"label":["source"],"name":[2],"type":["chr"],"align":["left"]},{"label":["needs_compilation"],"name":[3],"type":["lgl"],"align":["right"]}],"data":[{"1":"1.0.5","2":"1.0.6","3":"TRUE","_rn_":"systemfonts"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gIEJpbmFyaWVzIHdpbGwgYmUgaW5zdGFsbGVkXG4ifQ== -->
+<pre><code>
+  Binaries will be installed</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoidHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi93aW5kb3dzL2NvbnRyaWIvNC4zL2RpZ2VzdF8wLjYuMzQuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCAyMDYyMjUgYnl0ZXMgKDIwMSBLQilcbmRvd25sb2FkZWQgMjAxIEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vd2luZG93cy9jb250cmliLzQuMy9nbHVlXzEuNy4wLnppcCdcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24vemlwJyBsZW5ndGggMTYxMjc1IGJ5dGVzICgxNTcgS0IpXG5kb3dubG9hZGVkIDE1NyBLQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvY29udHJpYi80LjMvcmxhbmdfMS4xLjMuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCAxNTczNTgzIGJ5dGVzICgxLjUgTUIpXG5kb3dubG9hZGVkIDEuNSBNQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvY29udHJpYi80LjMvcm1hcmtkb3duXzIuMjYuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCAyNjgwNjEwIGJ5dGVzICgyLjYgTUIpXG5kb3dubG9hZGVkIDIuNiBNQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvY29udHJpYi80LjMvc3lzdGVtZm9udHNfMS4wLjUuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCAxNTU0NDM3IGJ5dGVzICgxLjUgTUIpXG5kb3dubG9hZGVkIDEuNSBNQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL3dpbmRvd3MvY29udHJpYi80LjMvd2l0aHJfMy4wLjAuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCAyNDU5MjAgYnl0ZXMgKDI0MCBLQilcbmRvd25sb2FkZWQgMjQwIEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vd2luZG93cy9jb250cmliLzQuMy94ZnVuXzAuNDIuemlwJ1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi96aXAnIGxlbmd0aCA0Nzc0OTkgYnl0ZXMgKDQ2NiBLQilcbmRvd25sb2FkZWQgNDY2IEtCXG4ifQ== -->
+<pre><code>trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/digest_0.6.34.zip&#39;
+Content type &#39;application/zip&#39; length 206225 bytes (201 KB)
+downloaded 201 KB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/glue_1.7.0.zip&#39;
+Content type &#39;application/zip&#39; length 161275 bytes (157 KB)
+downloaded 157 KB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/rlang_1.1.3.zip&#39;
+Content type &#39;application/zip&#39; length 1573583 bytes (1.5 MB)
+downloaded 1.5 MB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/rmarkdown_2.26.zip&#39;
+Content type &#39;application/zip&#39; length 2680610 bytes (2.6 MB)
+downloaded 2.6 MB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/systemfonts_1.0.5.zip&#39;
+Content type &#39;application/zip&#39; length 1554437 bytes (1.5 MB)
+downloaded 1.5 MB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/withr_3.0.0.zip&#39;
+Content type &#39;application/zip&#39; length 245920 bytes (240 KB)
+downloaded 240 KB
+
+trying URL &#39;https://cran.rstudio.com/bin/windows/contrib/4.3/xfun_0.42.zip&#39;
+Content type &#39;application/zip&#39; length 477499 bytes (466 KB)
+downloaded 466 KB</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhkaWdlc3TigJkgc3VjY2Vzc2Z1bGx5IHVucGFja2VkIGFuZCBNRDUgc3VtcyBjaGVja2VkXG4ifQ== -->
+<pre><code>package ‘digest’ successfully unpacked and MD5 sums checked</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogY2Fubm90IHJlbW92ZSBwcmlvciBpbnN0YWxsYXRpb24gb2YgcGFja2FnZSDigJhkaWdlc3TigJlXYXJuaW5nOiBwcm9ibGVtIGNvcHlpbmcgQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXDAwTE9DS1xcZGlnZXN0XFxsaWJzXFx4NjRcXGRpZ2VzdC5kbGwgdG8gQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXGRpZ2VzdFxcbGlic1xceDY0XFxkaWdlc3QuZGxsOiBQZXJtaXNzaW9uIGRlbmllZFdhcm5pbmc6IHJlc3RvcmVkIOKAmGRpZ2VzdOKAmVxuIn0= -->
+<pre><code>Warning: cannot remove prior installation of package ‘digest’Warning: problem copying C:\Users\dases\AppData\Local\R\win-library\4.3\00LOCK\digest\libs\x64\digest.dll to C:\Users\dases\AppData\Local\R\win-library\4.3\digest\libs\x64\digest.dll: Permission deniedWarning: restored ‘digest’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhnbHVl4oCZIHN1Y2Nlc3NmdWxseSB1bnBhY2tlZCBhbmQgTUQ1IHN1bXMgY2hlY2tlZFxuIn0= -->
+<pre><code>package ‘glue’ successfully unpacked and MD5 sums checked</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogY2Fubm90IHJlbW92ZSBwcmlvciBpbnN0YWxsYXRpb24gb2YgcGFja2FnZSDigJhnbHVl4oCZV2FybmluZzogcHJvYmxlbSBjb3B5aW5nIEM6XFxVc2Vyc1xcZGFzZXNcXEFwcERhdGFcXExvY2FsXFxSXFx3aW4tbGlicmFyeVxcNC4zXFwwMExPQ0tcXGdsdWVcXGxpYnNcXHg2NFxcZ2x1ZS5kbGwgdG8gQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXGdsdWVcXGxpYnNcXHg2NFxcZ2x1ZS5kbGw6IFBlcm1pc3Npb24gZGVuaWVkV2FybmluZzogcmVzdG9yZWQg4oCYZ2x1ZeKAmVxuIn0= -->
+<pre><code>Warning: cannot remove prior installation of package ‘glue’Warning: problem copying C:\Users\dases\AppData\Local\R\win-library\4.3\00LOCK\glue\libs\x64\glue.dll to C:\Users\dases\AppData\Local\R\win-library\4.3\glue\libs\x64\glue.dll: Permission deniedWarning: restored ‘glue’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhybGFuZ+KAmSBzdWNjZXNzZnVsbHkgdW5wYWNrZWQgYW5kIE1ENSBzdW1zIGNoZWNrZWRcbiJ9 -->
+<pre><code>package ‘rlang’ successfully unpacked and MD5 sums checked</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogY2Fubm90IHJlbW92ZSBwcmlvciBpbnN0YWxsYXRpb24gb2YgcGFja2FnZSDigJhybGFuZ+KAmVdhcm5pbmc6IHByb2JsZW0gY29weWluZyBDOlxcVXNlcnNcXGRhc2VzXFxBcHBEYXRhXFxMb2NhbFxcUlxcd2luLWxpYnJhcnlcXDQuM1xcMDBMT0NLXFxybGFuZ1xcbGlic1xceDY0XFxybGFuZy5kbGwgdG8gQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXHJsYW5nXFxsaWJzXFx4NjRcXHJsYW5nLmRsbDogUGVybWlzc2lvbiBkZW5pZWRXYXJuaW5nOiByZXN0b3JlZCDigJhybGFuZ+KAmVxuIn0= -->
+<pre><code>Warning: cannot remove prior installation of package ‘rlang’Warning: problem copying C:\Users\dases\AppData\Local\R\win-library\4.3\00LOCK\rlang\libs\x64\rlang.dll to C:\Users\dases\AppData\Local\R\win-library\4.3\rlang\libs\x64\rlang.dll: Permission deniedWarning: restored ‘rlang’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhybWFya2Rvd27igJkgc3VjY2Vzc2Z1bGx5IHVucGFja2VkIGFuZCBNRDUgc3VtcyBjaGVja2VkXG5wYWNrYWdlIOKAmHN5c3RlbWZvbnRz4oCZIHN1Y2Nlc3NmdWxseSB1bnBhY2tlZCBhbmQgTUQ1IHN1bXMgY2hlY2tlZFxuIn0= -->
+<pre><code>package ‘rmarkdown’ successfully unpacked and MD5 sums checked
+package ‘systemfonts’ successfully unpacked and MD5 sums checked</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogY2Fubm90IHJlbW92ZSBwcmlvciBpbnN0YWxsYXRpb24gb2YgcGFja2FnZSDigJhzeXN0ZW1mb250c+KAmVdhcm5pbmc6IHByb2JsZW0gY29weWluZyBDOlxcVXNlcnNcXGRhc2VzXFxBcHBEYXRhXFxMb2NhbFxcUlxcd2luLWxpYnJhcnlcXDQuM1xcMDBMT0NLXFxzeXN0ZW1mb250c1xcbGlic1xceDY0XFxzeXN0ZW1mb250cy5kbGwgdG8gQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXHN5c3RlbWZvbnRzXFxsaWJzXFx4NjRcXHN5c3RlbWZvbnRzLmRsbDogUGVybWlzc2lvbiBkZW5pZWRXYXJuaW5nOiByZXN0b3JlZCDigJhzeXN0ZW1mb250c+KAmVxuIn0= -->
+<pre><code>Warning: cannot remove prior installation of package ‘systemfonts’Warning: problem copying C:\Users\dases\AppData\Local\R\win-library\4.3\00LOCK\systemfonts\libs\x64\systemfonts.dll to C:\Users\dases\AppData\Local\R\win-library\4.3\systemfonts\libs\x64\systemfonts.dll: Permission deniedWarning: restored ‘systemfonts’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJh3aXRocuKAmSBzdWNjZXNzZnVsbHkgdW5wYWNrZWQgYW5kIE1ENSBzdW1zIGNoZWNrZWRcbnBhY2thZ2Ug4oCYeGZ1buKAmSBzdWNjZXNzZnVsbHkgdW5wYWNrZWQgYW5kIE1ENSBzdW1zIGNoZWNrZWRcbiJ9 -->
+<pre><code>package ‘withr’ successfully unpacked and MD5 sums checked
+package ‘xfun’ successfully unpacked and MD5 sums checked</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogY2Fubm90IHJlbW92ZSBwcmlvciBpbnN0YWxsYXRpb24gb2YgcGFja2FnZSDigJh4ZnVu4oCZV2FybmluZzogcHJvYmxlbSBjb3B5aW5nIEM6XFxVc2Vyc1xcZGFzZXNcXEFwcERhdGFcXExvY2FsXFxSXFx3aW4tbGlicmFyeVxcNC4zXFwwMExPQ0tcXHhmdW5cXGxpYnNcXHg2NFxceGZ1bi5kbGwgdG8gQzpcXFVzZXJzXFxkYXNlc1xcQXBwRGF0YVxcTG9jYWxcXFJcXHdpbi1saWJyYXJ5XFw0LjNcXHhmdW5cXGxpYnNcXHg2NFxceGZ1bi5kbGw6IFBlcm1pc3Npb24gZGVuaWVkV2FybmluZzogcmVzdG9yZWQg4oCYeGZ1buKAmVxuIn0= -->
+<pre><code>Warning: cannot remove prior installation of package ‘xfun’Warning: problem copying C:\Users\dases\AppData\Local\R\win-library\4.3\00LOCK\xfun\libs\x64\xfun.dll to C:\Users\dases\AppData\Local\R\win-library\4.3\xfun\libs\x64\xfun.dll: Permission deniedWarning: restored ‘xfun’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5UaGUgZG93bmxvYWRlZCBiaW5hcnkgcGFja2FnZXMgYXJlIGluXG5cdEM6XFxVc2Vyc1xcZGFzZXNcXEFwcERhdGFcXExvY2FsXFxUZW1wXFxSdG1wc0pybUJTXFxkb3dubG9hZGVkX3BhY2thZ2VzXG4ifQ== -->
+<pre><code>
+The downloaded binary packages are in
+    C:\Users\dases\AppData\Local\Temp\RtmpsJrmBS\downloaded_packages</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 
@@ -1845,7 +1973,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Projeto.Rmd");
+  window.initializeSourceEmbed("R - Projeto.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
