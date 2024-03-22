@@ -1,4 +1,4 @@
-# Projeto
+# Projeto - Visualization of Single-Cell Transcriptomics from Zebrafish Pigment Cells
 Repositório criado para a UC Projeto do Mestrado em Bioinformática
 
 ## Autores:
