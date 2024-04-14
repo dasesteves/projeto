@@ -1,4 +1,4 @@
-# Project on Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells
+# Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells
 
 ## My Information
 - **Name:** Diogo Esteves
