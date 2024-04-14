@@ -1,6 +1,6 @@
 # Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells
 
-## My Information
+## 1st year of Master Degree in Bioinformatics
 - **Name:** Diogo Esteves
 - **Student:** PG28935
 
