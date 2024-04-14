@@ -1,7 +1,6 @@
 ## Here you can find the final file from phase 1 project delivery:
 
-- 'Visualization of Single-Cell Transcriptomics from Zebrafish Pigment Cells.pdf'
-
+- `Visualization of Single-Cell Transcriptomics from Zebrafish Pigment Cells.pdf` 
 
 ## Project Description
 - **Advisor:** David Henriques – CSIC IIM (Vigo, Spain)
