@@ -4,7 +4,7 @@
 
 ## Project Description
 
-**Advisor:** David Henriques – CSIC IIM (Vigo, Spain)
+**Advisor:** David Henriques – CSIC IIM (Vigo, Spain)  
 **Title:** Visualization of Single-Cell Transcriptomics from Zebrafish Pigment Cells
 
 ### Abstract
