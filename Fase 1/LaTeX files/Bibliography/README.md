@@ -1,3 +1,3 @@
 ### NOTE
 
-A bibliografia não se encontra toda aqui por falha no upload para o repositório (GitHub)
+The bibliography is not fully available here due to a failed upload to the repository **(GitHub)**.
