@@ -5,7 +5,7 @@
 - **Student Number:** PG28935
 
 ## Project Information:
-- **Area** Bioinformatics
+- **Area:** Bioinformatics
 - **Course Unit:** Project
 - **Course Professor:** Miguel Rocha
 
