@@ -2,7 +2,7 @@
 
 ## My Information
 - **Name:** Diogo Esteves
-- **Student Number:** PG28935
+- **Student:** PG28935
 
 ## Project Information:
 - **Area:** Bioinformatics
