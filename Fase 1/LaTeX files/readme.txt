@@ -1,19 +1,24 @@
-Dear LLNCS user,
+Dear visitor,
 
-The files in this directory belong to the LaTeX2e package for
-Lecture Notes in Computer Science (LNCS) of Springer-Verlag.
+The files in this directory belong to the phase 1 project delivery.
 
-It consists of the following files:
+It consists of the following LaTeX related files:
 
-  readme.txt         this file
+  readme.txt               this file
 
-  history.txt        the version history of the package
+  llncs.cls                the LaTeX2e document class
 
-  llncs.cls          the LaTeX2e document class
+  llncsdoc.pdf             the documentation of the class (PDF version)
 
-  samplepaper.tex    a sample paper
-  fig1.eps           a figure used in the sample paper
+  splncs04.bst             current LNCS BibTeX style with alphabetic sorting
 
-  llncsdoc.pdf       the documentation of the class (PDF version)
 
-  splncs04.bst       current LNCS BibTeX style with alphabetic sorting
+and Project related files:
+
+  Artigo Intercalar.tex    TeX document that originates "Visualization of Single-Cell Transcriptomics from Zebrafish                              Pigment Cells.pdf"
+
+  Fig1.jpg                  Figure from Saunders et al., 2023, used in "Artigo Intercalar.tex"
+
+  Fig2.jpg                  Figure from Saunders et al., 2023
+
+  references.bib            All cited references within "Artigo Intercalar.tex" and "Visualization of Single-Cell                                  Transcriptomics from Zebrafish Pigment Cells.pdf"
