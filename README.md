@@ -4,10 +4,9 @@
 - **Name:** Diogo Esteves
 - **Student:** PG28935
 
-## Project Information:
+## Course - Project:
 - **Area:** Bioinformatics
-- **Course Unit:** Project
-- **Course Professor:** Miguel Rocha
+- **Professor:** Miguel Rocha
 
 ## Project Description
 - **Advisor:** David Henriques – CSIC IIM (Vigo, Spain)
