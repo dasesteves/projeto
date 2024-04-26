@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Installing Libraries/packages/dependencies
 
 ```{r}
+
 #Pré-Requisitos do Bioconductor
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -35,6 +36,7 @@ library(SRAdb)
 library(RSQLite)
 library(graph)
 library(RCurl)
+library(GEOquery)
 ```
 
 
@@ -43,17 +45,26 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
 
 ```{r}
-# Connect to the SRA database
-sqlfile <- getSRAdbFile(SRP374541)
+
+options(timeout=900)  # Aumenta o tempo limite para 900 segundos(15min), ajustar mediante a velocidade de conexão. 
+
+url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
+localfile <- "SRAmetadb.sqlite.gz"
+download.file(url_sra, destfile = localfile, mode = "wb", timeout = 300)
 
 # Initialize connection
-sra_con <- dbConnect(SQLite(), dbname=sqlfile)
+sra_con <- dbConnect(SQLite(),sqlfile)
+
+# Connect to the SRA database
+sraInf <- getSRAinfo("SRP374541",sra_con, sraType="sra")
+
+sraInf
 
 # Get SRA accessions
 sra_acc <- getFASTQinfo('GSE202639', srcType = 'ftp', sra_con = sra_con)
 
-# Download data
-download.file(url_sra, destfile = localfile, mode = "wb")
+# Download data substituir x por ficheiro, repetir função para vários ficheiros
+sapply(sraInf$run, function(x) try(getSRAfile(x,sra_con, fileType="sra"),silent=TRUE))
 
 # Close the database connection
 dbDisconnect(sra_con)
