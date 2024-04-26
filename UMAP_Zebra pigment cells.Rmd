@@ -50,12 +50,12 @@ options(timeout=900)  # Aumenta o tempo limite para 900 segundos(15min), ajustar
 
 url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
 localfile <- "SRAmetadb.sqlite.gz"
-download.file(url_sra, destfile = localfile, mode = "wb", timeout = 300)
+download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
 
 # Initialize connection
 sra_con <- dbConnect(SQLite(),sqlfile)
 
-# Connect to the SRA database
+# Connect to the SRA database, metadados
 sraInf <- getSRAinfo("SRP374541",sra_con, sraType="sra")
 
 sraInf
