@@ -45,27 +45,33 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
 
 ```{r}
+library(R.utils)
 
+# Definir as variáveis
 url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
 localfile <- "SRAmetadb.sqlite.gz"
-download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
 
-# Initialize connection
-sra_con <- dbConnect(SQLite(),sqlfile)
+# Verificar se o arquivo já existe antes de fazer o download
+if (!file.exists(localfile)) {
+  download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
+}
 
-# Connect to the SRA database, metadados
-sra_inf <- getSRAinfo("SRP374541",sra_con, sraType="sra")
+# Descompactar o arquivo se necessário
+if (!file.exists("SRAmetadb.sqlite") && file.exists(localfile)) {
+  gunzip(localfile, overwrite = TRUE)
+}
 
-sra_inf
+# Verificar o tamanho do arquivo descompactado
+file.info("SRAmetadb.sqlite")$size
 
-# Get SRA accessions
-sra_acc <- getFASTQinfo('GSE202639', srcType = 'ftp', sra_con = sra_con)
+# Inicializar a conexão
+if (file.exists("SRAmetadb.sqlite")) {
+  sra_con <- dbConnect(RSQLite::SQLite(), "SRAmetadb.sqlite")
+  dbListTables(sra_con)
+} else {
+  print("O arquivo descompactado não existe ou é inválido.")
+}
 
-# Download data substituir x por ficheiro, repetir função para vários ficheiros
-#sapply(sraInf$run, function(x) try(getSRAfile(x,sra_con, fileType="sra"),silent=TRUE))
-
-# Close the database connection
-dbDisconnect(sra_con)
 ```
 
 ## Analysis
