@@ -1,0 +1,93 @@
+---
+title: "UMAP"
+author: "Diogo Esteves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Installing Libraries/packages/dependencies
+
+```{r}
+#Pré-Requisitos do Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+BiocManager::install(c("SingleCellExperiment", "GenomeInfoDb", "SummarizedExperiment", "DelayedArray", "HDF5Array", "BiocParallel", "SRAdb"))
+
+#Monocle 3 usando o pacote devtools
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+devtools::install_github("cole-trapnell-lab/monocle3", ref="master")
+
+```
+## Loading Libraries
+```{r}
+# Carregar as bibliotecas após a instalação
+library(Seurat)
+library(monocle3)
+library(ggplot2)
+library(dplyr)
+library(SRAdb)
+library(RSQLite)
+library(graph)
+library(RCurl)
+```
+
+
+## Data Import and Preprocessing
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+
+```{r}
+# Connect to the SRA database
+sqlfile <- getSRAdbFile(SRP374541)
+
+# Initialize connection
+sra_con <- dbConnect(SQLite(), dbname=sqlfile)
+
+# Get SRA accessions
+sra_acc <- getFASTQinfo('GSE202639', srcType = 'ftp', sra_con = sra_con)
+
+# Download data
+download.file(url_sra, destfile = localfile, mode = "wb")
+
+# Close the database connection
+dbDisconnect(sra_con)
+```
+
+## Analysis
+
+```{r}
+# Setup Monocle
+sc_data <- setup_cds(sc_data, method = "UMAP")
+
+# Trajectory analysis
+sc_data <- reduce_dimension(sc_data)
+plot_cells(sc_data, color_by = "your_cell_type_variable")
+```
+
+## Differential Expression Analysis
+
+```{r}
+# Differential expression
+diff_exp_results <- differentialGeneTest(sc_data[cell_ids,], fullModelFormulaStr = "~ condition")
+head(diff_exp_results)
+```
+
+## Visualization
+
+
+```{r}
+# Run UMAP
+sc_data <- runUMAP(sc_data, dims = 1:20)
+
+# Visualization
+DimPlot(sc_data, reduction = "umap", group.by = "condition")
+```
+
+```{r}
+```
