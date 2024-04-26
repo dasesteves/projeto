@@ -13,13 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
-#Pré-Requisitos do Bioconductor
+#Bioconductor
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install()
 BiocManager::install(c("SingleCellExperiment", "GenomeInfoDb", "SummarizedExperiment", "DelayedArray", "HDF5Array", "BiocParallel", "SRAdb"))
 
-#Monocle 3 usando o pacote devtools
+#Monocle 3, usando o pacote devtools
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
 devtools::install_github("cole-trapnell-lab/monocle3", ref="master")
@@ -30,6 +30,7 @@ devtools::install_github("cole-trapnell-lab/monocle3", ref="master")
 # Carregar as bibliotecas após a instalação
 library(Seurat)
 library(monocle3)
+library(R.utils)
 library(ggplot2)
 library(dplyr)
 library(SRAdb)
@@ -45,26 +46,25 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
 
 ```{r}
-library(R.utils)
-
-# Definir as variáveis
+# Define as variáveis
 url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
 localfile <- "SRAmetadb.sqlite.gz"
 
-# Verificar se o arquivo já existe antes de fazer o download
+# Verifica se o arquivo já existe antes de fazer o download
 if (!file.exists(localfile)) {
   download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
 }
 
-# Descompactar o arquivo se necessário
+# o proximo passo descompacta o arquivo se necessário, passo demorado e sem barra de progresso... ter em atenção se executou corretamente ou se ainda está a ser executado em segundo plano mesmo se abortarem o processo.
+
 if (!file.exists("SRAmetadb.sqlite") && file.exists(localfile)) {
   gunzip(localfile, overwrite = TRUE)
 }
 
-# Verificar o tamanho do arquivo descompactado
+# Verifica o tamanho do arquivo descompactado
 file.info("SRAmetadb.sqlite")$size
 
-# Inicializar a conexão
+# Inicializa a conexão
 if (file.exists("SRAmetadb.sqlite")) {
   sra_con <- dbConnect(RSQLite::SQLite(), "SRAmetadb.sqlite")
   dbListTables(sra_con)
