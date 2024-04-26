@@ -8,6 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+setwd("C:/Users/dases/Desktop/Projeto") # isto é muito importante definir antes - ficheiros muito grandes
+
+```
 
 ## Installing Libraries/packages/dependencies
 
@@ -41,12 +45,11 @@ library(GEOquery)
 ```
 
 
-## Data Import and Preprocessing
+## Data Import
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
-
 ```{r}
-# Define as variáveis
+# Define as variáveis de acesso a db
 url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
 localfile <- "SRAmetadb.sqlite.gz"
 
@@ -55,10 +58,10 @@ if (!file.exists(localfile)) {
   download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
 }
 
-# o proximo passo descompacta o arquivo se necessário, passo demorado e sem barra de progresso... ter em atenção se executou corretamente ou se ainda está a ser executado em segundo plano mesmo se abortarem o processo.
+# o próximo passo descompacta o arquivo se necessário, passo muito demorado e sem barra de progresso... ter em atenção se executou corretamente, ou se ainda está a ser executado em segundo plano, mesmo se abortarem o processo...
 
 if (!file.exists("SRAmetadb.sqlite") && file.exists(localfile)) {
-  gunzip(localfile, overwrite = TRUE)
+  gunzip(localfile, overwrite = TRUE, BFR.SIZE = 1e+07) #tive de redefinir o parametro BFR.SIZE para lidar com este ficheiro
 }
 
 # Verifica o tamanho do arquivo descompactado
@@ -66,13 +69,18 @@ file.info("SRAmetadb.sqlite")$size
 
 # Inicializa a conexão
 if (file.exists("SRAmetadb.sqlite")) {
-  sra_con <- dbConnect(RSQLite::SQLite(), "SRAmetadb.sqlite")
+  sra_con <- dbConnect(RSQLite::SQLite(), "SRAmetadb.sqlite", synchronous = NULL)
   dbListTables(sra_con)
 } else {
   print("O arquivo descompactado não existe ou é inválido.")
 }
 
 ```
+ 
+## Preprocessing
+```{r}
+```
+
 
 ## Analysis
 
