@@ -46,8 +46,6 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
 ```{r}
 
-options(timeout=900)  # Aumenta o tempo limite para 900 segundos(15min), ajustar mediante a velocidade de conexão. 
-
 url_sra <- "https://gbnci.cancer.gov/backup/SRAmetadb.sqlite.gz"
 localfile <- "SRAmetadb.sqlite.gz"
 download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
@@ -56,15 +54,15 @@ download.file(url_sra, destfile = localfile, mode = "wb", timeout = 900)
 sra_con <- dbConnect(SQLite(),sqlfile)
 
 # Connect to the SRA database, metadados
-sraInf <- getSRAinfo("SRP374541",sra_con, sraType="sra")
+sra_inf <- getSRAinfo("SRP374541",sra_con, sraType="sra")
 
-sraInf
+sra_inf
 
 # Get SRA accessions
 sra_acc <- getFASTQinfo('GSE202639', srcType = 'ftp', sra_con = sra_con)
 
 # Download data substituir x por ficheiro, repetir função para vários ficheiros
-sapply(sraInf$run, function(x) try(getSRAfile(x,sra_con, fileType="sra"),silent=TRUE))
+#sapply(sraInf$run, function(x) try(getSRAfile(x,sra_con, fileType="sra"),silent=TRUE))
 
 # Close the database connection
 dbDisconnect(sra_con)
