@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
 ## Instalação de Bibliotecas, Pacotes e Dependências
@@ -22,7 +23,7 @@ required_bioconductor_packages <- c(
   "SingleCellExperiment", "GenomeInfoDb", "SummarizedExperiment",
   "DelayedArray", "HDF5Array", "BiocParallel", "SRAdb",
   "BiocGenerics", "DelayedMatrixStats", "limma", "lme4",
-  "S4Vectors", "batchelor", "terra", "ggrastr", "scater"
+  "S4Vectors", "batchelor", "terra", "ggrastr", "scater", "scran"
 )
 BiocManager::install(required_bioconductor_packages, update = TRUE, ask = FALSE)
 
@@ -53,6 +54,7 @@ library(SingleCellExperiment)
 library(scater)
 library(DESeq2)
 library(Matrix)
+library(scran)
 ```
 
 ## Download dos Dados
@@ -62,6 +64,7 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 AVISO: São muitos GBs certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
 
 ```{r download-data1}
+setwd("C:/Users/dases/Desktop/Projeto")
 files_to_download <- list(
   cds = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcds%2ERDS%2Egz",
   cell_metadata = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcell%5Fmetadata%2Ecsv%2Egz",
@@ -82,6 +85,7 @@ dest_files <- list(
   raw_counts = "GSE202639_zperturb_full_raw_counts.RDS.gz"
 )
 
+#função para download e extração dos datasets anteriores
 for (name in names(dest_files)) {
   file_url <- paste0(base_url, dest_files[[name]])
   dest_file <- dest_files[[name]] 
@@ -93,6 +97,7 @@ for (name in names(dest_files)) {
 ## Loading dos Dados
 
 ```{r data-load1}
+setwd("C:/Users/dases/Desktop/Projeto")
 # Carregar o objeto completo do CellDataSet
 full_cds <- readRDS("GSE202639_zperturb_full_cds.RDS")
 
@@ -104,9 +109,48 @@ gene_metadata <- read.csv("GSE202639_zperturb_full_gene_metadata.csv")
 
 # Carregar contagens
 raw_counts <- readRDS("GSE202639_zperturb_full_raw_counts.RDS")
+
 ```
 
-## Screening
+## Pre-processamento dos Dados
+
+```{r prepoc1}
+# Criar um objeto SingleCellExperiment
+sce <- SingleCellExperiment(assays = list(counts = raw_counts))
+
+# Amostragem de células para reduzir o tamanho do dataset
+set.seed(123)
+sample_cells <- sample(colnames(sce), size = 10000)
+
+# 'sce_sample' é um objeto SingleCellExperiment e deve conter apenas as células da amostra
+sce_sample <- SingleCellExperiment(assays = list(counts = raw_counts[, sample_cells]))
+
+# Clusterização rápida com a amostra
+clusters <- quickCluster(sce_sample)
+# Convert clusters to numeric if it is a factor
+if (is.factor(clusters)) {
+    clusters <- as.numeric(as.character(clusters))
+}
+
+# Computar os fatores de tamanho utilizando apenas a amostra
+size_factors <- computeSumFactors(sce_sample, clusters = clusters)
+
+# Computar os fatores de tamanho utilizando apenas a amostra
+size_factors <- computeSumFactors(sce_sample, clusters = clusters)
+
+# Verifique novamente se o tamanho do vetor size_factors corresponde ao número de células em sce_sample
+if (length(size_factors) == length(sample_cells)) {
+  # Armazenar os fatores de tamanho no objeto SingleCellExperiment da amostra
+  sizeFactors(sce_sample) <- size_factors
+  # Se não houver erro, a função continuará normalmente
+} else {
+  # Se o número de fatores de tamanho não corresponder, um erro será lançado
+  stop("O número de fatores de tamanho não corresponde ao número de células na amostra.")
+}
+
+```
+
+## Análise exploratória
 
 ```{r exam1}
 # Explorar os tipos de células
@@ -119,7 +163,7 @@ unique(colData(full_cds)$gene_target)
 unique(colData(full_cds)$condition) #parece não haver nada o que é de estranhar, vou continuar a avançar no entanto...
 ```
 
-## Plotar o UMAP
+## Plotar UMAPs com os dados em bruto
 
 Com base nas informações e nesta pré-analise temos um conjunto de dados com vários tipos de células e alvos genéticos, mas ainda sem condições especificadas. Neste caso para realizar uma análise de expressão genética foquei-me apenas nos 3 diferentes tipos de celulas pigmentares que consegui identificar mais rapidamente : "melanophore," "iridophore," e "xanthophore," e plotei um UMAP com isto.
 
