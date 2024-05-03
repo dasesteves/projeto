@@ -1,0 +1,276 @@
+---
+title: "UMAP_simple"
+author: "Diogo Esteves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instalação de Bibliotecas, Pacotes e Dependências
+
+```{r dependencies}
+# Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(version = "3.18")
+
+# Instalar pacotes necessários do Bioconductor
+required_bioconductor_packages <- c(
+  "SingleCellExperiment", "GenomeInfoDb", "SummarizedExperiment",
+  "DelayedArray", "HDF5Array", "BiocParallel", "SRAdb",
+  "BiocGenerics", "DelayedMatrixStats", "limma", "lme4",
+  "S4Vectors", "batchelor", "terra", "ggrastr", "scater"
+)
+BiocManager::install(required_bioconductor_packages, update = TRUE, ask = FALSE)
+
+# Instalar o Monocle 3
+if (!requireNamespace("devtools", quietly = TRUE))
+  install.packages("devtools")
+devtools::install_github("cole-trapnell-lab/monocle3")
+
+# Instalar outras dependências
+install.packages(c("R.utils", "ggplot2", "dplyr", "data.table", "plotly", "viridis", "htmlwidgets", "VGAM", "forcats"))
+
+# Instalar UMAP e Louvain em Python para uso com o reticulate
+reticulate::py_install('umap-learn', pip = TRUE, pip_ignore_installed = TRUE)
+reticulate::py_install("louvain")
+```
+
+## Configuração do Diretório de Trabalho e loading das Bibliotecas
+
+```{r libraries}
+setwd("C:/Users/dases/Desktop/Projeto") #a definir pelo utilizador
+
+library(monocle3)
+library(ggplot2)
+library(R.utils)
+library(dplyr)
+library(Seurat)
+library(SingleCellExperiment)
+library(scater)
+library(DESeq2)
+library(Matrix)
+```
+
+## Download dos Dados
+Ficheiros:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+AVISO: São muitos GBs certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
+
+```{r download-data1}
+files_to_download <- list(
+  cds = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcds%2ERDS%2Egz",
+  cell_metadata = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcell%5Fmetadata%2Ecsv%2Egz",
+  gene_metadata = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fgene%5Fmetadata%2Ecsv%2Egz",
+  raw_counts = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fraw%5Fcounts%2ERDS%2Egz"
+)
+
+options(timeout=900)  # Defini o tempo limite para 900 segundos (15 minutos)
+
+# URL Base
+base_url <- "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/"
+
+# Arquivos de destino
+dest_files <- list(
+  cds = "GSE202639_zperturb_full_cds.RDS.gz",
+  cell_metadata = "GSE202639_zperturb_full_cell_metadata.csv.gz",
+  gene_metadata = "GSE202639_zperturb_full_gene_metadata.csv.gz",
+  raw_counts = "GSE202639_zperturb_full_raw_counts.RDS.gz"
+)
+
+for (name in names(dest_files)) {
+  file_url <- paste0(base_url, dest_files[[name]])
+  dest_file <- dest_files[[name]] 
+  download.file(file_url, destfile = dest_file, method = "libcurl")
+  gunzip(dest_file, overwrite = TRUE)
+}
+```
+
+## Loading dos Dados
+
+```{r data-load1}
+# Carregar o objeto completo do CellDataSet
+full_cds <- readRDS("GSE202639_zperturb_full_cds.RDS")
+
+# Carregar os metadados das células
+cell_metadata <- read.csv("GSE202639_zperturb_full_cell_metadata.csv")
+
+# Carregar os metadados dos genes
+gene_metadata <- read.csv("GSE202639_zperturb_full_gene_metadata.csv")
+
+# Carregar contagens
+raw_counts <- readRDS("GSE202639_zperturb_full_raw_counts.RDS")
+```
+
+## Screening
+
+```{r exam1}
+# Explorar os tipos de células
+unique(colData(full_cds)$cell_type_broad)
+
+# Explorar os alvos dos genes
+unique(colData(full_cds)$gene_target)
+
+# Explorar as condições
+unique(colData(full_cds)$condition) #parece não haver nada o que é de estranhar, vou continuar a avançar no entanto...
+```
+
+## Plotar o UMAP
+
+Com base nas informações e nesta pré-analise temos um conjunto de dados com vários tipos de células e alvos genéticos, mas ainda sem condições especificadas. Neste caso para realizar uma análise de expressão genética foquei-me apenas nos 3 diferentes tipos de celulas pigmentares que consegui identificar mais rapidamente : "melanophore," "iridophore," e "xanthophore," e plotei um UMAP com isto.
+
+```{r UMAP1}
+# Filtrar células pigmentares
+pigment_cell_types <- c("melanophore", "iridophore", "xanthophore") #espero não estar a esquecer nenhuma
+
+pigment_cds <- full_cds[, colData(full_cds)$cell_type_broad %in% pigment_cell_types]
+
+# Calcular as coordenadas UMAP
+if (!"UMAP" %in% reducedDimNames(pigment_cds)) {
+  pigment_cds <- runUMAP(pigment_cds, dims = 1:10)
+}
+
+# Plotar UMAP
+plotUMAP(pigment_cds, colour_by = "cell_type_broad") + 
+  ggtitle("UMAP dos tipos de Células Pigmentares") +
+  theme_minimal()
+```
+Para criar um gráfico UMAP para visualizar a expressão ao longo do tempo das celulas pigmentares, utilizei o `pigment_cds` definido anteriormente colorido pelo `timepoint`:
+
+```{r UMAP2}
+# UMAP ao longo do tempo do ensaio com as celulas pigmentares
+plotUMAP(pigment_cds, colour_by = "timepoint") + 
+  ggtitle("UMAP das celulas Pigmentares ao longo do tempo") +
+  theme_minimal()
+```
+Por fim, para uma análise com os fatores de transcrição, usei a coluna `gene_target` no `colData` para colorir o gráfico UMAP, o que deve  permitir visualizar a distribuição dos diferentes fatores de transcrição.
+
+```{r UMAP3}
+# Gráfico UMAP colorido pelos fatores de transcrição
+plotUMAP(pigment_cds, colour_by = "gene_target") + 
+  ggtitle("UMAP das Células Pigmentares por Factores de Transcrição")
+```
+## Enriquecimento de Marcadores de Célula
+
+Funções como `FindAllMarkers` ou `FindMarkers` do pacote Seurat permitem encontrar os marcadores celulares para cada cluster identificado.
+A ideia é comparar a expressão entre os diferentes tipos de células pigmentares (`melanophore`, `iridophore`, `xanthophore`).
+
+encontrei um problema de alocação de memória ao tentar criar um objeto DESeqDataSet a partir de uma matriz de contagens. A mensagem de erro cannot allocate vector of size 641.3 Gb indica que o R não é capaz de alocar um vetor deste tamanho (641GB) ou a maquina não esta preparada para alocar 641GB. Uma abordagem para contornar esse problema seria trabalhar com uma representação de dados esparsos, evitando a conversão para um formato denso, que requer uma grande quantidade de memória. O pacote DESeq2 permite trabalhar com matrizes diretamente através do uso do pacote Matrix para criar a matriz de contagens. Não está a funcionar
+
+```{r enrimarker1}
+# 'counts' já é uma matriz esparsa:
+sparse_counts <- as(counts, "sparseMatrix")
+
+# Assuming 'sparse_counts' is a sparse matrix of counts and 'coldata' has the necessary metadata
+group <- factor(coldata$cluster)
+
+# Create a DGEList object from sparse matrix
+dge <- DGEList(counts=sparse_counts, group=group)
+
+# Proceed with analysis using edgeR
+dge <- calcNormFactors(dge)
+design <- model.matrix(~ group)
+dge <- estimateDisp(dge, design)
+fit <- glmQLFit(dge, design)
+result <- glmQLFTest(fit, coef=2) # Adjust 'coef' based on the comparison of interest
+topTags(result)
+
+```
+
+
+## Perform differential expression analysis
+
+Proximo passo? ... ainda em desenvolvimento...
+
+```{r exam3}
+#analise exploratoria do conteudo das colunas
+names(colData(full_cds))
+
+unique(colData(full_cds)$timepoint)
+unique(colData(full_cds)$expt)
+unique(colData(full_cds)$tissue)
+unique(colData(full_cds)$gene_target)
+unique(colData(full_cds)$embryo)
+unique(colData(full_cds)$sample)
+
+
+```
+
+```{r difexp1}
+
+# Extrair a matriz de contagens do objeto 'full_cds'
+counts <- counts(full_cds)
+
+# Obter os metadados de coluna (dados de amostra), que devem incluir a coluna 'cluster'
+coldata <- colData(full_cds)
+
+# Criar um objeto DESeqDataSet
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = coldata,
+                              design = ~ cluster)
+
+# Prossiga com a análise DESeq
+dds <- DESeq(dds)
+
+# Obter os resultados para comparações específicas de tempo
+results_1_vs_2 <- results(dds, contrast = c("timepoint", "1", "2"))
+
+# Visualizar os principais resultados
+head(results_1_vs_2)
+
+```
+
+## Cell type-specific differential expression analysis for a perturbation
+
+```{r pressure, echo=FALSE}
+
+# Load the zebrafish perturbation data
+perturb_cds <- readRDS("zscape_perturb_cds.RDS")
+
+# List the different genetic perturbations 
+unique(colData(perturb_cds)$gene_target)
+
+# Subset smoothened crispants and notochord cells (for example)
+smo_nc_cds <- perturb_cds[,colData(perturb_cds)$gene_target %in% c("smo", "ctrl-inj") & 
+            colData(perturb_cds)$cell_type_broad %in% c("notochord")]
+
+# Now select the timepoints 
+# note that the controls will include timepoints that are not included for smo
+smo_nc_cds <- smo_nc_cds[,colData(smo_nc_cds)$timepoint %in% c("24", "36")]
+
+# Use monocle3 to perform DE testing between controls and smo notochord cells
+deg_cds <- smo_nc_cds[Matrix::rowSums(SingleCellExperiment::counts(smo_nc_cds) > 0) > 10,] # filter for expressed genes
+fits <- fit_models(deg_cds, model_formula_str = "~gene_target", cores = 4)
+mod_coef <- coefficient_table(fits)
+
+# Parse the results table
+smo.celltype.degs <- mod_coef %>% 
+  mutate(up_in = case_when(
+    estimate < 0 ~ "ctrl",
+    estimate > 0 ~ "smo"))
+
+smo.celltype.degs <- smo.celltype.degs %>% 
+    filter(term != "(Intercept)") %>%
+    select(up_in, id, gene_short_name, q_value, estimate, -model_summary, -model)
+
+# filter for q-value < 0.05
+sig.smo.celltype.degs <- smo.celltype.degs %>%
+            filter(q_value < 0.05 ) %>%  
+            arrange(up_in, q_value)
+
+# check the deg number for each direction
+sig.smo.celltype.degs %>% 
+    group_by(up_in) %>%
+    tally()
+
+# save the differentially expressed genes as a csv
+fwrite(sig.smo.celltype.degs, "smo_nc_24-36h_q05_degs.csv", 
+        sep = ",", na = "NA")
+
+
+#Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```
