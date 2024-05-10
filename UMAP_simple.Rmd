@@ -1,5 +1,5 @@
 ---
-title: "UMAP_simple"
+title: "Análise Eficiente de Células Pigmentares em Zebrafish"
 author: "Diogo Esteves"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,336 +7,186 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-```
-
-# Instalação e "loading" de Bibliotecas, Pacotes e Dependências
-
-```{r dependencies1}
-# Define uma função para instalar pacotes se eles não estiverem já instalados
-ensure_packages <- function(packages) {
-  new_packages <- packages[!packages %in% installed.packages()[,"Package"]]
-  if(length(new_packages) > 0) install.packages(new_packages)
-  lapply(packages, library, character.only = TRUE)
-}
-
-# Pacotes do CRAN
-cran_packages <- c("R.utils", "ggplot2", "dplyr", "data.table", "plotly", 
-                   "viridis", "htmlwidgets", "VGAM", "forcats", "devtools", "knitr")
-ensure_packages(cran_packages)
-
-# Pacotes do Bioconductor
-bioc_packages <- c("SingleCellExperiment", "GenomeInfoDb", "SummarizedExperiment",
-                   "DelayedArray", "HDF5Array", "BiocParallel", "SRAdb",
-                   "BiocGenerics", "DelayedMatrixStats", "limma", "lme4",
-                   "S4Vectors", "batchelor", "terra", "ggrastr", "scater", "scran")
-
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager")
-}
-BiocManager::install(bioc_packages, ask = FALSE)
-```
-
-## Instalação de Pacotes Python via Reticulate
-
-```{r dependencies2}
-# Função para instalar pacotes Python e tratar erros
-install_python_package <- function(package) {
-  tryCatch({
-    reticulate::py_install(package, pip = TRUE)
-    cat(paste("Instalação do pacote", package, "completada.\n"))
-  }, error = function(e) {
-    cat(paste("Erro na instalação do pacote", package, ":", e$message, "\n"))
-  })
-}
-
-# Instalar pacotes p/Python necessários
-install_python_package('umap-learn')
-install_python_package('louvain')
-
-```
-### Configuração do Diretório de Trabalho e loading das Bibliotecas
-
-```{r libraries}
-# Automaticamente define a working directory para o local deste ficheiro .Rmd
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
-library(monocle3)
-library(ggplot2)
-library(R.utils)
-library(dplyr)
-library(Seurat)
-library(SingleCellExperiment)
-library(BiocParallel)
-library(parallel)
 library(Matrix)
-library(DelayedArray)
-library(DelayedMatrixStats)
-library(scater)
-library(DESeq2)
-library(scran)
+library(SingleCellExperiment)
+library(Seurat)
+library(dplyr)
+library(ggplot2)
 ```
 
-# Download dos Dados e Pré-Processamento
+# Instalação e Carregamento de Pacotes
+```{r Pacotes}
+# Instalação condicional de pacotes necessários
+necessary_packages <- c("ggplot2", "dplyr", "Seurat", "Matrix", "SingleCellExperiment")
+new_packages <- necessary_packages[!necessary_packages %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+lapply(necessary_packages, library, character.only = TRUE)
+```
+
+# Configuração do Ambiente
+
+```{r Ambiente}
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+```
+
+# Aquisição e Pré-Processamento dos Dados
+
+## Download dos Dados
+
 Ficheiros:
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
-AVISO: São muitos GBs certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
+- AVISO: São muitos GBs certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
 
-```{r download-data1}
-# Automaticamente define a working directory para o local deste ficheiro .Rmd
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+- PASSO MUITO DEMORADO, mediante a velocidade de rede e a máquina usada, necessário cumprir com todos os pré-requisitos até aqui. 
 
-# Função para baixar e extrair arquivos apenas se eles não existirem
-download_and_extract <- function(urls, dests) {
-  for (i in seq_along(urls)) {
-    if (!file.exists(dests[i])) {
-      download.file(urls[i], dests[i], method = "libcurl", mode = "wb")
-      if (file.exists(dests[i])) {
-        utils::unzip(dests[i], exdir = dirname(dests[i]))
-        message(paste("Arquivo", dests[i], "baixado e extraído com sucesso."))
-      } else {
-        message(paste("Falha no download do arquivo:", urls[i]))
-      }
-    } else {
-      message(paste("Arquivo já existe e não será baixado novamente:", dests[i]))
+
+```{r download}
+# Definir URLs e destinos para download
+files_to_download <- list(
+  "GSE202639_zperturb_full_cds.RDS.gz" = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcds%2ERDS%2Egz",
+  "GSE202639_zperturb_full_cell_metadata.csv.gz" = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcell%5Fmetadata%2Ecsv%2Egz",
+  "GSE202639_zperturb_full_gene_metadata.csv.gz" = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fgene%5Fmetadata%2Ecsv%2Egz",
+  "GSE202639_zperturb_full_raw_counts.RDS.gz" = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fraw%5Fcounts%2ERDS%2Egz"
+)
+
+# Download e descompressão dos dados
+for (file_name in names(files_to_download)) {
+  local_file_name <- gsub(".gz", "", file_name)
+  if (!file.exists(local_file_name)) {
+    download.file(files_to_download[[file_name]], file_name)
+    # Descomprimir arquivo se for um gzipped RDS
+    if (grepl(".gz$", file_name)) {
+      R.utils::gunzip(file_name, overwrite = TRUE)
     }
+  }
+  # Carregar arquivos descomprimidos
+  if (grepl(".csv", local_file_name)) {
+    assign(gsub(".csv$", "", local_file_name), read.csv(local_file_name))
+  } else if (grepl(".RDS", local_file_name)) {
+    assign(gsub(".RDS$", "", local_file_name), readRDS(local_file_name))
   }
 }
 
-# Executando a função para os datasets necessários
-files_to_download <- c("https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcds%2ERDS%2Egz",
-                       "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcell%5Fmetadata%2Ecsv%2Egz",
-                       "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fgene%5Fmetadata%2Ecsv%2Egz",
-                       "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fraw%5Fcounts%2ERDS%2Egz")
-
-
-dest_files <- c("GSE202639_zperturb_full_cds.RDS.gz", "GSE202639_zperturb_full_cell_metadata.csv.gz", "GSE202639_zperturb_full_gene_metadata.csv.gz", "GSE202639_zperturb_full_raw_counts.RDS.gz")
-
-download_and_extract(files_to_download, dest_files)
 ```
+## SingleCellExperiment
 
-## Loading dos Dados
-
-```{r data-load1}
-# Automaticamente define a working directory para o local deste ficheiro .Rmd
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
-# Carregar o objeto completo do CellDataSet
-full_cds <- readRDS("GSE202639_zperturb_full_cds.RDS")
-
-# Carregar os metadados das células
+```{r Carregamento}
+# Carregar e preparar os dados
+raw_counts <- Matrix::Matrix(readRDS("GSE202639_zperturb_full_raw_counts.RDS"), sparse = TRUE)
 cell_metadata <- read.csv("GSE202639_zperturb_full_cell_metadata.csv")
-
-# Carregar os metadados dos genes
 gene_metadata <- read.csv("GSE202639_zperturb_full_gene_metadata.csv")
 
-# Carregar contagens
-raw_counts <- readRDS("GSE202639_zperturb_full_raw_counts.RDS")
+# Criar objeto SingleCellExperiment
+sce <- SingleCellExperiment(assays = list(counts = raw_counts))
+colData(sce) <- DataFrame(cell_metadata)
+rowData(sce) <- DataFrame(gene_metadata)
+```
+
+# Análise com Seurat
+
+```{r Filtragem}
+# Criar objeto Seurat
+seurat_obj <- CreateSeuratObject(counts = raw_counts, project = "Pigment Cells")
+seurat_obj@meta.data <- cell_metadata
+
+# Pré-processamento e Normalização
+seurat_obj <- SCTransform(seurat_obj, verbose = FALSE)  # Utiliza regularização, adequada para grandes datasets
+
+# Executar PCA
+seurat_obj <- RunPCA(seurat_obj, features = VariableFeatures(seurat_obj))
+
+# Análise de clustering com base nos PCs
+seurat_obj <- FindNeighbors(seurat_obj, dims = 1:15)
+seurat_obj <- FindClusters(seurat_obj, resolution = 0.5)
+
+# Redução de dimensionalidade com UMAP para visualização usando os PCs
+seurat_obj <- RunUMAP(seurat_obj, dims = 1:15)
+
+# Visualização de UMAP
+p <- DimPlot(seurat_obj, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+print(p)
+```
+# Visualização de Heatmap das células pigmentares
+
+```{r Heatmap}
+
+FeaturePlot(seurat_obj, features = c("gene1", "gene2", "gene3"))  # Substituir 'gene1', 'gene2', 'gene3' pelos genes de interesse
+
+```{r}
+
+
+
+# Análise de Expressão Diferencial e Exportação dos Resultados
+
+```{r ExpDif}
+# Análise de expressão diferencial entre os clusters encontrados
+markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, thresh.use = 0.25)
+print(head(markers))
+```
+
+```{r Exportação}
+# Salvar os resultados
+ggsave("UMAP_clusters.png", plot = last_plot(), device = "png", width = 8, height = 6)
+write.csv(markers, "cell_markers.csv")
+```
+Análise dos Histogramas e Estatísticas
+Número de Genes por Célula:
+Média: 344.2 genes por célula.
+Mediana: 278 genes por célula.
+Máximo: 2527 genes por célula.
+A maioria das células tem entre 210 e 404 genes, com uma cauda longa estendendo-se até 2527 genes.
+Número de Células por Gene:
+Média: 28,873 células por gene.
+Mediana: 3,543 células por gene.
+Máximo: 2,678,428 células por gene.
+A maioria dos genes está presente em algumas centenas a alguns milhares de células, mas alguns genes são extremamente comuns, aparecendo em quase todas as células.
+
+# Análise com Seurat
+
+```{r data-load1}
+# Conversão para objeto Seurat para análise detalhada
+seurat_obj <- CreateSeuratObject(counts = counts(sce), project = "Pigment Cells")
+
+# Normalização dos dados
+seurat_obj <- NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+
+# Identificação de características variáveis
+seurat_obj <- FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = 2000)
+
+# Escalamento dos dados
+seurat_obj <- ScaleData(seurat_obj)
+
+# Redução de dimensionalidade com PCA
+seurat_obj <- RunPCA(seurat_obj, features = VariableFeatures(object = seurat_obj))
+
+# Redução de dimensionalidade com UMAP
+seurat_obj <- RunUMAP(seurat_obj, dims = 1:15)
+
+# Clustering
+seurat_obj <- FindNeighbors(seurat_obj, dims = 1:15)
+seurat_obj <- FindClusters(seurat_obj, resolution = 0.5)
+
+# Visualização dos clusters com UMAP
+DimPlot(seurat_obj, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+
+```
+# Análise de Expressão Diferencial
+
+```{r ExpDif}
+# Análise de expressão diferencial para identificar marcadores de célula
+markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, thresh.use = 0.25)
+
+# Visualização dos marcadores de expressão gênica
+FeaturePlot(seurat_obj, features = head(markers$gene, 5))
 
 ```
 
-### Pre-processamento dos Dados Inicial
-Dado o grande volume de dados e às limitações das máquinas este passo tornou-se demorado (tempo variável consoante a máquina). Avancei com a realização da Filtragem em Blocos, este passo é fundamental para os seguintes scripts correrem mais fluidamente ver documentação (é possível alocar mais um núcleo do PC para processar estes dados))
-```{r prepoc1}
-#gc() - #Garbage collection para libertar memória não utilizada, apagar #
+#Exportação dos Resultados
 
-# Configuração inicial
-num_cores <- detectCores()
-bpparam <- MulticoreParam(workers = num_cores - 2)
+```{r preproci}
+ggsave("UMAP_clusters.png", plot = last_plot(), device = "png", width = 8, height = 6)
 
-# Definição dos blocos
-nblocks <- 10
-block_size <- ceiling(ncol(sce) / nblocks)
-blocks <- split(seq_len(ncol(sce)), cut(seq_len(ncol(sce)), breaks = nblocks))
-
-# Função para processar cada bloco
-process_block <- function(block) {
-  sub_sce <- sce[, block]
-  rowSums(counts(sub_sce) > 5, na.rm = TRUE) > 0
-}
-
-# Aplicação da função em paralelo
-keep_genes_blocks <- bplapply(blocks, process_block, BPPARAM = bpparam)
-
-# Consolidação dos resultados
-keep_genes <- do.call(c, keep_genes_blocks)
-sce <- sce[keep_genes, ]
-
-
-# Análise de expressão dos genes e fatores de transcrição
-# Preparar dados para análise
-# Esta etapa será mais detalhada após revisão da teoria e determinação de métodos específicos
+write.csv(markers, "cell_markers.csv")
 ```
 
-## Análise exploratória
-
-```{r exam1}
-# Explorar os tipos de células
-unique(colData(full_cds)$cell_type_broad)
-# Explorar os alvos dos genes
-unique(colData(full_cds)$gene_target)
-# Explorar as condições
-unique(colData(full_cds)$condition) #parece não haver nada o que é de estranhar, vou continuar a avançar no entanto...
-#celulas pigmentares:
-#[55] "iridophore"
-#[38] "melanophore"                                          
-#[60] "xanthophore"                                          
-
-```
-
-## Plotar UMAPs com os dados em bruto
-
-Com base nas informações e nesta pré-analise temos um conjunto de dados com vários tipos de células e alvos genéticos, mas ainda sem condições especificadas. Neste caso para realizar uma análise de expressão genética foquei-me apenas nos 3 diferentes tipos de celulas pigmentares que consegui identificar mais rapidamente : "melanophore," "iridophore," e "xanthophore," e plotei um UMAP com isto.
-
-```{r UMAP1}
-# Filtrar células pigmentares
-pigment_cell_types <- c("melanophore", "iridophore", "xanthophore") #espero não estar a esquecer nenhuma
-
-pigment_cds <- full_cds[, colData(full_cds)$cell_type_broad %in% pigment_cell_types]
-
-# Calcular as coordenadas UMAP
-if (!"UMAP" %in% reducedDimNames(pigment_cds)) {
-  pigment_cds <- runUMAP(pigment_cds, dims = 1:10)
-}
-
-# Plotar UMAP
-plotUMAP(pigment_cds, colour_by = "cell_type_broad") + 
-  ggtitle("UMAP dos tipos de Células Pigmentares") +
-  theme_minimal()
-```
-Para criar um gráfico UMAP para visualizar a expressão ao longo do tempo das celulas pigmentares, utilizei o `pigment_cds` definido anteriormente colorido pelo `timepoint`:
-
-```{r UMAP2}
-# UMAP ao longo do tempo do ensaio com as celulas pigmentares
-plotUMAP(pigment_cds, colour_by = "timepoint") + 
-  ggtitle("UMAP das celulas Pigmentares ao longo do tempo") +
-  theme_minimal()
-```
-Por fim, para uma análise com os fatores de transcrição, usei a coluna `gene_target` no `colData` para colorir o gráfico UMAP, o que deve  permitir visualizar a distribuição dos diferentes fatores de transcrição.
-
-```{r UMAP3}
-# Gráfico UMAP colorido pelos fatores de transcrição
-plotUMAP(pigment_cds, colour_by = "gene_target") + 
-  ggtitle("UMAP das Células Pigmentares por Factores de Transcrição")
-```
-## Enriquecimento de Marcadores de Célula
-
-Funções como `FindAllMarkers` ou `FindMarkers` do pacote Seurat permitem encontrar os marcadores celulares para cada cluster identificado.
-A ideia é comparar a expressão entre os diferentes tipos de células pigmentares (`melanophore`, `iridophore`, `xanthophore`).
-
-encontrei um problema de alocação de memória ao tentar criar um objeto DESeqDataSet a partir de uma matriz de contagens. A mensagem de erro cannot allocate vector of size 641.3 Gb indica que o R não é capaz de alocar um vetor deste tamanho (641GB) ou a maquina não esta preparada para alocar 641GB. Uma abordagem para contornar esse problema seria trabalhar com uma representação de dados esparsos, evitando a conversão para um formato denso, que requer uma grande quantidade de memória. O pacote DESeq2 permite trabalhar com matrizes diretamente através do uso do pacote Matrix para criar a matriz de contagens. Não está a funcionar
-
-```{r enrimarker1}
-# 'counts' já é uma matriz esparsa:
-sparse_counts <- as(counts, "sparseMatrix")
-
-# Assuming 'sparse_counts' is a sparse matrix of counts and 'coldata' has the necessary metadata
-group <- factor(coldata$cluster)
-
-# Create a DGEList object from sparse matrix
-dge <- DGEList(counts=sparse_counts, group=group)
-
-# Proceed with analysis using edgeR
-dge <- calcNormFactors(dge)
-design <- model.matrix(~ group)
-dge <- estimateDisp(dge, design)
-fit <- glmQLFit(dge, design)
-result <- glmQLFTest(fit, coef=2) # Adjust 'coef' based on the comparison of interest
-topTags(result)
-
-```
-
-
-## Perform differential expression analysis
-
-Proximo passo? ... ainda em desenvolvimento...
-
-```{r exam3}
-#analise exploratoria do conteudo das colunas
-names(colData(full_cds))
-
-unique(colData(full_cds)$timepoint)
-unique(colData(full_cds)$expt)
-unique(colData(full_cds)$tissue)
-unique(colData(full_cds)$gene_target)
-unique(colData(full_cds)$embryo)
-unique(colData(full_cds)$sample)
-
-
-```
-
-```{r difexp1}
-
-# Extrair a matriz de contagens do objeto 'full_cds'
-counts <- counts(full_cds)
-
-# Obter os metadados de coluna (dados de amostra), que devem incluir a coluna 'cluster'
-coldata <- colData(full_cds)
-
-# Criar um objeto DESeqDataSet
-dds <- DESeqDataSetFromMatrix(countData = counts,
-                              colData = coldata,
-                              design = ~ cluster)
-
-# Prossiga com a análise DESeq
-dds <- DESeq(dds)
-
-# Obter os resultados para comparações específicas de tempo
-results_1_vs_2 <- results(dds, contrast = c("timepoint", "1", "2"))
-
-# Visualizar os principais resultados
-head(results_1_vs_2)
-
-```
-
-## Cell type-specific differential expression analysis for a perturbation
-
-```{r pressure, echo=FALSE}
-
-# Load the zebrafish perturbation data
-perturb_cds <- readRDS("zscape_perturb_cds.RDS")
-
-# List the different genetic perturbations 
-unique(colData(perturb_cds)$gene_target)
-
-# Subset smoothened crispants and notochord cells (for example)
-smo_nc_cds <- perturb_cds[,colData(perturb_cds)$gene_target %in% c("smo", "ctrl-inj") & 
-            colData(perturb_cds)$cell_type_broad %in% c("notochord")]
-
-# Now select the timepoints 
-# note that the controls will include timepoints that are not included for smo
-smo_nc_cds <- smo_nc_cds[,colData(smo_nc_cds)$timepoint %in% c("24", "36")]
-
-# Use monocle3 to perform DE testing between controls and smo notochord cells
-deg_cds <- smo_nc_cds[Matrix::rowSums(SingleCellExperiment::counts(smo_nc_cds) > 0) > 10,] # filter for expressed genes
-fits <- fit_models(deg_cds, model_formula_str = "~gene_target", cores = 4)
-mod_coef <- coefficient_table(fits)
-
-# Parse the results table
-smo.celltype.degs <- mod_coef %>% 
-  mutate(up_in = case_when(
-    estimate < 0 ~ "ctrl",
-    estimate > 0 ~ "smo"))
-
-smo.celltype.degs <- smo.celltype.degs %>% 
-    filter(term != "(Intercept)") %>%
-    select(up_in, id, gene_short_name, q_value, estimate, -model_summary, -model)
-
-# filter for q-value < 0.05
-sig.smo.celltype.degs <- smo.celltype.degs %>%
-            filter(q_value < 0.05 ) %>%  
-            arrange(up_in, q_value)
-
-# check the deg number for each direction
-sig.smo.celltype.degs %>% 
-    group_by(up_in) %>%
-    tally()
-
-# save the differentially expressed genes as a csv
-fwrite(sig.smo.celltype.degs, "smo_nc_24-36h_q05_degs.csv", 
-        sep = ",", na = "NA")
-
-
-#Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-```
