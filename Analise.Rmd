@@ -47,7 +47,7 @@ https://github.com/cole-trapnell-lab/sdg-zfish
 ## Repositorios GEO:
 
 ### GSE202639
-O desenvolvimento de atlas celulares compreensivos de embriões inteiros foi facilitado pela evolução das tecnologias de transcritômica de célula única. Mas a maioria desses dados foi coletada de embriões selvagens sem levar em consideração a variação latente no desenvolvimento. Apresentamos dados de transcritômica de célula única de 3,2 milhões de células de embriões de peixe-zebra em desenvolvimento de 1812, que incluem 19 pontos de tempo e 23 perturbações genéticas. A alta replicação deste estudo (8 ou mais embriões por condição) permite estimar as variações na abundância de tipos celulares em todo o organismo e identificar desvios dependentes de perturbação na composição de tipos celulares em comparação com embriões selvagens. A técnica por eles utilizada é sensível a tipos celulares raros, resolvendo trajetórias de desenvolvimento e dependências genéticas nos neurônios dos gânglios cranianos, uma população celular que representa menos de 1% do embrião:
+O desenvolvimento de atlas celulares compreensivos de embriões inteiros foi facilitado pela evolução das tecnologias de transcritômica de célula única. Mas a maioria desses dados foi coletada de embriões selvagens sem levar em consideração a variação latente no desenvolvimento, este repositorio apresenta dados de transcritômica de célula única de 3,2 milhões de células de embriões de peixe-zebra em desenvolvimento de 1812, que incluem 19 pontos de tempo e 23 perturbações genéticas. A alta replicação deste estudo (8 ou mais embriões por condição) permite estimar as variações na abundância de tipos celulares em todo o organismo e identificar desvios dependentes de perturbação na composição de tipos celulares em comparação com embriões selvagens. A técnica por eles utilizada é sensível a tipos celulares raros, resolvendo trajetórias de desenvolvimento e dependências genéticas nos neurônios dos gânglios cranianos, uma população celular que representa menos de 1% do embrião:
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
 ### GSE112294
@@ -63,43 +63,28 @@ http://zebrafish-dev.cells.ucsc.edu/
 Ficheiros:
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 
-- AVISO: São muitos GBs. Certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
-- PASSO DEMORADO, mediante a velocidade de rede e a máquina usada. Necessário cumprir com todos os pré-requisitos de pacotes e dependências até aqui.
+- AVISO: São cerca de 4GBs. Certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
+- PASSO DEMORADO, mediante a velocidade de rede e a máquina usada. Necessário cumprir com todos os pré-requisitos de pacotes e dependências até aqui incluindo o ficheiro `Projeto_utils.R`
 
 ```{r download}
 # Configurar o diretório de trabalho para o diretório deste ficheiro .Rmd
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+# Carregar o script com funções de apoio
+source(utils)
 
 # URLs dos ficheiros
 url_utils <- "https://raw.githubusercontent.com/cole-trapnell-lab/sdg-zfish/main/figure_code/saunders_srivatsan_2023_utils.R"
 url_ref_cds <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcds%2ERDS%2Egz"
 
 # Definir nomes dos arquivos
-utils <- "saunders_srivatsan_2023_utils.R"
+utils <- "Projeto_utils.R"
 ref_cds_gz <- "GSE202639_reference_cds.RDS.gz"
 ref_cds <- "GSE202639_reference_cds.RDS"
-
-
-# Função para verificar, baixar e extrair arquivos. Apenas executa novamente o download e a extração caso não estejam presentes estes ficheiros nesta diretoria
-options(timeout = 1200) #20minutos para tempo máximo de download, aumentar se a net for lenta
-download_file_if_not_exists <- function(url, file_name) {
-  if (!file.exists(file_name)) {
-    message("Downloading ", file_name, " from ", url)
-    download.file(url, file_name)
-    if (grepl(".gz$", file_name)) {
-      R.utils::gunzip(file_name, overwrite = TRUE)
-    }
-  } else {
-    message(file_name, " already exists.")
-  }
-}
 
 # Baixar e carregar os arquivos
 download_file_if_not_exists(url_utils, utils)
 download_file_if_not_exists(url_ref_cds, ref_cds_gz)
-
-# Carregar o script com funções de apoio (from Zscape)
-source(utils)
 
 ```
 ## Carregamento dos dados
@@ -192,7 +177,7 @@ ggplot(ref_coldata %>%
                outlier.stroke = 0) +
   theme_classic() +
   scale_y_continuous(breaks = c(2, 3, 4), limits = c(1.5, 4.5)) +
-  labs(x = "Tempos de amostragem", y = NULL) +  # Define o título do eixo y e remove o título do eixo x, notem que apesar de estar ao contrario no grafico aparece correto
+  labs(x = "Tempos de amostragem", y = NULL) +  # Define o título do eixo y e remove o título do eixo x, notem que, apesar de estar ao contrário aqui no grafico aparece correto
   theme(legend.position = "none",
         axis.text.y = element_text(), 
         axis.title.y = element_text(size = 10, face = "bold"),  # Ajusta o estilo do título do eixo y

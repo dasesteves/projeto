@@ -1,4 +1,20 @@
-# Utility functions for Saunders, Srivatsan, et al. Nature (2023)
+# Funções utilitárias 
+# Projecto: "Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells"
+# This project utilizes single-cell transcriptomics techniques to investigate cell type lineages and visualize key genetic markers of pigment cell differentiation. With tools such as Monocle and Slingshot, we aim to deepen our understanding of cell proliferation and the factors influencing the pigmentation of zebrafish.
+
+# Função para verificar, baixar e extrair arquivos. Apenas executa novamente o download e a extração caso não estejam presentes estes ficheiros nesta diretoria
+options(timeout = 1200) #20minutos para tempo máximo de download, aumentar se a net for lenta
+download_file_if_not_exists <- function(url, file_name) {
+  if (!file.exists(file_name)) {
+    message("Downloading ", file_name, " from ", url)
+    download.file(url, file_name)
+    if (grepl(".gz$", file_name)) {
+      R.utils::gunzip(file_name, overwrite = TRUE)
+    }
+  } else {
+    message(file_name, " already exists.")
+  }
+}
 
 # extract coordinates for a PAGA graph from a cell data set 
 get_paga_graph <- function(cds, reduction_method = "UMAP") {
