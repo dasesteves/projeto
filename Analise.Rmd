@@ -1,0 +1,431 @@
+---
+title: "Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells"
+author: "Diogo Esteves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Instalação Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+
+# Instalação Monocle 3, usando o pacote devtools
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+devtools::install_github("cole-trapnell-lab/monocle3", ref="master")
+
+# Instalação e carregamento condicional dos pacotes necessários, para agora
+necessary_packages <- c("ggplot2", "dplyr", "tidyr", "data.table", "monocle3")
+new_packages <- necessary_packages[!necessary_packages %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+lapply(necessary_packages, library, character.only = TRUE)
+```
+
+Este ficheiro efetua os downloads dos dados automaticamente à medida que avançamos na análise, as próximas secções detalham a origem destes dados.
+
+# Configuração do Ambiente
+
+Passo importante para definir a diretoria para os downloads e ficheiros de apoio, está definida para ser a localização deste ficheiro na máquina.
+
+```{r Ambiente}
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+```
+
+# Links:
+
+## Dados: 
+https://cole-trapnell-lab.github.io/zscape/
+
+## Código e Dados Fonte
+Os dados que não estão disponíveis nos repositórios GEO, estão disponíveis:
+https://github.com/cole-trapnell-lab/sdg-zfish
+
+## Repositorios GEO:
+
+### GSE202639
+O desenvolvimento de atlas celulares compreensivos de embriões inteiros foi facilitado pela evolução das tecnologias de transcritômica de célula única. Mas a maioria desses dados foi coletada de embriões selvagens sem levar em consideração a variação latente no desenvolvimento. Apresentamos dados de transcritômica de célula única de 3,2 milhões de células de embriões de peixe-zebra em desenvolvimento de 1812, que incluem 19 pontos de tempo e 23 perturbações genéticas. A alta replicação deste estudo (8 ou mais embriões por condição) permite estimar as variações na abundância de tipos celulares em todo o organismo e identificar desvios dependentes de perturbação na composição de tipos celulares em comparação com embriões selvagens. A técnica por eles utilizada é sensível a tipos celulares raros, resolvendo trajetórias de desenvolvimento e dependências genéticas nos neurônios dos gânglios cranianos, uma população celular que representa menos de 1% do embrião:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+### GSE112294
+Perfil de expressão de sequenciação de alta qualidade. O mapeamento de alta taxa de diferenciação celular a partir de dados de célula única promete facilitar investigações sistemáticas sobre o desenvolvimento e doenças em vertebrados. Aqui, aplicamos sequenciação de RNA de célula única a mais de 92,000 células de embriões de peixe-zebra durante o primeiro dia de desenvolvimento:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE112294
+ou:
+http://zebrafish-dev.cells.ucsc.edu/
+
+# Hashing de oligonucleotidos para transcritómica de peixe-zebra em células únicas
+
+## Download dos Dados
+
+Ficheiros:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+- AVISO: São muitos GBs. Certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
+- PASSO DEMORADO, mediante a velocidade de rede e a máquina usada. Necessário cumprir com todos os pré-requisitos de pacotes e dependências até aqui.
+
+```{r download}
+# Configurar o diretório de trabalho para o diretório deste ficheiro .Rmd
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+# URLs dos ficheiros
+url_utils <- "https://raw.githubusercontent.com/cole-trapnell-lab/sdg-zfish/main/figure_code/saunders_srivatsan_2023_utils.R"
+url_ref_cds <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcds%2ERDS%2Egz"
+
+# Definir nomes dos arquivos
+utils <- "saunders_srivatsan_2023_utils.R"
+ref_cds_gz <- "GSE202639_reference_cds.RDS.gz"
+ref_cds <- "GSE202639_reference_cds.RDS"
+
+
+# Função para verificar quanto à existência do ficheiro, baixar arquivos e extrair caso não estejam presentes estes ficheiros nesta diretoria
+options(timeout = 1200) #20minutos para tempo maximo de download, aumentar se a net for lenta
+download_file_if_not_exists <- function(url, file_name) {
+  if (!file.exists(file_name)) {
+    message("Downloading ", file_name, " from ", url)
+    download.file(url, file_name)
+    if (grepl(".gz$", file_name)) {
+      R.utils::gunzip(file_name, overwrite = TRUE)
+    }
+  } else {
+    message(file_name, " already exists.")
+  }
+}
+
+# Baixar e carregar os arquivos
+download_file_if_not_exists(url_utils, utils)
+download_file_if_not_exists(url_ref_cds, ref_cds_gz)
+
+# Carregar o script com funções de apoio (from Zscape)
+source(utils)
+
+```
+## Carregamento dos dados
+Nesta secção, os dados descarregados são lidos e preparados para análise.
+
+```{r Carregamento}
+# Ler o arquivo descomprimido
+ref_cds <- readRDS("GSE202639_reference_cds.RDS")
+
+ref_coldata <-  
+  ref_cds %>%
+  colData() %>%
+  as.data.frame()
+```
+
+## Definir cores para os tempos de amostragem
+Aqui definimos as cores que serão usadas para representar diferentes pontos de tempo.
+
+```{r cores}
+#utilizei as mesmas cores da figura 1 do artigo do projeto ZScape
+
+rainbow_timepoint_colors <-  
+  c("18h" = "#DF4828", 
+    "24h" = "#E78C35", 
+    "36h" = "#F6C141", 
+    "48h" = "#4EB265", 
+    "72h" = "#1965B0")
+
+num_colors <- ref_coldata %>%
+  filter(!is.na(timepoint)) %>%
+  pull(timepoint) %>%
+  unique() %>%
+  sort() %>%
+  length()
+
+full_spectrum_timepoint <- colorRampPalette(rainbow_timepoint_colors)(num_colors) 
+
+names(full_spectrum_timepoint) <- ref_coldata %>%
+  filter(!is.na(timepoint)) %>%
+  pull(timepoint) %>%
+  unique() %>%
+  sort()
+```
+
+## Espaço amostral
+Visualização do número de indivíduos em diferentes pontos de tempo e boxplot com a análise da variação no número de células em diferentes pontos de tempo.
+
+```{r barplot}
+ggplot(ref_coldata %>%
+         group_by(timepoint) %>%
+         summarise(n = n()) %>%
+         drop_na()) +
+  geom_bar(aes(x = reorder(as.character(timepoint), -timepoint),
+               y = n,
+               fill = as.character(timepoint)),
+           stat = "identity",
+           color = "black",
+           linewidth = 0.2) +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12),
+        plot.background = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_blank()) +
+  labs(x = "Tempos de amostragem", y = "Número de indivíduos") +
+  scale_fill_manual(values = full_spectrum_timepoint) +
+  coord_flip()
+
+ggsave("fig1_barplot.png",
+       dpi = 750,
+       height = 3,
+       width = 1,
+       bg = "transparent")
+```
+
+```{r boxplot}
+
+# Gráfico de Boxplot
+ggplot(ref_coldata %>%
+         group_by(timepoint, Oligo) %>%
+         summarise(n = n(), .groups = 'drop') %>%
+         drop_na()) +
+  geom_boxplot(aes(x = reorder(as.character(timepoint), -timepoint),
+                   y = log10(n),
+                   fill = as.character(timepoint)),
+               color = "black",
+               size = 0.1,
+               outlier.size = 0.2,
+               outlier.stroke = 0) +
+  theme_classic() +
+  scale_y_continuous(breaks = c(2, 3, 4), limits = c(1.5, 4.5)) +
+  labs(x = "Tempos de amostragem", y = NULL) +  # Define o título do eixo y e remove o título do eixo x, notem que apesar de estar ao contrario no grafico aparece correto
+  theme(legend.position = "none",
+        axis.text.y = element_text(), 
+        axis.title.y = element_text(size = 10, face = "bold"),  # Ajusta o estilo do título do eixo y
+        plot.background = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(),
+        panel.background = element_blank()) +
+  scale_fill_manual(values = full_spectrum_timepoint) +
+  coord_flip()
+
+ggsave("fig2_boxplot.png",
+         dpi = 750,
+         height = 3,
+         width = 0.5,
+         bg = "transparent")
+
+```
+
+## UMAP
+
+```{r UMAP}
+vibrant.colors <-  
+  c('#EE7733', '#0077BB', '#228833', '#33BBEE', '#EE3377', '#CC3311',
+    '#AA3377', '#009988', '#004488', '#DDAA33', '#99CC66','#D590DD')
+
+bright.colors <-  
+  c('#4477AA', 
+    '#EE6677', 
+    '#228833', 
+    '#CCBB44', 
+    '#66CCEE',
+    '#AA3377', 
+    '#BBBBBB')
+
+
+num.colors.tissue <-  
+  ref_coldata %>%
+  filter(!is.na(tissue)) %>%
+  pull(tissue) %>%
+  unique() %>%
+  sort() %>%
+  length()
+
+tissue.colors <- colorRampPalette(c(vibrant.colors,bright.colors))(num.colors.tissue) 
+```
+
+### 24h
+```{r UMAP-24h}
+# Individual UMAP 24hours 
+ggplot(ref_coldata %>%
+         sample_n(size = dim(ref_coldata)[1]) %>%
+         filter(!is.na(timepoint))) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2),
+             color = "grey80",
+             stroke = 0,
+             size = 0.1) +
+  geom_point(data = ref_coldata %>%
+               filter(Oligo == "24h_ctrl-inj_P10_H7"),
+             aes(x = umap3d_1,
+                 y = umap3d_2,
+                 color = as.character(timepoint)),
+             stroke = 0,
+             size = 0.125) +
+  theme_void() +
+  theme(legend.position = "right") +
+  scale_color_manual(values = full_spectrum_timepoint)
+
+ggsave("fig3_umap_24h.png",
+         dpi = 600,
+         height = 1,
+         width = 1,
+         bg = "transparent")
+
+```
+### 48h
+a resolver este problema...
+```{r UMAP-48h}
+ggplot(ref_coldata %>%
+         sample_n(size = dim(ref_coldata)[1]) %>%
+         filter(!is.na(timepoint))) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2),
+             color = "grey80",
+             stroke = 0,
+             size = 0.1) +
+  geom_point(data = ref_coldata %>%
+               filter(Oligo == "48h_ctrl-inj_P2_D11"),
+             aes(x = umap3d_1,
+                 y = umap3d_2,
+                 color = as.character(timepoint)),
+             stroke = 0,
+             size = 0.125) +
+  theme_void() +
+  theme(legend.position = "right") +
+  scale_color_manual(values = full_spectrum_timepoint)
+
+ggsave("fig4_umap_48h.png",
+         dpi = 600,
+         height = 1,
+         width = 1,
+         bg = "transparent")
+
+
+```
+
+### Resultado final
+a resolver a legenda
+```{r UMAP_final}
+# plotar células por tempo
+ggplot(ref_coldata %>%
+         sample_n(size = dim(ref_coldata)[1]) %>%
+         filter(!is.na(timepoint))) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2),
+             color = "black",
+             stroke = 0,
+             size = 0.15) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2,
+                 color = as.character(timepoint)),
+             stroke = 0,
+             size = 0.11) +
+  theme_void() +
+  theme(legend.position = "bottom") +  # Define a posição da legenda
+  scale_color_manual(values = full_spectrum_timepoint) +
+  ggtitle("Células por Tempo")
+
+ggsave("fig5_umap_tempos.png",
+         dpi = 750,
+         height = 1.5,
+         width = 1.5,
+         bg = "transparent")
+
+# plotar células por tecido
+ggplot(ref_coldata %>%
+         sample_n(size = dim(ref_coldata)[1]) %>%
+         filter(!is.na(timepoint)) %>%
+         group_by(tissue) %>%
+         add_tally() %>%
+         arrange(-n)) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2),
+             color = "black",
+             stroke = 0,
+             size = 0.2) +
+  geom_point(aes(x = umap3d_1,
+                 y = umap3d_2,
+                 color = as.character(tissue)),
+             stroke = 0,
+             size = 0.15) +
+  theme_void() +
+  theme(legend.position = "bottom") +  # Define a posição da legenda
+  scale_color_manual(values = tissue.colors) +
+  ggtitle("Células por Tecido")
+
+ggsave("fig6_umap_tecidos.png",
+         dpi = 1200,
+         height = 3,
+         width = 3,
+         bg = "transparent")
+
+```
+
+## Testes de variancia
+
+### teste 1
+```{r testvariancia1}
+# Baixar o arquivo
+if (!file.exists("ref_broad_celltype_disps.csv")) {
+  download.file("https://raw.githubusercontent.com/cole-trapnell-lab/sdg-zfish/main/data/ref_broad_celltype_disps.csv", "ref_broad_celltype_disps.csv")
+} else {
+    message("ref_broad_celltype_disps.csv", " already exists.")
+}
+
+# Carregar os dados
+celltype_disps <- fread("ref_broad_celltype_disps.csv", 
+                        sep = ",", stringsAsFactors = F, 
+                        data.table = F)
+
+# set thresholds
+sig_thresh = 0.05
+times = c(20, 22, 24, 42)
+
+plot_df = celltype_disps %>% 
+  filter(cells_per_embryo > 3) %>% 
+  filter(timepoint %in% times)
+
+# plot variance faceted by time
+ggplot(data=plot_df) + 
+  geom_line(aes(cells_per_embryo, model_fit), color="black", data=plot_df) + 
+  geom_ribbon(aes(cells_per_embryo, ymin=model_fit_lower, ymax=model_fit_upper), alpha=0.2) +
+  geom_point(aes(cells_per_embryo, cells_per_embryo_cv, color=cv_z_stat_p_val < sig_thresh), size = 0.75) + 
+  geom_linerange(aes(cells_per_embryo, 
+                     ymin=cells_per_embryo_cv - cells_per_embryo_cv.stderr, 
+                     ymax=cells_per_embryo_cv + cells_per_embryo_cv.stderr),
+                 data=plot_df %>% filter(cv_z_stat_p_val < sig_thresh)) +
+  facet_wrap(~timepoint, scales = "free_x", nrow = 1) +
+  scale_color_manual(values = c("steelblue", "tomato")) +
+  scale_y_log10() +
+  scale_x_log10() +
+  theme_classic() +
+  theme(legend.position = "top")
+
+ggsave("fig7_variancia_tempos.pdf",
+       width = 5,
+       height = 2.2)
+```
+
+### teste 2
+Após este teste e gráfico consequente, focarei apenas nas celulas pigmentares e transciptómica associada a estas:
+
+- xanthophores (yellow)
+- erythrophores (red)
+- iridophores (reflective / iridescent)
+- leucophores (white)
+- melanophores (black/brown)
+- cyanophores (blue)
+
+```{r testvariancia2}
+
+ggplot(celltype_disps %>% 
+         filter(cells_per_embryo > 3), 
+       aes(x = reorder(cell_group, cv_test_stat, FUN = median), y = cv_test_stat, fill = cell_group)) + 
+  geom_boxplot() +
+  coord_flip() +
+  theme_classic() +
+  xlab("Tipos de Células (broad)") +
+  ylab("Variância das Contagens (CV test statistic)") +
+  theme(legend.position = "none", 
+        axis.text = element_text(size = 6), 
+        axis.line = element_line(), axis.ticks = element_line())
+
+ggsave(filename = "Fig8_varianciatotal_boxplot.pdf", width = 8, height = 8)
+```
