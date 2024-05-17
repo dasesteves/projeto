@@ -80,8 +80,8 @@ ref_cds_gz <- "GSE202639_reference_cds.RDS.gz"
 ref_cds <- "GSE202639_reference_cds.RDS"
 
 
-# Função para verificar quanto à existência do ficheiro, baixar arquivos e extrair caso não estejam presentes estes ficheiros nesta diretoria
-options(timeout = 1200) #20minutos para tempo maximo de download, aumentar se a net for lenta
+# Função para verificar, baixar e extrair arquivos. Apenas executa novamente o download e a extração caso não estejam presentes estes ficheiros nesta diretoria
+options(timeout = 1200) #20minutos para tempo máximo de download, aumentar se a net for lenta
 download_file_if_not_exists <- function(url, file_name) {
   if (!file.exists(file_name)) {
     message("Downloading ", file_name, " from ", url)
@@ -165,7 +165,7 @@ ggplot(ref_coldata %>%
         plot.background = element_blank(),
         axis.ticks.y = element_blank(),
         panel.background = element_blank()) +
-  labs(x = "Tempos de amostragem", y = "Número de indivíduos") +
+  labs(x = "Tempos de amostragem", y = "Número de contagens") +
   scale_fill_manual(values = full_spectrum_timepoint) +
   coord_flip()
 
@@ -302,7 +302,7 @@ ggsave("fig4_umap_48h.png",
 
 ### Resultado final
 a resolver a legenda
-```{r UMAP_final}
+```{r UMAP_tempo}
 # plotar células por tempo
 ggplot(ref_coldata %>%
          sample_n(size = dim(ref_coldata)[1]) %>%
@@ -327,7 +327,9 @@ ggsave("fig5_umap_tempos.png",
          height = 1.5,
          width = 1.5,
          bg = "transparent")
+```
 
+```{r UMAP_tecido}
 # plotar células por tecido
 ggplot(ref_coldata %>%
          sample_n(size = dim(ref_coldata)[1]) %>%
