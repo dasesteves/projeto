@@ -16,7 +16,7 @@ download_file_if_not_exists <- function(url, file_name) {
   }
 }
 
-# extract coordinates for a PAGA graph from a cell data set 
+# Extrair coordenadas para um gráfico PAGA a partir de um conjunto de dados celulares
 get_paga_graph <- function(cds, reduction_method = "UMAP") {
   
   cluster_result <- cds@clusters[[reduction_method]]$cluster_result
@@ -32,7 +32,7 @@ get_paga_graph <- function(cds, reduction_method = "UMAP") {
 }
 
 
-# add 2d or 3d umap coordinates to your coldata
+# Adicionar coordenadas UMAP 2D ou 3D ao colData
 append_umap_coordinates = function(cds, umap_3D = F){
   
   if (!umap_3D){
@@ -52,7 +52,7 @@ append_umap_coordinates = function(cds, umap_3D = F){
   return(cds)
 }
 
-# calculate hotspot function
+# Calcular função de hotspot
 calc_hotspot <- function(cds, 
                          compare_col, compare,
                          subset_col = NULL, subset = NULL, 
@@ -70,16 +70,16 @@ calc_hotspot <- function(cds,
   lg.df
 }
 
-# input gene short names and get associated gene ids
+# Inserir nomes curtos dos genes e obter os IDs associados
 get.gene.ids = function (cds, names) {
   return(as.character(rowData(cds)[rowData(cds)$gene_short_name %in% names, "id"]))
 }
 
-#' calculate spatial weights
-#' functions take from graph_test
-#' @k is how many neighbors in knn graph
-#' @reduction_method default is UMAP
-#'
+#' Calcular pesos espaciais
+#' Funções retiradas de graph_test
+#' @k é quantos vizinhos no gráfico knn
+#' @reduction_method por defeito é UMAP
+
 calculateSpatialWeights <- function(cds, k=15, reduction_method = "UMAP"){
   
   lw <- monocle3:::calculateLW(cds = cds, k = k,
@@ -94,9 +94,10 @@ calculateSpatialWeights <- function(cds, k=15, reduction_method = "UMAP"){
 }
 
 
-#' @var is a specific label value
-#' @column_name of labels of interest
-#' @lw is output of calculateLW
+#' @var é um valor de rótulo específico
+#' @column_name dos rótulos de interesse
+#' @lw é a saída de calculateLW
+
 calculateLocalG <- function(cds, lw, wc, column_name, var) {
   
   # absence or presence of specified variable
@@ -116,8 +117,9 @@ calculateLocalG <- function(cds, lw, wc, column_name, var) {
   localG.df
 }
 
-#' select local g values of interest + merge with full df
-#' only values 1 mean anything in the local G calculation
+#' Selecionar valores locais de G de interesse + combinar com df completo
+#' Apenas valores 1 têm significado no cálculo local G
+
 mergeLocalG <- function(localG_result, df, column) {
   
   localG_result$Cell = row.names(localG_result)
@@ -127,11 +129,10 @@ mergeLocalG <- function(localG_result, df, column) {
   wt
 }
 
-#' to turn the zscore into a pvalue
+#' Para converter o zscore num p-value
 #' method : c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+
 getPval <- function(df, method, tail) {
-  
-  # I think this is right, but should check it...
   if (tail=="onesided"){
     df = df %>% mutate(pval = pnorm(-abs(localG)))
   } else if (tail=="twosided"){
@@ -142,10 +143,11 @@ getPval <- function(df, method, tail) {
 }
 
 
-#' compare col : column in cds that is your categorical label, ex: "gene_target"
-#' compare: which category you want to determine hotspot, ex: "tbxta"
-#' subset col: if you want to do hotspot by broad grouping, ex: "cell_type_broad"
-#' subset: the specific subset, ex: "fast muscle"
+#' compare col: coluna em cds que é o seu rótulo categórico, ex: "gene_target"
+#' compare: qual categoria pretende determinar o hotspot, ex: "tbxta"
+#' subset col: se pretende fazer hotspot por grupo amplo, ex: "cell_type_broad"
+#' subset: o subconjunto específico, ex: "fast muscle"
+
 calc_hotspot <- function(cds,
                          compare_col, compare,
                          subset_col = NULL, subset = NULL,
@@ -165,7 +167,8 @@ calc_hotspot <- function(cds,
   lg.df
 }
 
-### Functions for differential cell abundance testing across individuals. 
+### Funções para teste de abundância diferencial de células entre indivíduos.
+# Converter um conjunto de dados de expressão génica num conjunto de dados de contagem de células.
 
 #' @title Convert a gene expression cell data set into a cell count cell data set.
 #' @description Convert a gene expression cell data set into a cell count cell data set.
@@ -269,8 +272,6 @@ make_cell_count_cds <- function(cds,
   return(cell_count_cds)
 }
 
-
-
 #' @title Convert a gene expression cell data set into a cell count cell data set.
 #' @description Convert a gene expression cell data set into a cell count cell data set.
 #'
@@ -295,6 +296,8 @@ make_cell_count_cds <- function(cds,
 #'
 #' @importFrom dplyr %>%
 #' @export
+
+# Converter um conjunto de dados de expressão génica num conjunto de dados de contagem de células.
 bb_compare_abundance <- function(ccs,
                                  comp_col,
                                  model_formula, 

@@ -25,7 +25,7 @@ if(length(new_packages)) install.packages(new_packages)
 lapply(necessary_packages, library, character.only = TRUE)
 ```
 
-Este ficheiro efetua os downloads dos dados automaticamente à medida que avançamos na análise, as próximas secções detalham a origem destes dados.
+NOTA: Este ficheiro efetua os downloads dos dados automaticamente à medida que avançamos na análise, as próximas secções detalham a origem destes dados.
 
 # Configuração do Ambiente
 
@@ -70,9 +70,6 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
 # Configurar o diretório de trabalho para o diretório deste ficheiro .Rmd
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
-# Carregar o script com funções de apoio
-source(utils)
-
 # URLs dos ficheiros
 url_utils <- "https://raw.githubusercontent.com/cole-trapnell-lab/sdg-zfish/main/figure_code/saunders_srivatsan_2023_utils.R"
 url_ref_cds <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcds%2ERDS%2Egz"
@@ -81,6 +78,9 @@ url_ref_cds <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=
 utils <- "Projeto_utils.R"
 ref_cds_gz <- "GSE202639_reference_cds.RDS.gz"
 ref_cds <- "GSE202639_reference_cds.RDS"
+
+# Carregar o script com funções de apoio
+source(utils)
 
 # Baixar e carregar os arquivos
 download_file_if_not_exists(url_utils, utils)
