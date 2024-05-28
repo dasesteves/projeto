@@ -1,0 +1,399 @@
+---
+title: "Project in Bioinformatics:
+Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells"
+author: "Diogo Esteves - PG28935
+Master Student in Bioinformatics
+Department of Engeneering
+University of Minho
+Portugal"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instalação de Pacotes
+
+```{r Instalação}
+# Instalação Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+
+# Instalação Monocle 3, usando o pacote devtools
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+devtools::install_github("cole-trapnell-lab/monocle3", ref="master")
+
+# Instalação de outros pacotes
+if (!requireNamespace("Seurat", quietly = TRUE))
+    install.packages("Seurat")
+if (!requireNamespace("magick", quietly = TRUE))
+    install.packages("magick")
+
+```
+
+## Carregamento dos Pacotes
+
+```{r Carregamento1}
+# Carregar bibliotecas necessárias
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(monocle3)
+library(data.table)
+library(RCurl)
+library(R.utils)
+library(Seurat)
+library(magick)
+
+```
+
+## Configuração do Ambiente
+
+```{r Ambiente}
+#setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+```
+
+## Download e Extração dos Dados
+
+```{r download&extract}
+# Definir tempo limite para downloads
+options(timeout = 1800) # 30 minutos
+
+# URLs e caminhos para os arquivos
+urls <- list(
+  reference_cds = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcds%2ERDS%2Egz",
+  Projeto_utils = "https://raw.githubusercontent.com/dasesteves/projeto/main/Projeto_utils.R",
+  zperturb_beta_bin_results_broadtype_clean = "https://github.com/cole-trapnell-lab/sdg-zfish/raw/main/data/zperturb_beta-bin_results_broadtype_clean.csv.gz",
+  zperturb_all_broadtype_summary_merge = "https://github.com/cole-trapnell-lab/sdg-zfish/raw/main/data/zperturb-all_broadtype_summary_merge.csv.gz"
+)
+
+destfiles <- list(
+  reference_cds = "data/reference_cds.RDS.gz",
+  Projeto_utils = "data/Projeto_utils.R",
+  zperturb_beta_bin_results_broadtype_clean = "data/zperturb_beta_bin_results_broadtype_clean.csv.gz",
+  zperturb_all_broadtype_summary_merge = "data/zperturb_all_broadtype_summary_merge.csv.gz"
+)
+
+# Download dos arquivos
+for (i in seq_along(urls)) {
+  if (!file.exists(destfiles[[i]])) {
+    download.file(urls[[i]], destfiles[[i]], mode = "wb")
+  }
+}
+
+# Descompactar os arquivos
+gunzip(destfiles$reference_cds, destname = "data/reference_cds.RDS", remove = FALSE, overwrite = TRUE)
+gunzip(destfiles$zperturb_beta_bin_results_broadtype_clean, destname = "data/zperturb_beta_bin_results_broadtype_clean.csv", remove = FALSE, overwrite = TRUE)
+gunzip(destfiles$zperturb_all_broadtype_summary_merge, destname = "data/zperturb_all_broadtype_summary_merge.csv", remove = FALSE, overwrite = TRUE)
+
+```
+
+## Carregamento dos Dados
+
+```{r Carregamento2}
+source("data/Projeto_utils.R")
+
+# Carregar dados
+ref_cds <- readRDS("data/reference_cds.RDS")
+zperturb_beta_bin_results_broadtype_clean <- fread("data/zperturb_beta_bin_results_broadtype_clean.csv")
+zperturb_all_broadtype_summary_merge <- fread("data/zperturb_all_broadtype_summary_merge.csv")
+
+ref_coldata <- as.data.frame(colData(ref_cds))
+
+```
+
+## Definição das Cores
+
+```{r Cores}
+rainbow_timepoint_colors <- c("18h" = "#DF4828", "24h" = "#E78C35", "36h" = "#F6C141", "48h" = "#4EB265", "72h" = "#1965B0")
+num_colors <- length(unique(ref_coldata$timepoint))
+full_spectrum_timepoint <- colorRampPalette(rainbow_timepoint_colors)(num_colors)
+names(full_spectrum_timepoint) <- sort(unique(ref_coldata$timepoint))
+
+```
+
+## Visualização do Espaço Amostral
+
+```{r Espaço Amostral1}
+ggplot(ref_coldata %>% group_by(timepoint) %>% summarise(n = n()) %>% drop_na()) +
+  geom_bar(aes(x = reorder(as.character(timepoint), -timepoint), y = n, fill = as.character(timepoint)), stat = "identity", color = "black", linewidth = 0.2) +
+  theme_classic() +
+  theme(legend.position = "none", axis.title = element_blank(), plot.background = element_blank(), axis.ticks.y = element_blank(), panel.background = element_blank()) +
+  scale_fill_manual(values = full_spectrum_timepoint) +
+  coord_flip()
+
+ggsave("output/fig1_reference_cells_barplot.png", dpi = 1200, height = 10, width = 10, bg = "transparent")
+
+```
+```{r Espaço Amostral2}
+ggplot(ref_coldata %>% group_by(timepoint, Oligo) %>% summarise(n = n()) %>% drop_na()) +
+  geom_boxplot(aes(x = reorder(as.character(timepoint), -timepoint), y = log10(n), fill = as.character(timepoint)), color = "black", size = 0.1, outlier.size = 0.2, outlier.stroke = 0) +
+  theme_classic() +
+  scale_y_continuous(breaks = c(2, 3, 4), limits = c(1.5, 4.5)) +
+  theme(legend.position = "none", axis.text.y = element_blank(), axis.title = element_blank(), plot.background = element_blank(), axis.text.x = element_blank(), axis.ticks.y = element_blank(), axis.line.y = element_blank(), panel.background = element_blank()) +
+  scale_fill_manual(values = full_spectrum_timepoint) +
+  coord_flip()
+
+ggsave("output/fig2_reference_cells_boxplot.png", dpi = 1200, height = 10, width = 10, bg = "transparent")
+```
+
+## Visualização UMAP
+
+```{r coresUMAP}
+vibrant.colors <- c('#EE7733', '#0077BB', '#228833', '#33BBEE', '#EE3377', '#CC3311', '#AA3377', '#009988', '#004488', '#DDAA33', '#99CC66', '#D590DD')
+bright.colors <- c('#4477AA', '#EE6677', '#228833', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB')
+num.colors.tissue <- length(unique(ref_coldata$tissue))
+tissue.colors <- colorRampPalette(c(vibrant.colors, bright.colors))(num.colors.tissue)
+
+```
+### UMAP para Diferentes Pontos de Tempo
+
+```{r temposUMAP}
+for (time in c(18, 24, 36, 48, 72)) {
+  ggplot(ref_coldata %>% sample_n(size = nrow(ref_coldata)) %>% filter(!is.na(timepoint))) +
+    geom_point(aes(x = umap3d_1, y = umap3d_2), color = "grey80", stroke = 0, size = 0.1) +
+    geom_point(data = ref_coldata %>% filter(timepoint == time), aes(x = umap3d_1, y = umap3d_2, color = as.character(timepoint)), stroke = 0, size = 0.125) +
+    theme_void() +
+    theme(legend.position = "none") +
+    scale_color_manual(values = full_spectrum_timepoint)
+
+  ggsave(paste0("output/fig_umap_", time, "h.png"), dpi = 1200, height = 10, width = 10, bg = "transparent")
+}
+```
+## Análise de Variância
+
+```{r Variância1}
+# Baixar o arquivo
+if (!file.exists("data/ref_broad_celltype_disps.csv")) {
+  download.file("https://raw.githubusercontent.com/cole-trapnell-lab/sdg-zfish/main/data/ref_broad_celltype_disps.csv", "data/ref_broad_celltype_disps.csv")
+}
+
+# Carregar os dados
+celltype_disps <- fread("data/ref_broad_celltype_disps.csv", sep = ",", stringsAsFactors = F, data.table = F)
+
+# Definir thresholds
+sig_thresh <- 0.05
+times <- c(20, 22, 24, 42)
+
+plot_df <- celltype_disps %>% filter(cells_per_embryo > 3, timepoint %in% times)
+
+# Plotar variância
+ggplot(data = plot_df) +
+  geom_line(aes(cells_per_embryo, model_fit), color = "black") +
+  geom_ribbon(aes(cells_per_embryo, ymin = model_fit_lower, ymax = model_fit_upper), alpha = 0.2) +
+  geom_point(aes(cells_per_embryo, cells_per_embryo_cv, color = cv_z_stat_p_val < sig_thresh), size = 0.75) +
+  geom_linerange(aes(cells_per_embryo, ymin = cells_per_embryo_cv - cells_per_embryo_cv.stderr, ymax = cells_per_embryo_cv + cells_per_embryo_cv.stderr), data = plot_df %>% filter(cv_z_stat_p_val < sig_thresh)) +
+  facet_wrap(~timepoint, scales = "free_x", nrow = 1) +
+  scale_color_manual(values = c("steelblue", "tomato")) +
+  scale_y_log10() +
+  scale_x_log10() +
+  theme_classic() +
+  theme(legend.position = "top")
+
+ggsave("output/variancia_tempos.png", dpi = 1200, height = 10, width = 10)
+
+```
+```{r Variância2}
+ggplot(celltype_disps %>% filter(cells_per_embryo > 3), aes(x = reorder(cell_group, cv_test_stat, FUN = median), y = cv_test_stat, fill = cell_group)) +
+  geom_boxplot() +
+  coord_flip() +
+  theme_classic() +
+  xlab("Tipos de Células (broad)") +
+  ylab("Variância das Contagens (CV test statistic)") +
+  theme(legend.position = "none", axis.text = element_text(size = 6), axis.line = element_line(), axis.ticks = element_line())
+
+ggsave("output/varianciatotal_boxplot.png", dpi = 1200, height = 10, width = 10)
+
+```
+
+## Análise de Expressão
+
+```{r Expressão}
+# Carregar bibliotecas necessárias
+library(Seurat)
+library(data.table)
+library(dplyr)
+library(ggplot2)
+
+# Carregar dados
+broadtype_clean <- fread("data/zperturb_beta_bin_results_broadtype_clean.csv")
+
+# Identificar grupos de células que contêm pigmento
+pigment_keywords <- c("phore", "pigmented")
+pigment_cells_groups <- unique(broadtype_clean$cell_group[grepl(paste(pigment_keywords, collapse = "|"), broadtype_clean$cell_group, ignore.case = TRUE)])
+
+# Filtrar células pigmentares
+pigment_cells <- broadtype_clean %>% filter(cell_group %in% pigment_cells_groups)
+
+# Verificar estrutura dos dados filtrados
+head(pigment_cells)
+
+```
+
+## Expressão Diferencial
+
+```{r ExpDif}
+# Filtrar genes diferencialmente expressos ao longo do tempo
+diff_expr_genes <- pigment_cells %>%
+  group_by(gene1, timepoint) %>%
+  summarize(mean_estimate = mean(estimate), .groups = 'drop') %>%
+  spread(key = timepoint, value = mean_estimate)
+
+# Verificar a estrutura da tabela diff_expr_genes
+print(head(diff_expr_genes))
+
+# Visualizar a expressão de genes mais expressos ao longo do tempo em celulas pigmentares
+top_genes <- pigment_cells %>%
+  group_by(gene1) %>%
+  summarize(mean_expression = mean(estimate), .groups = 'drop') %>%
+  arrange(desc(mean_expression)) %>%
+  head(10)
+
+# Plotar expressão dos principais genes
+p1 <- ggplot(top_genes, aes(x = reorder(gene1, -mean_expression), y = mean_expression)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Genes Expressed in Pigment Cells", x = "Gene", y = "Mean Expression")
+
+# Salvar o gráfico
+ggsave("output/top_10_genes_expressed_in_pigment_cells.png", plot = p1, dpi = 1200, width = 10, height = 10)
+
+# Ajustar o código de plotagem para lidar com múltiplos genes e valores NA
+diff_expr_genes_long <- diff_expr_genes %>%
+  gather(key = "timepoint", value = "mean_estimate", -gene1)
+
+diff_expr_genes_long$timepoint <- factor(diff_expr_genes_long$timepoint, levels = sort(unique(as.numeric(diff_expr_genes_long$timepoint))))
+
+p2 <- ggplot(diff_expr_genes_long, aes(x = timepoint, y = mean_estimate, color = gene1, group = gene1)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Expression of Genes in Pigment Cells Over Time", x = "Time Point", y = "Mean Expression") +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Salvar o gráfico
+ggsave("output/expression_of_genes_in_pigment_cells_over_time.png", plot = p2, dpi = 1200, width = 10, height = 10)
+
+```
+## Expressão Diferencial com UMAP
+
+```{r ExpDifUMAP}
+# URLs para os arquivos
+raw_counts_url <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fraw%5Fcounts%2ERDS%2Egz"
+cell_metadata_url <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcell%5Fmetadata%2Ecsv%2Egz"
+
+# Caminhos para salvar os arquivos baixados
+raw_counts_file <- "data/GSE202639_reference_raw_counts.RDS.gz"
+cell_metadata_file <- "data/GSE202639_reference_cell_metadata.csv.gz"
+
+# Download dos arquivos
+options(timeout = 1800) # 30 minutos
+download.file(raw_counts_url, raw_counts_file)
+download.file(cell_metadata_url, cell_metadata_file)
+
+gunzip(raw_counts_file, destname = "data/raw_counts_file.RDS", remove = FALSE, overwrite = TRUE)
+gunzip(cell_metadata_file, destname = "data/cell_metadata_file.csv", remove = FALSE, overwrite = TRUE)
+
+```
+
+## Preparação dos Dados
+
+```{r DadosPrep}
+# Carregar dados de contagens e metadados
+raw_counts <- readRDS("data/raw_counts_file.RDS")
+cell_metadata <- fread("data/cell_metadata_file.csv")
+
+# Identificar grupos de células que contêm pigmento usando `cell_type_broad`
+pigment_keywords <- c("phore", "pigmented")
+pigment_cells_groups <- unique(cell_metadata$cell_type_broad[grepl(paste(pigment_keywords, collapse = "|"), cell_metadata$cell_type_broad, ignore.case = TRUE)])
+
+# Filtrar metadados para células pigmentares
+pigment_cells_metadata <- cell_metadata %>% filter(cell_type_broad %in% pigment_cells_groups)
+
+# Filtrar contagens para células pigmentares
+pigment_cells_counts <- raw_counts[, pigment_cells_metadata$cell, drop = FALSE]
+
+# Criar objeto Seurat
+seurat_object <- CreateSeuratObject(counts = pigment_cells_counts, meta.data = pigment_cells_metadata)
+
+# Processamento do objeto Seurat
+seurat_object <- NormalizeData(seurat_object)
+seurat_object <- FindVariableFeatures(seurat_object, selection.method = "vst", nfeatures = 1000)
+seurat_object <- ScaleData(seurat_object, features = rownames(seurat_object))
+seurat_object <- RunPCA(seurat_object, features = VariableFeatures(object = seurat_object), npcs = 20)
+
+
+```
+## UMAPs para Diferentes Pontos Temporais
+
+```{r UMAPsTemporais}
+# Definir cores personalizadas para os tipos de células pigmentares presentes nos dados
+pigment_colors <- c(
+  "xanthophore" = "yellow",
+  "erythrophore" = "red",
+  "iridophore" = "cyan",
+  "leucophore" = "white",
+  "melanophore" = "black",
+  "cyanophore" = "blue",
+  "retinal pigmented epithelium (early)" = "darkgray",
+  "retinal pigmented epithelium (late)" = "lightgray"
+)
+
+# Filtrar e criar UMAP para os diferentes tempos
+for (time in c(18, 24, 36, 48, 72)) {
+  seurat_object_time <- subset(seurat_object, subset = timepoint == time)
+  seurat_object_time <- RunUMAP(seurat_object_time, dims = 1:20)
+
+  umap_coords <- as.data.frame(Embeddings(seurat_object_time, "umap"))
+  umap_coords$cell <- rownames(umap_coords)
+  umap_coords <- left_join(umap_coords, pigment_cells_metadata, by = "cell")
+
+  names(umap_coords)[1:2] <- c("UMAP_1", "UMAP_2")
+
+  umap_plot <- ggplot(umap_coords %>% sample_n(size = nrow(umap_coords)) %>% filter(!is.na(cell_type_broad))) +
+    geom_point(aes(x = UMAP_1, y = UMAP_2, color = as.character(cell_type_broad)), stroke = 0, size = 0.15) +
+    theme_void() +
+    theme(legend.position = "right", legend.title = element_blank()) +
+    scale_color_manual(values = pigment_colors) +
+    ggtitle(paste("UMAP of Pigment Cells at", time, "h")) +
+    theme(plot.title = element_text(size = 10))
+
+  print(umap_plot)
+  ggsave(paste0("output/umap_pigment_cells_", time, "h.png"), plot = umap_plot, dpi = 1200, height = 10, width = 10, bg = "transparent")
+}
+
+```
+
+## Gerar um GIF
+
+```{r GIF}
+# Carregar biblioteca necessária para criar o GIF
+library(magick)
+
+# Listar todos os arquivos PNG gerados
+img_files <- list.files("output", pattern = "gene_expression_time_.*\\.png", full.names = TRUE)
+
+# Carregar todas as imagens
+img_list <- lapply(img_files, image_read)
+
+# Criar um GIF
+img_gif <- image_animate(image_join(img_list), fps = 1)
+
+# Salvar o GIF
+image_write(img_gif, "output/gene_expression_evolution.gif")
+
+```
+
+
+```{r}
+
+
+```
+
+
+```{r}
+
+```
