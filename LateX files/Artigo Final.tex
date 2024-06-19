@@ -57,10 +57,6 @@ Zebrafish pigment cells, originating from the NCs, are an excellent model for in
 
 These NCs cells travel throughout the organism and develop into many cell types, including pigment cells, which are required for the zebrafish's distinctive striping pattern. This migration and differentiation process is tightly controlled and involves a complex interaction of genetic and environmental factors\cite{patterson2019zebrafish}.
 
-In zebrafish, three main types of pigment cells are present: melanophores, xanthophores, and iridophores. Melanophores produce melanin, giving the black color; xanthophores contain carotenoids, providing yellow pigmentation; and iridophores contain guanine crystals, reflecting light and creating iridescence. These cells originate from NCs cells and their development and distribution are tightly regulated by genetic and environmental factors \cite{fabian2022lifelong,patterson2019zebrafish}.
-
-The interaction between these pigment cells and their precise spatial arrangement result in the characteristic zebrafish stripes \cite{patterson2019zebrafish}. This patterning process is not only fascinating but also serves as an excellent model for understanding the principles of cell migration, differentiation, and interaction.
-
 Pigmentation is regulated by a complex network of genes. Key transcription factors, such as MITF (Microphthalmia-associated transcription factor), help melanophores develop and operate by controlling genes involved in melanin synthesis and pigment cell survival. KIT, a receptor tyrosine kinase, promotes pigment cell migration and survival \cite{kenny2022tfap2,jang2021epigenetic}. 
 
 Mutations or alterations in these pathways can induce pigmentation abnormalities and lead to a variety of pigmentation illnesses, highlighting the importance of these components in normal pigment cell growth and function. For example, mutations in the MITF gene can cause Waardenburg syndrome, which is characterized by pigmentary abnormalities and hearing loss \cite{kenny2022tfap2,huang2022genetic}.
@@ -103,14 +99,16 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
     \caption{Summary of Loaded Data}
     \label{tab:my_label}
 \end{table}
-\subsubsection{Quality Control (QC):} To assess the quality of each cell QC metrics were calculated. Cells with high mitochondrial content (more than 5\%) or low library size (fewer than 500 unique molecular identifiers, UMIs) were filtered out. Genes expressed in fewer than 10 cells were also removed to eliminate noise from lowly expressed genes \cite{phipson2022propeller}. This rigorous QC process helps in maintaining the integrity of the data and ensures that subsequent analyses are based on reliable information.
+
 
 \begin{figure}[H]
   \centering
-  \includegraphics[height=0.3\textheight]{000018.png}
-  \caption{Distribution of Mitochondrial UMI Percentage}
-  \label{fig:mito_umi_reduced}
+  \includegraphics[height=0.2\textheight, width=0.7\textwidth]{000018.png}
+  \caption{Distribution of Mitochondrial UMI Percentage: This figure shows the distribution of mitochondrial UMI percentages across all cells. High mitochondrial content can indicate cell stress or damage, and cells with more than 5\% mitochondrial content were filtered out to improve data quality.}
+  \label{fig:mito_umi_percent}
 \end{figure}
+
+\subsubsection{Quality Control (QC):} To assess the quality of each cell QC metrics were calculated. Cells with high mitochondrial content (more than 5\%) or low library size (fewer than 500 unique molecular identifiers, UMIs) were filtered out. Genes expressed in fewer than 10 cells were also removed to eliminate noise from lowly expressed genes \cite{phipson2022propeller}. This rigorous QC process helps in maintaining the integrity of the data and ensures that subsequent analyses are based on reliable information.
 
 \subsubsection{Normalization and Identification of Highly Variable Genes:} To stabilize the variance across the dataset, raw counts were normalized using a log transformation. The \textbf{scran} package was utilized to identify highly variable genes, which are crucial for distinguishing different cell types. For further analysis, the top 2000 most variable genes were selected. Identifying highly variable genes is essential for focusing on the most informative features of the dataset and disregarding genes that have low or no variability under these conditions \cite{stuart2019comprehensive}.
 
@@ -119,17 +117,15 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
   \begin{subfigure}[b]{0.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{000016.png}
-    \caption{Distribution of Mitochondrial UMI Percentage}
-    \label{fig:mito_umi}
+    \label{fig:mito_umi_before}
   \end{subfigure}
   \hfill
   \begin{subfigure}[b]{0.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{000010.png}
-    \caption{Distribution of UMI Counts After Curation}
     \label{fig:umi_counts}
   \end{subfigure}
-  \caption{Comparison of different UMI distributions.}
+  \caption{Distribution of UMI Counts After Curation: This figure displays the distribution of UMI counts per cell after quality control and normalization. It shows that most cells have a reasonable number of UMIs, indicating good library complexity and quality after curation}
   \label{fig:umi_distributions}
 \end{figure}
 
@@ -138,8 +134,8 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{000012.png}
-\caption{Cumulative Variance Explained by PCA Components}
+\includegraphics[height=0.2\textheight, width=\textwidth]{000012.png}
+\caption{Cumulative Variance Explained by PCA Components: This figure shows the cumulative variance explained by the first 50 principal components. It helps to determine the number of components to retain for further analysis by showing the proportion of variance captured by each component.}
 \label{fig_variance}
 \end{figure}
 
@@ -148,69 +144,88 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
 \begin{figure}[htbp]
 \centering
 \includegraphics[height=0.3\textheight,width=0.7\textwidth]{umap.png}
-\caption{UMAP Visualization of Zebrafish Pigment Cells}
+\caption{UMAP Visualization of Zebrafish Pigment Cells: This UMAP plot shows the distribution of zebrafish pigment cells in a two-dimensional space, with each point representing a single cell. The colors represent different clusters, indicating distinct cell populations.}
 \label{fig_umap_dimensions}
 \end{figure}
 
 \subsubsection{Clustering Analysis:} Clustering analysis was conducted to identify distinct cell populations. Clusters were determined based on the principal components from PCA and the UMAP projections. This step involved using algorithms such as Louvain or Leiden for community detection in the data, which help in grouping cells with similar expression profiles \cite{street2018slingshot}.
 
-\subsection*{Functional Analysis and Gene Expression}
-\subsubsection{Marker Genes:} For each cluster to characterize the cell types. The expression of key genes, including \textit{mitfa}, \textit{kit}, and \textit{csf1ra}, was visualized to validate their roles in pigment cell development. Marker genes are critical for defining the identity and function of each cell cluster \cite{howard2021atlas}.
-
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \centering
-    \includegraphics[height=0.18\textheight]{fig_umap_18h_optimized.png}
-    \caption{18h}
-    \label{fig:umap_18h}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.3\textwidth}
-    \centering
-    \includegraphics[height=0.18\textheight]{fig_umap_24h_optimized.png}
-    \caption{24h}
-    \label{fig:umap_24h}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.3\textwidth}
-    \centering
-    \includegraphics[height=0.18\textheight]{fig_umap_36h_optimized.png}
-    \caption{36h}
-    \label{fig:umap_36h}
-  \end{subfigure}
-  \vskip\baselineskip
-  \begin{subfigure}[b]{0.3\textwidth}
-    \centering
-    \includegraphics[height=0.18\textheight]{fig_umap_48h_optimized.png}
-    \caption{48h}
-    \label{fig:umap_48h}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.3\textwidth}
-    \centering
-    \includegraphics[height=0.18\textheight]{fig_umap_72h_optimized.png}
-    \caption{72h}
-    \label{fig:umap_72h}
-  \end{subfigure}
-  \caption{UMAP visualizations of zebrafish pigment cells over-time (18h-72h), with clusters representing pigment cell types, expression is colour presence and colour type representing hours. These could generate a time-lapse analysis.}
+  \resizebox{0.4\textheight}{!}{%
+    \begin{tabular}{ccc}
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig_umap_18h_optimized.png}
+        \caption{18h}
+        \label{fig:umap_18h}
+      \end{subfigure} &
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig_umap_24h_optimized.png}
+        \caption{24h}
+        \label{fig:umap_24h}
+      \end{subfigure} &
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig_umap_36h_optimized.png}
+        \caption{36h}
+        \label{fig:umap_36h}
+      \end{subfigure} \\
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig_umap_48h_optimized.png}
+        \caption{48h}
+        \label{fig:umap_48h}
+      \end{subfigure} &
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig_umap_72h_optimized.png}
+        \caption{72h}
+        \label{fig:umap_72h}
+      \end{subfigure}
+    \end{tabular}%
+  }
+  \caption{UMAP visualizations of zebrafish pigment cells over time (18h-72h), showing the clustering of cells at different developmental stages. Each cluster represents a group of cells with similar gene expression profiles, indicating different cell types or states. These could generate a time-lapse analysis.}
   \label{fig:umap_all}
 \end{figure}
 
+\subsection*{Functional Analysis and Gene Expression}
+\subsubsection{Marker Genes:} For each cluster to characterize the cell types. The expression of key genes, including \textit{mitfa}, \textit{kit}, and \textit{csf1ra}, was visualized to validate their roles in pigment cell development. Marker genes are critical for defining the identity and function of each cell cluster \cite{howard2021atlas}.
+
 \subsubsection{Pathway and Gene Ontology Enrichment Analysis:} Pathway and Gene Ontology (GO) enrichment analyses were performed to identify significant biological processes and pathways associated with the identified clusters. These analyses help in understanding the functional roles of the genes within each cluster and their involvement in pigment cell differentiation and development \cite{kenny2022tfap2}. Enrichment analysis provides insights into the underlying biological mechanisms driving the observed gene expression patterns.
 
-\section{Discussion and Expected Results}
+\section{Results}
 
-The single-cell transcriptome investigation of zebrafish pigment cells aimed to reveal cellular heterogeneity and gene expression patterns, identifying highly variable genes critical to pigment cell development. This analysis provides insights into the biological mechanisms through pathway and GO enrichment studies. Despite computational and resource challenges, preliminary results include visualizations of QC metrics, UMI counts, PCA, and UMAP.
+The single-cell transcriptome investigation of zebrafish pigment cells aimed to reveal cellular heterogeneity and gene expression patterns. The expectation was to identify highly variable genes that are critical regulators of pigment cell development and to gain insights into the biological mechanisms at work through pathway and GO enrichment studies. However, several challenges were encountered during the analysis:\newline\textbf{Computational Challenges:} The volume of data was significant, and the pre-processing steps required substantial computational resources. The scripts developed to process the scRNA-seq data faced multiple issues, including memory limitations and long execution times.\newline\textbf{Resource Limitations:} The analysis was constrained by the available computational resources. Despite access to a remote computer with better specifications in the final two weeks, the processing times for some scripts were still prohibitively long, ranging from 2 to 24 hours.\newline\textbf{Dataset Selection:} The chosen dataset for the analysis was not ideal for the given computational constraints. Single-cell RNA sequencing analyses generally require extensive computational power and memory, making it challenging to complete within the limited timeframe and resources.
+
+Given these challenges, only a limited number of results were obtained, including a few visualizations of QC metrics, UMI counts, PCA, and UMAP.
+
+\section{Discussion}
+
+Despite the challenges and limitations, the analysis provided some preliminary insights into the cellular heterogeneity and gene expression patterns of zebrafish pigment cells. The quality control steps ensured that only high-quality cells were included in the analysis, and the normalization process allowed for accurate comparison of gene expression levels across cells. The PCA and UMAP visualizations revealed distinct clusters of cells, suggesting the presence of different cell types or states within the pigment cell population.
 
 High-throughput single-cell transcriptomics has revealed previously unknown details on the cellular diversity of tissues in various organisms. According to Kulkarni \textit{et al.} (2019), single-cell RNA sequencing provides an unbiased insight into the cellular makeup of complex tissues, addressing the stochastic nature of gene expression often overlooked in bulk tissue studies \cite{kulkarni2019beyond}.
 
 Trajectory inference is a crucial aspect of single-cell RNA-seq analysis. Qiu \textit{et al.} (2017) presented Monocle 2, an algorithm utilizing reversed graph embedding to express numerous fate decisions in an unsupervised manner, effectively resolving complex single-cell trajectories \cite{qiu2017reversed}. This method has been instrumental in studies of blood formation and other biological processes.
 
-Patterson and Parichy's (2019) examination of zebrafish pigment pattern creation revealed the arrangement and interaction of melanophores, xanthophores, and iridophores for zebrafish stripe formation. 
-Genetic factors such as transcription factors \textit{mitfa}, \textit{tfec}, and receptor tyrosine kinases \textit{kita} and \textit{ltka} are essential for pigment cell differentiation \cite{patterson2019zebrafish}.
+Patterson and Parichy's (2019) examination of zebrafish pigment pattern creation revealed the arrangement and interaction of melanophores, xanthophores, and iridophores for zebrafish stripe formation. Genetic factors such as transcription factors \textit{mitfa}, \textit{tfec}, and receptor tyrosine kinases \textit{kita} and \textit{ltka} are essential for pigment cell differentiation \cite{patterson2019zebrafish}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=0.5\textheight, width=0.5\textwidth]{varianciatotal_boxplot.png}
+\caption{Box plot of total variance in gene expression. This box plot summarizes the overall variance in gene expression levels across different cell types, providing insights into the heterogeneity within the pigment cell population.}
+\label{results 1}
+\end{figure}
 
 Saunders \textit{et al.} (2023) conducted a comprehensive single-cell transcriptome investigation of developing zebrafish embryos, resulting in a high-resolution map of cell type compositions and developmental trajectories. Their dataset, which includes 1812 embryos and 3.2 million cells, allows for the estimation of cell type abundance variation and discovery of perturbation-dependent variances in cell type composition. This robust dataset provides a framework for understanding the genetic connections and developmental processes of zebrafish pigment cells \cite{saunders2023embryo}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.2\textheight, width=0.5\textwidth]{variancia_tempos.png}
+  \caption{Variance of gene expression over different time points. This plot shows the variance in gene expression for various genes across different developmental stages, highlighting the dynamic nature of gene regulation during pigment cell development.}
+  \label{results 2}
+\end{figure}
 
 Additionally, Saunders \textit{et al.} (2019) elucidated the influence of thyroid hormone on pigment cell line maturation, showing that hormone signaling pathways significantly impact pigment cell formation and differentiation, consistent with our pathway enrichment findings \cite{saunders2019thyroid}.
 
@@ -219,33 +234,15 @@ Phipson \textit{et al.} (2022) used propeller to evaluate variations in cell typ
 The following figures illustrate the key findings from replicating Saunders \textit{et al.} (2023) processed code, datasets and tables and the last image was generated by me after isolating a small subsample of transcription factors over time, and it was very memory intensive as well.
 
 \begin{figure}[H]
-\centering
-\includegraphics[height=0.7\textheight, width=\textwidth]{varianciatotal_boxplot.png}
-\caption{Box plot of total variance in gene expression. This box plot summarizes the overall variance in gene expression levels across different cell types, providing insights into the heterogeneity within the pigment cell population.}
-\label{results 1}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[height=0.2\textheight, width=\textwidth]{variancia_tempos.png}
-\caption{Variance of gene expression over different time points. This plot shows the variance in gene expression for various genes across different developmental stages, highlighting the dynamic nature of gene regulation during pigment cell development.}
-\label{results 2}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[height=0.2\textheight, width=\textwidth]{expression_of_genes_in_pigment_cells_over_time.png}
-\caption{Expression of genes in pigment cells over time. This graph shows the mean expression levels of various genes involved in pigment cell development across different time points, highlighting dynamic changes in gene expression.}
-\label{results 3}
+  \centering
+  \includegraphics[height=0.2\textheight, width=0.5\textwidth]{expression_of_genes_in_pigment_cells_over_time.png}
+  \caption{Expression of genes in pigment cells over time. This graph shows the mean expression levels of various genes involved in pigment cell development across different time points, highlighting dynamic changes in gene expression.}
+  \label{results 3}
 \end{figure}
 
 \section{Conclusion}
 
 This study utilized high-quality single-cell RNA-seq data to understand the zebrafish pigment cell transcriptome better. Initial analysis steps, including data processing and normalization, were completed, but the full analysis faced limitations due to computational constraints. Nonetheless, the study provided valuable preliminary insights into the genetic regulation of pigmentation and highlighted the importance of adequate computational resources for single-cell RNA-seq analysis. Future work could involve experimental validation of these findings and the integration of additional datasets to create a more comprehensive perspective.
-
-\section{Troubleshooting}
-
-During the analysis, several issues were encountered:\newline\textbf{Memory Limitations:} The large dataset required more memory than available, causing script failures.\newline\textbf{Long Processing Times:} Some scripts had excessively long execution times, limiting multiple iterations and optimizations.\newline\textbf{Computational Resource Constraints:} Despite remote access to a more powerful computer in the final weeks, the computational resources were still insufficient for the full analysis.
 
 \section{Future Work}
 To address the issues encountered and complete the analysis, the following steps are recommended:\newline\textbf{Enhanced Computational Resources}: Utilize a high-performance computing cluster with sufficient memory and processing power to handle large single-cell RNA-seq datasets.\newline\textbf{Optimized Scripts}: Refine and optimize the scripts for better performance and efficiency.\newline\textbf{Extended Timeframe}: Allocate more time for the analysis to allow for the completion of all pre-processing and downstream analysis steps.\newline\textbf{Experimental Validation}: Validate the findings experimentally to ensure the accuracy and relevance of the results.\newline\textbf{Integration of Additional Datasets}: Incorporate additional datasets to create a more comprehensive understanding of zebrafish pigment cell development.
