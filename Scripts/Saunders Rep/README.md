@@ -2,7 +2,7 @@
 
 ## Description
 
-This folder contains scripts and data related to the project "Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells".
+This folder contains scripts and data related to repetition of Saunders *et al*. (2023) initial pipeline using `monocle`
 
 ## Contents
 
