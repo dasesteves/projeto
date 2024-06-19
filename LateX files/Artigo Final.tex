@@ -74,8 +74,7 @@ Research into the genetic and molecular basis of zebrafish pigmentation has also
 \section{Materials and Methods}
 The main challenge addressed in this study was to analyze the complexity of pigment cell formation in zebrafish using scRNA-seq data. The analysis aimed to identify key genes, transcription factors, and signaling pathways involved in pigment cell development. Additionally, the study sought to understand the cellular heterogeneity and gene expression patterns within the pigment cell population.
 
-This analysis was performed using the R programming language within RStudio, an integrated development environment (IDE) for R. The environment setup included the following key libraries and tools:\newline\textbf{R}: The primary programming language used for data analysis.\newline\textbf{RStudio}: An IDE for R that provides a user-friendly interface for writing scripts, visualizing data, and managing projects.
-\newline The following R packages were essential for this analysis:\newline\textbf{SingleCellExperiment}: Provides a container for storing single-cell RNA-seq data, including expression matrices, cell metadata, and gene metadata.\newline\textbf{scater}: Used for quality control, visualization, and pre-processing of single-cell RNA-seq data.\newline\textbf{scran}: Provides tools for normalizing single-cell RNA-seq data and identifying highly variable genes.\newline\textbf{dplyr \& tidyr}: Used for data manipulation and cleaning.\newline\textbf{HDF5Array}: Facilitates the efficient handling of large datasets by storing them in HDF5 format.\newline\textbf{biomaRt}: Used for retrieving genomic data from Ensembl and converting gene symbols to Ensembl IDs.\newline\textbf{clusterProfiler}: Provides tools for statistical analysis and visualization of functional profiles for genes and gene clusters.\newline\textbf{org.Dr.eg.db}: An organism-specific database for \textit{Danio rerio} (zebrafish), used for gene annotation and enrichment analysis.
+This analysis was performed using the R programming language within RStudio. The environment setup included the following key libraries and tools:\newline\textbf{R}: The primary programming language used for data analysis.\newline\textbf{RStudio}: An IDE for R that provides a user-friendly interface for writing scripts, visualizing data, and managing projects.\newline\textbf{Monocle}: An R package for analyzing single-cell transcriptomics data.\newline\textbf{Slingshot}: An R package for clustering single-cell transcriptomics data.\newline\textbf{Seurat}: An R package for single-cell transcriptomics data analysis.
 
 \subsection*{Data Source}
 This study used data from the GEO series \href{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639}{GSE202639}, which includes single-cell RNA-seq data from developing zebrafish embryos. This collection contains single-cell transcriptome data from 1812 individually resolved growing zebrafish embryos, with 19 time points and 23 genetic alterations totaling 3.2 million cells. This dataset, called \href{https://cole-trapnell-lab.github.io/zscape/}{ZSCAPE} (Zebrafish Single Cell Atlas of Perturbed Embryos), has generated several research publications, revealing its potential for further detailed analysis \cite{saunders2023embryo,dorrity2023proteostasis}.
@@ -150,6 +149,10 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
 
 \subsubsection{Clustering Analysis:} Clustering analysis was conducted to identify distinct cell populations. Clusters were determined based on the principal components from PCA and the UMAP projections. This step involved using algorithms such as Louvain or Leiden for community detection in the data, which help in grouping cells with similar expression profiles \cite{street2018slingshot}.
 
+\subsection*{Functional Analysis and Gene Expression}
+\subsubsection{Marker Genes:} For each cluster to characterize the cell types. The expression of key genes, including \textit{mitfa}, \textit{kit}, and \textit{csf1ra}, was visualized to validate their roles in pigment cell development. Marker genes are critical for defining the identity and function of each cell cluster \cite{howard2021atlas}.
+\newpage
+
 \begin{figure}[H]
   \centering
   \resizebox{0.4\textheight}{!}{%
@@ -190,31 +193,30 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
   \label{fig:umap_all}
 \end{figure}
 
-\subsection*{Functional Analysis and Gene Expression}
-\subsubsection{Marker Genes:} For each cluster to characterize the cell types. The expression of key genes, including \textit{mitfa}, \textit{kit}, and \textit{csf1ra}, was visualized to validate their roles in pigment cell development. Marker genes are critical for defining the identity and function of each cell cluster \cite{howard2021atlas}.
-
-\subsubsection{Pathway and Gene Ontology Enrichment Analysis:} Pathway and Gene Ontology (GO) enrichment analyses were performed to identify significant biological processes and pathways associated with the identified clusters. These analyses help in understanding the functional roles of the genes within each cluster and their involvement in pigment cell differentiation and development \cite{kenny2022tfap2}. Enrichment analysis provides insights into the underlying biological mechanisms driving the observed gene expression patterns.
-
 \section{Results \& Discussion}
 
-The single-cell transcriptome investigation of zebrafish pigment cells aimed to reveal cellular heterogeneity and gene expression patterns. The expectation was to identify highly variable genes that are critical regulators of pigment cell development and to gain insights into the biological mechanisms at work through pathway and GO enrichment studies. However, several challenges were encountered during the analysis:\newline\textbf{Computational Challenges:} The volume of data was significant, and the pre-processing steps required substantial computational resources. The scripts developed to process the scRNA-seq data faced multiple issues, including memory limitations and long execution times.\newline\textbf{Resource Limitations:} The analysis was constrained by the available computational resources. Despite access to a remote computer with better specifications in the final two weeks, the processing times for some scripts were still prohibitively long, ranging from 2 to 24 hours.\newline\textbf{Dataset Selection:} The chosen dataset for the analysis was not ideal for the given computational constraints. Single-cell RNA sequencing analyses generally require extensive computational power and memory, making it challenging to complete within the limited timeframe and resources.
+Quality control was an essential first step to ensure that only high-quality cells were included in the analysis. In Fig. 1 and 2, the distribution of mitochondrial UMI percentages across the cells is show cells with a high mitochondrial content (>5\%). These were filtered out, as they often indicate stressed or dying cells, which could introduce bias into the analysis. This step ensured that the dataset only contained viable cells, providing a reliable foundation for downstream analyses as shown in Fig 2 after curation graph.
 
-Given these challenges, only a limited number of results were obtained, including a few visualizations of QC metrics, UMI counts, PCA, and UMAP.
+These distributions highlight the effectiveness of the curation process, ensuring consistent and comparable data across all cells. After this normalization is crucial for accurate downstream analysis, enabling the identification of the most variable and biologically significant genes.
 
-Despite the challenges and limitations, the analysis provided some preliminary insights into the cellular heterogeneity and gene expression patterns of zebrafish pigment cells. The quality control steps ensured that only high-quality cells were included in the analysis, and the normalization process allowed for accurate comparison of gene expression levels across cells. The PCA and UMAP visualizations revealed distinct clusters of cells, suggesting the presence of different cell types or states within the pigment cell population.
+Principal Component Analysis (PCA) was employed to reduce the dimensionality of the data. Figure 3 illustrates the cumulative variance explained by the PCA components, with the first few components capturing most of the variance in the dataset. This step was essential for simplifying the dataset while retaining the key variations. By reducing the complexity of the data, PCA facilitated the identification of major patterns and trends, which are critical for understanding the underlying biological processes.
+
+Uniform Manifold Approximation and Projection (UMAP) was used for visualization, as shown in Figure 4. The UMAP plot reveals distinct clusters of cells based on their gene expression profiles, indicating the presence of different cell types or states within the pigment cell population. This visualization is particularly valuable for identifying subpopulations of cells that may have specific roles in pigment cell development or function. The clustering analysis, using algorithms such as Louvain or Leiden, confirmed these distinct cell populations, providing a detailed map of cellular diversity.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.7\textheight, width=0.7\textwidth]{varianciatotal_boxplot.png}
+  \caption{Box plot of total variance in gene expression. This box plot summarizes the overall variance in gene expression levels across different cell types, providing insights into the heterogeneity within the pigment cell population.}
+  \label{results 1}
+\end{figure}
+
+The UMAP visualizations over different time points in Figure 5, were generated from pigment cells positive expressions and demonstrate the clustering of cells at various timepoints. These allow for time-lapse visualizations show how cell populations evolve over time, providing insights into the dynamics of pigment cell development. For instance, the clustering patterns observed at 18h, 24h, 36h, 48h, and 72h indicate shifts in gene expression as cells differentiate and mature. This temporal analysis is crucial for understanding the progression and regulation of pigment cell development, highlighting key stages where significant changes occur.
 
 High-throughput single-cell transcriptomics has revealed previously unknown details on the cellular diversity of tissues in various organisms. According to Kulkarni \textit{et al.} (2019), single-cell RNA sequencing provides an unbiased insight into the cellular makeup of complex tissues, addressing the stochastic nature of gene expression often overlooked in bulk tissue studies \cite{kulkarni2019beyond}.
 
 Trajectory inference is a crucial aspect of single-cell RNA-seq analysis. Qiu \textit{et al.} (2017) presented Monocle 2, an algorithm utilizing reversed graph embedding to express numerous fate decisions in an unsupervised manner, effectively resolving complex single-cell trajectories \cite{qiu2017reversed}. This method has been instrumental in studies of blood formation and other biological processes.
 
-Patterson and Parichy's (2019) examination of zebrafish pigment pattern creation revealed the arrangement and interaction of melanophores, xanthophores, and iridophores for zebrafish stripe formation. Genetic factors such as transcription factors \textit{mitfa}, \textit{tfec}, and receptor tyrosine kinases \textit{kita} and \textit{ltka} are essential for pigment cell differentiation \cite{patterson2019zebrafish}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[height=0.7\textheight, width=0.7\textwidth]{varianciatotal_boxplot.png}
-\caption{Box plot of total variance in gene expression. This box plot summarizes the overall variance in gene expression levels across different cell types, providing insights into the heterogeneity within the pigment cell population.}
-\label{results 1}
-\end{figure}
+Patterson \& Parichy's (2019) examination of zebrafish pigment pattern creation revealed the arrangement and interaction of melanophores, xanthophores, and iridophores for zebrafish stripe formation. Genetic factors such as transcription factors \textit{mitfa}, \textit{tfec}, and receptor tyrosine kinases \textit{kita} and \textit{ltka} are essential for pigment cell differentiation \cite{patterson2019zebrafish}.
 
 Saunders \textit{et al.} (2023) conducted a comprehensive single-cell transcriptome investigation of developing zebrafish embryos, resulting in a high-resolution map of cell type compositions and developmental trajectories. Their dataset, which includes 1812 embryos and 3.2 million cells, allows for the estimation of cell type abundance variation and discovery of perturbation-dependent variances in cell type composition. This robust dataset provides a framework for understanding the genetic connections and developmental processes of zebrafish pigment cells \cite{saunders2023embryo}.
 
@@ -225,27 +227,48 @@ Saunders \textit{et al.} (2023) conducted a comprehensive single-cell transcript
   \label{results 2}
 \end{figure}
 
-Additionally, Saunders \textit{et al.} (2019) elucidated the influence of thyroid hormone on pigment cell line maturation, showing that hormone signaling pathways significantly impact pigment cell formation and differentiation, consistent with our pathway enrichment findings \cite{saunders2019thyroid}.
-
-Phipson \textit{et al.} (2022) used propeller to evaluate variations in cell type proportions in single-cell data, demonstrating the resilience of statistical approaches for evaluating scRNA-seq datasets. This method validated the quality control and clustering results from our study \cite{phipson2022propeller}.
-
-The following figures illustrate the key findings from replicating Saunders \textit{et al.} (2023) processed code, datasets and tables and the last image was generated by me after isolating a small subsample of transcription factors over time, and it was very memory intensive as well.
+The previous figures in this section illustrate the key findings from replicating Saunders \textit{et al.} (2023) processed code, datasets and tables and the last image was generated by me after isolating a small subsample of transcription factors over time, and it was very memory intensive as well.
 
 \begin{figure}[H]
   \centering
   \includegraphics[height=0.25\textheight, width=0.6\textwidth]{expression_of_genes_in_pigment_cells_over_time.png}
-  \caption{Expression of genes in pigment cells over time. This graph shows the mean expression levels of various genes involved in pigment cell development across different time points, highlighting dynamic changes in gene expression.}
+  \caption{Expression of transcription factors in pigment cells over time. This graph shows the mean expression levels of various genes involved in pigment cell development across different time points, highlighting dynamic changes in gene expression.}
   \label{results 3}
 \end{figure}
+
+In Fig.8 we can see that a few transcription factors stand out for their peculiar expression behavior over time. These would be great targets for future single cell transcriptomics analysis.
 
 \section{Conclusion}
 
 This study utilized high-quality single-cell RNA-seq data to understand the zebrafish pigment cell transcriptome better. Initial analysis steps, including data processing and normalization, were completed, but the full analysis faced limitations due to computational constraints. Nonetheless, the study provided valuable preliminary insights into the genetic regulation of pigmentation and highlighted the importance of adequate computational resources for single-cell RNA-seq analysis. Future work could involve experimental validation of these findings and the integration of additional datasets to create a more comprehensive perspective.
 
-\section{Future Work}
-To address the issues encountered and complete the analysis, the following steps are recommended:\newline\textbf{Enhanced Computational Resources}: Utilize a high-performance computing cluster with sufficient memory and processing power to handle large single-cell RNA-seq datasets.\newline\textbf{Optimized Scripts}: Refine and optimize the scripts for better performance and efficiency.\newline\textbf{Extended Timeframe}: Allocate more time for the analysis to allow for the completion of all pre-processing and downstream analysis steps.\newline\textbf{Experimental Validation}: Validate the findings experimentally to ensure the accuracy and relevance of the results.\newline\textbf{Integration of Additional Datasets}: Incorporate additional datasets to create a more comprehensive understanding of zebrafish pigment cell development.
+\section{Challenges \& Future Work}
 
-In conclusion, while the analysis faced significant challenges and was not fully completed, the experience provided valuable insights into the complexities and requirements of single-cell RNA sequencing studies. Future work with enhanced resources and an optimized approach will be essential to achieving the study's objectives.
+Given these challenges, only a limited number of results were obtained, including a few visualizations of QC metrics, UMI counts, PCA, and UMAP.
+
+Despite the challenges and limitations, the analysis provided some preliminary insights into the cellular heterogeneity and gene expression patterns of zebrafish pigment cells. The quality control steps ensured that only high-quality cells were included in the analysis, and the normalization process allowed for accurate comparison of gene expression levels across cells. 
+
+The single-cell transcriptome investigation of zebrafish pigment cells aimed to reveal cellular heterogeneity and gene expression patterns, focusing on key regulators of pigment cell development. 
+
+Several challenges appeared:
+
+\textbf{Computational Challenges:} The large data volume required significant computational resources, leading to memory limitations and long script execution times.
+
+\textbf{Resource Limitations:} Despite remote access to a better computer in the final weeks, script processing times remained long (2 to 24 hours). The dataset was not ideal for available resources, as single-cell RNA sequencing analyses require extensive computational power and memory.
+
+To address these challenges:
+
+\textbf{Enhanced Resources:} Use a high-performance computing cluster.
+
+\textbf{Optimized Scripts:} Refine scripts for better performance.
+
+\textbf{Extended Timeframe:} Allocate more time for analysis.
+
+\textbf{Experimental Validation:} Validate findings experimentally.
+
+\textbf{Additional Datasets:} Incorporate more datasets for a comprehensive understanding of zebrafish pigment cell development.
+
+In conclusion, the study highlighted the complexities and demands of single-cell RNA sequencing. Future work with enhanced resources and optimized approaches is essential to achieve the study's objectives.
 
 \section*{Acknowledgements}
 I am grateful to David Henriques of CSIC IIM in Vigo and Professor Miguel Rocha of the University of Minho in Braga for the chance and collaboration on this research project. I also want to thank my family, friends, and colleagues for their useful advices and support over the first year of my Masters degree in Bioinformatics, as this is my final course during this academic year.
