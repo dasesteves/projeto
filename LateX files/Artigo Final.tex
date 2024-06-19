@@ -195,13 +195,11 @@ The expression matrix, cell metadata, and gene metadata were loaded and validate
 
 \subsubsection{Pathway and Gene Ontology Enrichment Analysis:} Pathway and Gene Ontology (GO) enrichment analyses were performed to identify significant biological processes and pathways associated with the identified clusters. These analyses help in understanding the functional roles of the genes within each cluster and their involvement in pigment cell differentiation and development \cite{kenny2022tfap2}. Enrichment analysis provides insights into the underlying biological mechanisms driving the observed gene expression patterns.
 
-\section{Results}
+\section{Results \& Discussion}
 
 The single-cell transcriptome investigation of zebrafish pigment cells aimed to reveal cellular heterogeneity and gene expression patterns. The expectation was to identify highly variable genes that are critical regulators of pigment cell development and to gain insights into the biological mechanisms at work through pathway and GO enrichment studies. However, several challenges were encountered during the analysis:\newline\textbf{Computational Challenges:} The volume of data was significant, and the pre-processing steps required substantial computational resources. The scripts developed to process the scRNA-seq data faced multiple issues, including memory limitations and long execution times.\newline\textbf{Resource Limitations:} The analysis was constrained by the available computational resources. Despite access to a remote computer with better specifications in the final two weeks, the processing times for some scripts were still prohibitively long, ranging from 2 to 24 hours.\newline\textbf{Dataset Selection:} The chosen dataset for the analysis was not ideal for the given computational constraints. Single-cell RNA sequencing analyses generally require extensive computational power and memory, making it challenging to complete within the limited timeframe and resources.
 
 Given these challenges, only a limited number of results were obtained, including a few visualizations of QC metrics, UMI counts, PCA, and UMAP.
-
-\section{Discussion}
 
 Despite the challenges and limitations, the analysis provided some preliminary insights into the cellular heterogeneity and gene expression patterns of zebrafish pigment cells. The quality control steps ensured that only high-quality cells were included in the analysis, and the normalization process allowed for accurate comparison of gene expression levels across cells. The PCA and UMAP visualizations revealed distinct clusters of cells, suggesting the presence of different cell types or states within the pigment cell population.
 
@@ -213,7 +211,7 @@ Patterson and Parichy's (2019) examination of zebrafish pigment pattern creation
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=0.5\textheight, width=0.5\textwidth]{varianciatotal_boxplot.png}
+\includegraphics[height=0.7\textheight, width=0.7\textwidth]{varianciatotal_boxplot.png}
 \caption{Box plot of total variance in gene expression. This box plot summarizes the overall variance in gene expression levels across different cell types, providing insights into the heterogeneity within the pigment cell population.}
 \label{results 1}
 \end{figure}
@@ -235,7 +233,7 @@ The following figures illustrate the key findings from replicating Saunders \tex
 
 \begin{figure}[H]
   \centering
-  \includegraphics[height=0.2\textheight, width=0.5\textwidth]{expression_of_genes_in_pigment_cells_over_time.png}
+  \includegraphics[height=0.25\textheight, width=0.6\textwidth]{expression_of_genes_in_pigment_cells_over_time.png}
   \caption{Expression of genes in pigment cells over time. This graph shows the mean expression levels of various genes involved in pigment cell development across different time points, highlighting dynamic changes in gene expression.}
   \label{results 3}
 \end{figure}
