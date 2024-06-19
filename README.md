@@ -29,10 +29,13 @@ This project utilizes single-cell transcriptomics techniques to investigate cell
 - Integrate more advanced visualisation tools.
 - Collaborate with other research groups for comparative studies.
 
-## Software Documentation
+## Software Used
 
+- **R:** [Access R](https://www.r-project.org/)
+- **RStudio:** [Access RStudio](https://www.rstudio.com/)
 - **Monocle:** [Access Monocle](https://cole-trapnell-lab.github.io/monocle-release/)
 - **Slingshot:** [Access Slingshot](https://bioconductor.org/packages/devel/bioc/vignettes/slingshot/inst/doc/vignette.html)
+- **Seurat:** [Access Seurat](https://satijalab.org/seurat/)
 
 ## Acknowledgements
 

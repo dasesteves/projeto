@@ -1,9 +1,11 @@
 # Results
 
 ## Description
+
 This folder contains the visualisation results of the single-cell transcriptomic analysis of zebrafish pigment cells.
 
 ## Contents
+
 - **expression_of_genes_in_pigment_cells_over_time.png:** Plot showing gene expression in pigment cells over time.
 - **fig_umap_24h.png:** UMAP plot of cells at 24 hours.
 - **fig_umap_48h.png:** UMAP plot of cells at 48 hours.
@@ -21,7 +23,9 @@ This folder contains the visualisation results of the single-cell transcriptomic
 - **varianciatotal_boxplot.png:** Box plot showing total variance.
 
 ## Usage
+
 These visualisations are used to interpret the results of the single-cell transcriptomic analysis. They can be included in reports and presentations to illustrate findings.
 
 ## Notes
+
 Ensure that the visualisations are correctly referenced in any documentation or presentations.

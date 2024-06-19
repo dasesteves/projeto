@@ -1,9 +1,11 @@
 # LaTeX Files
 
 ## Description
+
 This folder contains LaTeX files and related images for the final article on the single-cell transcriptomic analysis of zebrafish pigment cells.
 
 ## Contents
+
 - **000010.png:** Image file used in the article.
 - **000012.png:** Image file used in the article.
 - **000016.png:** Image file used in the article.
@@ -24,8 +26,10 @@ This folder contains LaTeX files and related images for the final article on the
 - **references.bib:** Bibliography file for the article.
 
 ## Usage
+
 Compile the `Artigo Final.tex` file using a LaTeX editor to generate the final article. Ensure all image files are in the same directory as the `.tex` file.
 
 ## Notes
+
 - Ensure all image files are correctly referenced in the LaTeX document.
 - The bibliography file `references.bib` lists all the references used in the article.
