@@ -1,0 +1,291 @@
+---
+title: "Análise Transcriptómica em Célula Única de Zebrafish"
+author: "Diogo Esteves"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Configuração Inicial e Carregamento dos Pacotes
+
+```{r}
+# Atualizar o pacote xfun
+if (!requireNamespace("xfun", quietly = TRUE) || packageVersion("xfun") < "0.44") {
+    install.packages("xfun")
+}
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("SCArray")
+BiocManager::install("Seurat")
+BiocManager::install("SingleCellExperiment")
+BiocManager::install("scater")
+BiocManager::install("monocle3")
+install.packages("R.utils")
+
+# Instalar SeuratDisk separadamente
+if (!requireNamespace("SeuratDisk", quietly = TRUE)) {
+  devtools::install_github("mojaveazure/seurat-disk")
+}
+```
+
+### 1.1 Libraries
+
+```{r}
+library(SCArray)
+library(Seurat)
+library(SingleCellExperiment)
+library(scater)
+library(SeuratDisk)
+library(monocle3)
+library(R.utils)
+library(Matrix)
+```
+
+## 2. Verificação, Download e Extração dos Arquivos
+
+```{r}
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+# URLs dos arquivos
+url_expression_data <- "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_raw_counts.RDS.gz"
+url_cell_metadata <- "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_cell_metadata.csv.gz"
+url_gene_metadata <- "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_gene_metadata.csv.gz"
+
+# Diretório de destino para download
+dest_dir <- "data"
+if(!dir.exists(dest_dir)) dir.create(dest_dir)
+
+# Função para verificar, baixar e descompactar arquivos
+download_and_extract <- function(url, destfile) {
+  if (!file.exists(destfile) && !file.exists(sub(".gz$", "", destfile))) {
+    download.file(url, destfile, mode = "wb")
+  }
+  if (grepl(".gz$", destfile) && !file.exists(sub(".gz$", "", destfile))) {
+    R.utils::gunzip(destfile)
+  }
+}
+
+# Verificar, baixar e descompactar os arquivos
+download_and_extract(url_expression_data, file.path(dest_dir, "GSE202639_reference_raw_counts.RDS.gz"))
+download_and_extract(url_cell_metadata, file.path(dest_dir, "GSE202639_reference_cell_metadata.csv.gz"))
+download_and_extract(url_gene_metadata, file.path(dest_dir, "GSE202639_reference_gene_metadata.csv.gz"))
+
+```
+
+## 3. Carregamento e Pré-processamento dos Dados
+
+```{r}
+# Carregar dados de expressão e metadados
+expression_data <- readRDS(file.path(dest_dir, "GSE202639_reference_raw_counts.RDS"))
+cell_metadata <- read.csv(file.path(dest_dir, "GSE202639_reference_cell_metadata.csv"))
+gene_metadata <- read.csv(file.path(dest_dir, "GSE202639_reference_gene_metadata.csv"))
+
+# Criar objeto SingleCellExperiment
+sce <- SingleCellExperiment(assays = list(counts = expression_data),
+                            colData = cell_metadata,
+                            rowData = gene_metadata)
+
+# Normalizar os dados e calcular as logcounts
+sce <- scuttle::logNormCounts(sce)
+
+```
+
+## 4. Filtragem de Genes e Células
+
+```{r}
+# Filtrar genes com baixa expressão
+sce <- sce[rowSums(counts(sce) > 0) > 10, ]
+
+# Filtrar células com baixa contagem de genes detectados
+sce <- sce[, colSums(counts(sce) > 0) > 200]
+
+# Converter a matriz de contagens para formato esparso
+assay(sce, "counts") <- Matrix(assay(sce, "counts"), sparse = TRUE)
+
+```
+
+## 5. Conversão para Seurat com Dados Esparsos e Análise Incremental
+
+```{r}
+# Dividir o objeto em subconjuntos menores
+set.seed(123)
+subsets <- split(seq_len(ncol(sce)), sort(rep(1:25, length.out = ncol(sce)))) # Dividindo em 25 partes para reduzir o tamanho do subconjunto
+
+# Diretório para salvar subconjuntos temporários
+temp_dir <- "temp_seurat"
+if(!dir.exists(temp_dir)) dir.create(temp_dir)
+
+# Função para processar subconjuntos de células
+process_subset <- function(subset_indices, subset_name) {
+  sce_subset <- sce[, subset_indices]
+  seurat_obj <- as.Seurat(sce_subset, counts = "counts", data = "logcounts")
+  saveRDS(seurat_obj, file.path(temp_dir, paste0("seurat_subset_", subset_name, ".rds")))
+  gc() # Limpar memória
+}
+
+# Processar cada subconjunto e salvar no disco
+for (i in seq_along(subsets)) {
+  process_subset(subsets[[i]], i)
+}
+
+```
+
+## 6. Combinação Incremental dos Resultados e Análise
+
+```{r}
+# Função para combinar objetos Seurat incrementalmente
+combine_seurat_objects <- function(file_list) {
+  combined <- readRDS(file_list[[1]])
+  for (file in file_list[-1]) {
+    temp <- readRDS(file)
+    combined <- merge(combined, temp)
+    rm(temp)
+    gc() # Limpar memória
+  }
+  return(combined)
+}
+
+# Listar arquivos temporários e combinar
+temp_files <- list.files(temp_dir, full.names = TRUE, pattern = "seurat_subset_.*\\.rds$")
+seurat_combined <- combine_seurat_objects(temp_files)
+
+# Processar o objeto combinado em blocos menores para Normalização e Identificação de Variáveis Principais
+process_combined_blocks <- function(seurat_obj, block_size = 10000) {
+  total_cells <- ncol(seurat_obj)
+  block_indices <- split(seq_len(total_cells), ceiling(seq_len(total_cells) / block_size))
+  
+  for (indices in block_indices) {
+    seurat_block <- subset(seurat_obj, cells = colnames(seurat_obj)[indices])
+    seurat_block <- NormalizeData(seurat_block)
+    seurat_block <- FindVariableFeatures(seurat_block, selection.method = "vst", nfeatures = 2000)
+    seurat_block <- ScaleData(seurat_block)
+    seurat_block <- RunPCA(seurat_block)
+    saveRDS(seurat_block, file.path(temp_dir, paste0("seurat_block_", min(indices), "_", max(indices), ".rds")))
+    rm(seurat_block)
+    gc() # Limpar memória
+  }
+  
+  # Combinar blocos processados
+  block_files <- list.files(temp_dir, full.names = TRUE, pattern = "seurat_block_.*\\.rds$")
+  combined_final <- readRDS(block_files[[1]])
+  for (file in block_files[-1]) {
+    temp_block <- readRDS(file)
+    combined_final <- merge(combined_final, temp_block)
+    rm(temp_block)
+    gc() # Limpar memória
+  }
+  
+  return(combined_final)
+}
+
+# Processar o objeto combinado em blocos menores
+seurat_combined <- process_combined_blocks(seurat_combined)
+
+```
+
+## 7. Análise Exploratória
+
+```{r}
+# Visualização de variáveis principais
+VariableFeaturePlot(seurat_combined)
+ElbowPlot(seurat_combined)
+
+```
+
+## 8. Redução de Dimensionalidade
+
+```{r}
+seurat_combined <- RunUMAP(seurat_combined, dims = 1:20)
+seurat_combined <- RunTSNE(seurat_combined, dims = 1:20)
+DimPlot(seurat_combined, reduction = "umap")
+DimPlot(seurat_combined, reduction = "tsne")
+
+```
+
+## 9. Identificação de Clusters
+
+```{r}
+seurat_combined <- FindNeighbors(seurat_combined, dims = 1:20)
+seurat_combined <- FindClusters(seurat_combined, resolution = 0.5)
+DimPlot(seurat_combined, reduction = "umap", group.by = "seurat_clusters")
+```
+
+## 10. Análise de Trajetórias
+
+```{r}
+# Convertendo objeto Seurat para Monocle
+cds <- as.cell_data_set(seurat_combined)
+cds <- cluster_cells(cds)
+cds <- learn_graph(cds)
+plot_cells(cds, color_cells_by = "cluster")
+
+```
+
+## 11. Visualização e Análise da transcriptómica de células pigmentares
+
+### 11.1 Estágios de Desenvolvimento com Maior Expressão de Genes de Pigmentação
+
+```{r}
+# Identificar genes responsáveis pela pigmentação
+pigmentation_genes <- c("gene1", "gene2", "gene3") # Vou sunstituir pelos genes relevantes
+
+# Plotar expressão de genes de pigmentação ao longo dos estágios de desenvolvimento
+FeaturePlot(seurat_combined, features = pigmentation_genes)
+VlnPlot(seurat_combined, features = pigmentation_genes, group.by = "development_stage")
+
+```
+
+### Fatores de Transcrição dos Genes de Pigmentação
+
+```{r}
+# Identificar fatores de transcrição associados aos genes de pigmentação
+transcription_factors <- c("TF1", "TF2", "TF3") # Vou substituir pelos fatores relevantes
++
+# Plotar expressão dos fatores de transcrição
+FeaturePlot(seurat_combined, features = transcription_factors)
+VlnPlot(seurat_combined, features = transcription_factors, group.by = "development_stage")
+
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+

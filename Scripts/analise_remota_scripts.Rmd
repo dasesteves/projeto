@@ -1,0 +1,342 @@
+---
+title: "Single-Cell Transcriptomic Analysis of Zebrafish Pigment Cells"
+author: "Diogo Esteves - PG28935, Master Student in Bioinformatics, University of Minho"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Introduction
+This analysis focuses on single-cell transcriptomics of zebrafish pigment cells. The data used in this analysis is sourced from the GEO series GSE202639, which contains single-cell RNA-seq data from developing zebrafish embryos.
+
+## Data Source Information:
+Title: Embryo-scale reverse genetics at single-cell resolution
+Organism: Danio rerio (zebrafish)
+Experiment Type: Expression profiling by high throughput sequencing
+Summary: This dataset includes single-cell transcriptomic data from 1812 individually resolved developing zebrafish embryos, spanning 19 time points and 23 genetic perturbations, totaling 3.2 million cells. The data allows for the estimation of cell type abundance variance organism-wide and detection of perturbation-dependent deviations in cell type composition relative to wild type embryos.
+Overall Design: Whole zebrafish embryos were collected across multiple timepoints or in response to genetic perturbations with sci-RNA-seq3.
+
+For more detailed information, refer to the GSE202639 page: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+# Load and Prepare Data
+
+```{r data}
+setwd("C:/Users/dases/Desktop/Projeto")
+# Load necessary libraries
+suppressPackageStartupMessages({
+  library(SingleCellExperiment)
+  library(scater)
+  library(scran)
+  library(dplyr)
+  library(tidyr)
+  library(HDF5Array)
+  library(biomaRt)
+  library(clusterProfiler)
+  library(org.Dr.eg.db)
+})
+
+# Create directories if they don't exist
+dir.create("data", showWarnings = FALSE)
+dir.create("results", showWarnings = FALSE)
+dir.create("utils", showWarnings = FALSE)
+dir.create("other", showWarnings = FALSE)
+
+# Load datasets
+expression_matrix <- readRDS("data/GSE202639_reference_raw_counts.RDS")
+cell_metadata <- read.csv("data/GSE202639_reference_cell_metadata.csv")
+gene_metadata <- read.csv("data/GSE202639_reference_gene_metadata.csv")
+
+# Print the dimensions of loaded data to ensure correctness
+cat("Dimensions of expression_matrix:", dim(expression_matrix), "\n")
+cat("Dimensions of cell_metadata:", dim(cell_metadata), "\n")
+cat("Dimensions of gene_metadata:", dim(gene_metadata), "\n")
+
+# Print a summary of the loaded data to check for any obvious issues
+summary(cell_metadata)
+summary(gene_metadata)
+
+# Description of cell metadata columns
+cat("Cell metadata breakdown:\n")
+cat("timepoint: Developmental stage in hours post fertilization (hpf) of embryos.\n")
+cat("expt: Denotes unique library preparation instances.\n")
+cat("cell_type_sub: The finest cell type annotation level.\n")
+cat("cell_type_broad: A broader level of annotation than 'cell_type_sub'.\n")
+cat("tissue: The tissue type annotation that contains the cell types.\n")
+cat("germ_layer: The germ layer of origin for each cell type, if known.\n")
+cat("gene_target: The genetic perturbation target.\n")
+cat("mean_nn_time: The mean time points of the nearest 15 neighbor cells.\n")
+cat("embryo: The individual embryo barcode.\n")
+cat("temp: The growth temperature of the embryos.\n")
+cat("pseudostage: Embryo-level staging prediction by cell composition.\n")
+
+# Remove rows with NAs in cell_metadata and gene_metadata
+cell_metadata <- cell_metadata %>% drop_na()
+gene_metadata <- gene_metadata %>% drop_na()
+
+# Ensure matching IDs between metadata and expression matrix
+cell_ids <- colnames(expression_matrix)
+gene_ids <- rownames(expression_matrix)
+
+# Ensure IDs are now matching
+common_cell_ids <- intersect(cell_ids, cell_metadata$cell)
+common_gene_ids <- intersect(gene_ids, gene_metadata$id)
+
+if (length(common_cell_ids) == 0) {
+  stop("No matching cell IDs found between expression matrix and cell metadata.")
+}
+if (length(common_gene_ids) == 0) {
+  stop("No matching gene IDs found between expression matrix and gene metadata.")
+}
+
+# Subset expression matrix, cell_metadata, and gene_metadata based on common IDs
+expression_matrix <- expression_matrix[common_gene_ids, common_cell_ids]
+cell_metadata <- filter(cell_metadata, cell %in% common_cell_ids)
+gene_metadata <- filter(gene_metadata, id %in% common_gene_ids)
+
+cat("Dimensions after filtering:\n")
+cat("Dimensions of expression_matrix:", dim(expression_matrix), "\n")
+cat("Dimensions of cell_metadata:", dim(cell_metadata), "\n")
+cat("Dimensions of gene_metadata:", dim(gene_metadata), "\n")
+
+```
+## Convert and Check HDF5Array and SingleCellExperiment
+
+```{r convert_to_hdf5array_sce}
+# Convert data frames to tibbles for easier manipulation
+cell_metadata <- as_tibble(cell_metadata)
+gene_metadata <- as_tibble(gene_metadata)
+
+# Filter columns in metadata to retain only necessary information
+cell_metadata <- dplyr::select(cell_metadata, cell, n.umi, perc_mitochondrial_umis, Size_Factor)
+gene_metadata <- dplyr::select(gene_metadata, gene_short_name)
+
+# Convert expression matrix to HDF5Array for efficient large data handling
+h5_file <- "data/expression_matrix.h5"
+if (!file.exists(h5_file)) {
+  writeHDF5Array(expression_matrix, h5_file, name = "counts")
+  cat("HDF5Array created and saved.\n")
+} else {
+  cat("HDF5Array file already exists. Loading existing file.\n")
+}
+
+# Load HDF5Array back and verify
+expression_h5 <- HDF5Array(h5_file, "counts")
+cat("Dimensions of HDF5Array:", dim(expression_h5), "\n")
+
+# Convert to a SingleCellExperiment object
+sce <- SingleCellExperiment(assays = list(counts = expression_h5), colData = cell_metadata, rowData = gene_metadata)
+cat("SingleCellExperiment object created with dimensions:", dim(sce), "\n")
+
+# Save checkpoint after creating SingleCellExperiment object
+saveRDS(sce, "data/sce_checkpoint_1.rds")
+
+```
+
+# Filtering Cells and Genes
+
+```{r quality_control}
+qc_metrics_file <- "data/qc_metrics.csv"
+
+if (file.exists(qc_metrics_file)) {
+  cat("QC metrics file already exists. Loading existing QC metrics.\n")
+  qc_metrics <- read.csv(qc_metrics_file, row.names = 1)
+  colData(sce) <- DataFrame(qc_metrics)
+} else {
+  # Calculate QC metrics and filter based on mitochondrial content and library size
+  cat("Calculating QC metrics...\n")
+  sce <- addPerCellQC(sce, subsets = list(Mito = grep("^MT-", rownames(sce))))
+  cat("QC metrics calculated.\n")
+
+  # Save QC metrics
+  write.csv(as.data.frame(colData(sce)), qc_metrics_file, row.names = FALSE)
+}
+
+# Save QC metrics
+write.csv(as.data.frame(colData(sce)), "data/qc_metrics.csv", row.names = FALSE)
+
+# Filter out cells with high mitochondrial content or low library size
+cat("Filtering high quality cells...\n")
+mito_threshold <- 5
+umi_threshold <- 500
+high_quality_cells <- sce$subsets_Mito_percent <= mito_threshold & sce$total >= umi_threshold
+sce <- sce[, high_quality_cells]
+cat("High quality cells filtered.\n")
+
+# Save filtered cell metadata
+write.csv(as.data.frame(colData(sce)), "data/filtered_cell_metadata.csv", row.names = FALSE)
+
+# Filter low-expressed genes
+cat("Filtering genes with low expression...\n")
+sce <- sce[rowSums(counts(sce) > 0) >= 10, ]
+cat("Genes filtered.\n")
+
+# Save filtered gene metadata
+write.csv(as.data.frame(rowData(sce)), "data/filtered_gene_metadata.csv", row.names = FALSE)
+
+```
+
+
+# Normalization and Identification of Highly Variable Genes
+
+
+```{r normalization_variable_genes}
+# Normalize counts using size factors
+cat("Computing size factors...\n")
+size_factors <- computeSumFactors(sce) #computeSumFactors -> +24h running this command
+valid_factors <- size_factors > 0
+size_factors_values <- sizeFactors(size_factors)
+
+# Check the size_factors variable
+cat("Size factors summary:\n")
+print(summary(size_factors_values))
+
+# Check for non-positive size factors
+valid_factors <- size_factors_values > 0
+cat("Number of valid size factors:", sum(valid_factors), "\n")
+
+if (sum(valid_factors) == 0) {
+  stop("No valid size factors found. Check your data for issues.")
+}
+
+sce <- sce[, valid_factors]
+size_factors <- size_factors[valid_factors]
+cat("Size factors computed and invalid factors removed.\n")
+
+sce <- logNormCounts(sce)
+
+# Save checkpoint after lognormcounts and computeSumFactors
+saveRDS(sce, "data/sce_checkpoint_lognormcounts.rds")
+
+# Verify the counts matrix after normalization
+cat("Verifying counts matrix after normalization...\n")
+cat("Dimensions of log-normalized counts matrix:", dim(logcounts(sce)), "\n")
+
+# Identify highly variable genes using a robust method from scran
+cat("Identifying highly variable genes...\n")
+dec <- modelGeneVar(sce)
+top_hvgs <- getTopHVGs(dec, n = 2000)
+cat("Highly variable genes identified.\n")
+
+# Save highly variable genes
+write.csv(top_hvgs, "data/top_hvgs.csv", row.names = FALSE)
+
+# Load and verify the top_hvgs.csv file
+top_hvgs <- read.csv("data/top_hvgs.csv", stringsAsFactors = FALSE)
+print(top_hvgs)
+cat("Number of highly variable genes identified:", length(top_hvgs), "\n")
+head(top_hvgs)
+any(is.na(top_hvgs))
+
+```
+
+# Dimensionality Reduction and Clustering
+
+```{r dimensionality_reduction_clustering}
+# Ensure top_hvgs is a character vector of gene names that exist in row names of sce
+top_hvgs <- intersect(as.character(top_hvgs), rownames(sce))
+
+# Perform PCA
+sce <- runPCA(sce, subset_row = top_hvgs)
+
+# Save PCA results
+write.csv(as.data.frame(reducedDim(sce, "PCA")), "data/pca_results.csv", row.names = FALSE)
+
+# Perform UMAP
+set.seed(1037)
+n_neighbors <- min(10, ncol(sce) - 1)
+sce <- runUMAP(sce, dimred = "PCA", n_neighbors = n_neighbors)
+
+# Save UMAP results
+write.csv(as.data.frame(reducedDim(sce, "UMAP")), "data/umap_results.csv", row.names = FALSE)
+
+# Perform clustering
+sce <- clusterCells(sce, use.dimred = "PCA")
+
+# Save clustering results
+write.csv(as.data.frame(sce$cluster), "data/clustering_results.csv")
+
+
+```
+
+# Gene Analysis and Visualization
+
+```{r functional_analysis_gene_expression}
+# Genes of interest
+genes_of_interest <- c("mitfa", "kit", "csf1ra", "ltk", "foxd3", "tfec")
+
+# Plot gene expression
+for (gene in genes_of_interest) {
+  png(paste0("results/", gene, "_expression.png"))
+  plotExpression(sce, features = gene, x = 'UMAP_1', y = 'UMAP_2', colour_by = 'cluster') +
+    ggtitle(paste("Expression of", gene))
+  dev.off()
+}
+
+# Save gene expression data
+write.csv(as.data.frame(assay(sce, "counts")[genes_of_interest,]), "data/gene_expression_data.csv", row.names = TRUE)
+
+# Use biomaRt to convert gene symbols to Ensembl IDs
+mart <- useMart("ensembl", dataset = "drerio_gene_ensembl")
+gene_conversion <- getBM(attributes = c("external_gene_name", "ensembl_gene_id"),
+                        filters = "external_gene_name",
+                        values = genes_of_interest,
+                        mart = mart)
+
+# Confirm presence of pigment genes in the dataset
+present_genes <- gene_conversion$ensembl_gene_id[gene_conversion$ensembl_gene_id %in% rownames(sce)]
+missing_genes <- setdiff(gene_conversion$ensembl_gene_id, present_genes)
+
+if (length(missing_genes) > 0) {
+  warning("The following genes are not present in the dataset: ", paste(missing_genes, collapse = ", "))
+}
+
+
+
+```
+
+# Pathway and Gene Ontology Enrichment Analysis
+
+```{r pathway_go_enrichment}
+# Convert gene symbols to Ensembl IDs using biomaRt
+cat("Converting gene symbols to Ensembl IDs...\n")
+mart <- useMart("ensembl", dataset = "drerio_gene_ensembl")
+gene_conversion <- getBM(attributes = c("external_gene_name", "ensembl_gene_id"),
+                        filters = "external_gene_name",
+                        values = genes_of_interest,
+                        mart = mart)
+
+# Perform pathway enrichment analysis
+cat("Performing pathway enrichment analysis...\n")
+enriched_pathways <- enrichPathway(gene_conversion$ensembl_gene_id, organism = "zebrafish")
+png("results/enriched_pathways.png")
+dotplot(enriched_pathways, showCategory = 20)
+dev.off()
+
+# Perform Gene Ontology (GO) enrichment analysis
+cat("Performing GO enrichment analysis...\n")
+go_enrichment <- enrichGO(gene_conversion$ensembl_gene_id, OrgDb = org.Dr.eg.db, keyType = "ENSEMBL", ont = "BP")
+png("results/go_enrichment.png")
+dotplot(go_enrichment, showCategory = 20)
+dev.off()
+
+# Save enrichment results
+write.csv(as.data.frame(enriched_pathways), "results/enriched_pathways.csv", row.names = FALSE)
+write.csv(as.data.frame(go_enrichment), "results/go_enrichment.csv", row.names = FALSE)
+```
+
+# Conclusion
+This script focuses on the transcriptomic analysis of zebrafish pigment cells, performing the main steps of data processing, analysis, and visualization from initial preparation to functional analysis. The analysis leverages high-quality single-cell RNA-seq data from the GEO series GSE202639 to understand the transcriptomic landscape of zebrafish pigment cells.
+
+With this pipeline, we aim to identify key genes, transcription factors, phenotypes, possible signaling pathways, and markers associated with pigment cells in zebrafish. Further steps may include validating the findings experimentally and integrating additional datasets for a more comprehensive understanding.
+
+# References
+
+Saunders LM, Srivatsan SR, Duran M, Dorrity MW et al. Embryo-scale reverse genetics at single-cell resolution. Nature 2023 Nov;623(7988):782-791. PMID: 37968389.
+
+GEO Series GSE202639: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+
+
+

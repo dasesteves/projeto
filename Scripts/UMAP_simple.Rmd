@@ -1,0 +1,427 @@
+---
+title: "UMAP_simple"
+author: "Diogo Esteves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instalação e "loading" de Bibliotecas, Pacotes e Dependências
+Este passo tem de ser completo com sucesso para as analises que se seguem
+
+```{r dependencies1}
+# Define uma função para instalar pacotes se eles não estiverem já instalados
+ensure_packages <- function(packages) {
+  new_packages <- packages[!packages %in% installed.packages()[,"Package"]]
+  if (length(new_packages) > 0) install.packages(new_packages)
+  lapply(packages, library, character.only = TRUE)
+}
+
+# Pacotes do CRAN
+cran_packages <- c("ggplot2", "dplyr", "Seurat", "data.table", "plotly", "viridis", "htmlwidgets")
+ensure_packages(cran_packages)
+
+# Pacotes do Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+bioc_packages <- c("SingleCellExperiment", "BiocParallel", "scater", "scran")
+BiocManager::install(bioc_packages)
+
+# Instalação de pacotes adicionais
+BiocManager::install("monocle3")
+
+```
+
+## Instalação de Pacotes Python via Reticulate
+
+```{r dependencies2}
+library(reticulate)
+# Função para instalar pacotes Python e tratar erros
+install_python_package <- function(package) {
+  tryCatch({
+    py_install(package, pip = TRUE)
+    cat(paste("Instalação do pacote", package, "completada.\n"))
+  }, error = function(e) {
+    cat(paste("Erro na instalação do pacote", package, ":", e$message, "\n"))
+  })
+}
+
+# Instalar pacotes Python necessários
+install_python_package('umap-learn')
+install_python_package('louvain')
+```
+### Configuração do Diretório de Trabalho e loading das Bibliotecas
+
+```{r libraries}
+# Automaticamente define a working directory para o local deste ficheiro .Rmd
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+library(Seurat)
+library(SingleCellExperiment)
+library(scran)
+library(ggplot2)
+
+```
+
+# Download dos Dados e Pré-Processamento
+Ficheiros:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639
+
+AVISO: São muitos GBs certifiquem-se que a máquina reúne os requisitos, que estão na diretoria certa e a correr em modo administrador antes de avançar mais no script.
+
+```{r download-data1}
+# Automaticamente define a working directory para o local deste ficheiro .Rmd
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+# Função para baixar e extrair arquivos apenas se eles não existirem
+download_and_extract <- function(urls, dests) {
+  for (i in seq_along(urls)) {
+    if (!file.exists(dests[i])) {
+      download.file(urls[i], dests[i], method = "libcurl", mode = "wb")
+      if (file.exists(dests[i])) {
+        R.utils::gunzip(dests[i], overwrite = TRUE)
+        message(paste("Arquivo", dests[i], "baixado e extraído com sucesso."))
+      } else {
+        message(paste("Falha no download do arquivo:", urls[i]))
+      }
+    } else {
+      message(paste("Arquivo já existe e não será baixado novamente:", dests[i]))
+    }
+  }
+}
+
+# URLs e destinos dos arquivos
+files_to_download <- c(
+  "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcds%2ERDS%2Egz",
+  "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fcell%5Fmetadata%2Ecsv%2Egz",
+  "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fgene%5Fmetadata%2Ecsv%2Egz",
+  "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Fzperturb%5Ffull%5Fraw%5Fcounts%2ERDS%2Egz"
+)
+dest_files <- c(
+  "GSE202639_zperturb_full_cds.RDS.gz",
+  "GSE202639_zperturb_full_cell_metadata.csv.gz",
+  "GSE202639_zperturb_full_gene_metadata.csv.gz",
+  "GSE202639_zperturb_full_raw_counts.RDS.gz"
+)
+
+# Executar download e extração
+download_and_extract(files_to_download, dest_files)
+
+```
+## Explorar os dados
+```{r}
+# Mostrar os nomes das colunas de cell_metadata
+print(colnames(cell_metadata))
+# Exibir alguns valores únicos da coluna que suspeita ser os identificadores das células
+# Suponha que a coluna suspeita seja 'cell'
+print(unique(cell_metadata$cell)[1:10])
+# Verificar se os primeiros elementos coincidem (ajuste o número conforme necessário)
+print(head(colnames(raw_counts)))
+
+```
+## Loading dos Dados
+
+```{r data-load1}
+# Carregamento dos dados
+library(Seurat)
+library(data.table)
+
+# Converter metadados para data.table
+cell_metadata <- as.data.table(read.csv("GSE202639_zperturb_full_cell_metadata.csv"))
+gene_metadata <- as.data.table(read.csv("GSE202639_zperturb_full_gene_metadata.csv"))
+```
+
+```{r}
+# Subamostragem de células para reduzir o tamanho do dataset
+set.seed(42)
+subsampled_cells <- sample(colnames(raw_counts), 5000)  # Ajuste este número conforme necessário
+subsampled_counts <- raw_counts[, subsampled_cells]
+
+# Preparar metadados para as células subamostradas
+subsampled_metadata <- cell_metadata[cell %in% subsampled_cells,]
+
+# Criar objeto Seurat
+sce_seurat <- CreateSeuratObject(counts = subsampled_counts, project = "UMAP_Simple", meta.data = subsampled_metadata)
+
+```
+
+### Pre-processamento dos Dados Inicial
+Dado o grande volume de dados e às limitações das máquinas este passo tornou-se demorado (tempo variável consoante a máquina). Avancei com a realização da Filtragem em Blocos, este passo é fundamental para os seguintes scripts correrem mais fluidamente, aconselho a ler a documentação (é possível alocar mais um núcleos do PC para processar estes dados, workers = 3))
+
+```{r preproci}
+# Cria o objeto SingleCellExperiment
+library(SingleCellExperiment)
+sce <- SingleCellExperiment(assays = list(counts = raw_counts))
+colData(sce) <- DataFrame(cell_metadata)
+rowData(sce) <- DataFrame(gene_metadata)
+
+# Continua com a definição de blocos e outras análises
+nblocks <- 10  # Ajustar conforme necessário, divisão em mais blocos para processamento mais eficaz e mais lento também.
+block_size <- ceiling(ncol(sce) / nblocks)
+blocks <- split(seq_len(ncol(sce)), cut(seq_len(ncol(sce)), breaks = nblocks))
+
+# Verifica se o objeto sce está correto, resultado esperado: [1] 32031 2687135
+print(dim(sce))
+
+```
+
+### Filtragem dos Dados
+filtrar células e genes para remover células com pouca contagem total e genes que são detectados em poucas células, o que pode ajudar a reduzir a dimensionalidade e melhorar a qualidade dos dados para análises subsequentes.
+
+```{r filtragem1}
+# Filtrar genes que são expressos em pelo menos 10 células
+#keep_genes <- rowSums(counts(sce) > 0) >= 10
+#sce <- sce[keep_genes, ]
+
+# Filtrar células com pelo menos 500 transcritos detectados
+#keep_cells <- colSums(counts(sce)) >= 500
+#sce <- sce[, keep_cells]
+
+#print(dim(sce))  # conjunto de dados filtrado com 29 582 genes e 945 106 células, o que indica uma redução substancial em relação ao número inicial de células e genes, focando nos mais relevantes para análises subsequentes.
+
+```
+#### Preparação e Normalização dos Dados
+
+```{r norm1}
+# Criar objeto Seurat
+sce_seurat <- CreateSeuratObject(counts = raw_counts, project = "UMAP_Simple", meta.data = cell_metadata)
+
+# Converter SingleCellExperiment para objeto Seurat
+sce_seurat <- as.Seurat(sce, counts = "counts", data = NULL)  # Converte sem data, pois ainda não temos logcounts
+
+# Normalização e cálculo de logcounts usando Seurat
+sce_seurat <- NormalizeData(sce_seurat, normalization.method = "LogNormalize", scale.factor = 10000)
+
+# Encontrar features variáveis (opcional mas recomendado para análises posteriores)
+sce_seurat <- FindVariableFeatures(sce_seurat, selection.method = "vst", nfeatures = 2000)
+
+```
+
+### Executar Clusterização e Redução de Dimensionalidade
+Conversão do Objeto SingleCellExperiment para Seurat. Seurat é uma ferramenta popular e poderosa para análise de dados de RNA "single-cell" que inclui suporte para normalização, identificação de variáveis, clustering e visualização.
+Depois de normalizar os dados e potencialmente identificar os features variáveis
+
+```{r convert-sce-seurat}
+# Executar PCA
+sce_seurat <- RunPCA(sce_seurat, features = VariableFeatures(object = sce_seurat))
+
+# Executar UMAP
+sce_seurat <- RunUMAP(sce_seurat, dims = 1:15)
+
+# Encontrar clusters
+sce_seurat <- FindNeighbors(sce_seurat, dims = 1:15)
+sce_seurat <- FindClusters(sce_seurat, resolution = 0.5)
+
+# Visualizar UMAP
+DimPlot(sce_seurat, reduction = "umap", group.by = "seurat_clusters")
+
+```
+
+#### Normalização e Análise Inicial no Seurat
+Antes de proceder com a análise de clustering, é importante normalizar os dados e identificar as características variáveis que serão usadas para a análise de componentes principais (PCA) e para a etapa subsequente de clustering.
+
+```{r norm1}
+# Normalização dos dados (Se ainda não normalizado)
+sce_seurat <- NormalizeData(sce_seurat, normalization.method = "LogNormalize", scale.factor = 10000)
+
+# Encontrar características variáveis
+sce_seurat <- FindVariableFeatures(sce_seurat, selection.method = "vst", nfeatures = 2000)
+
+# Executar PCA
+sce_seurat <- RunPCA(sce_seurat, features = VariableFeatures(object = sce_seurat))
+
+# Clustering
+sce_seurat <- FindNeighbors(sce_seurat, dims = 1:20)
+sce_seurat <- FindClusters(sce_seurat, resolution = 0.5)
+
+# Rodar UMAP para visualização
+sce_seurat <- RunUMAP(sce_seurat, dims = 1:20)
+DimPlot(sce_seurat, reduction = "umap")
+```
+
+#### Clustering
+algoritmo de clustering para agrupar as células com base em seus perfis de expressão genética
+
+```{r clustering1}
+# Encontrar clusters
+sce_seurat <- FindNeighbors(sce_seurat, dims = 1:20)
+sce_seurat <- FindClusters(sce_seurat, resolution = 0.5)
+
+# Visualizar os clusters usando UMAP
+sce_seurat <- RunUMAP(sce_seurat, dims = 1:20)
+DimPlot(sce_seurat, reduction = "umap")
+
+```
+
+## Preparação para Análises Avançadas
+Esta seção prepara os dados para análises mais complexas, como a inferência de trajetória e análise de expressão diferencial, focando nos caminhos de diferenciação das células pigmentares.
+
+```{r}
+# Preparação para inferência de trajetória usando Monocle
+# Definir as células progenitoras como ponto inicial
+progenitor_cells <- which(sce$cell_type_broad == "progenitor")
+sce <- setOrderingFilter(sce, progenitor_cells)
+
+# Uso de técnicas de redução de dimensionalidade para preparar dados para Monocle
+sce <- reduceDimension(sce, max_components = 2, norm_method = "Log", reduction_method = 'DDRTree')
+
+# Inferência de trajetória
+sce <- orderCells(sce)
+
+# Visualizar as trajetórias das células
+plot_cell_trajectory(sce, color_by = "cell_type_broad") +
+  ggtitle("Trajetória de diferenciação das células pigmentares") +
+  theme_minimal()
+
+```
+
+# Análise de Expressão Diferencial
+análises de expressão diferencial para identificar os genes e fatores de transcrição que são reguladores-chave na diferenciação das células pigmentares
+
+```{r UMAP2}
+# Análise de expressão diferencial ao longo das trajetórias
+differential_genes <- differentialGeneTest(sce)
+significant_genes <- subset(differential_genes, qval < 0.05)
+
+# Visualizar os genes mais significativamente diferencialmente expressos
+plot_genes_in_pseudotime(sce, genes = head(significant_genes$gene_id, 5)) +
+  ggtitle("Genes diferencialmente expressos ao longo das trajetórias de diferenciação") +
+  theme_minimal()
+
+# Análise mais detalhada focando em fatores de transcrição específicos
+tf_analysis <- subset(significant_genes, gene_target %in% c("tfap2", "mitf", "sox10"))
+plot_genes_in_pseudotime(sce, genes = tf_analysis$gene_id) +
+  ggtitle("Análise de Fatores de Transcrição ao longo das Trajetórias") +
+  theme_minimal()
+```
+
+
+
+```{r UMAP3}
+
+
+```
+## Enriquecimento de Marcadores de Célula
+
+Funções como `FindAllMarkers` ou `FindMarkers` do pacote Seurat permitem encontrar os marcadores celulares para cada cluster identificado.
+A ideia é comparar a expressão entre os diferentes tipos de células pigmentares (`melanophore`, `iridophore`, `xanthophore`).
+
+encontrei um problema de alocação de memória ao tentar criar um objeto DESeqDataSet a partir de uma matriz de contagens. A mensagem de erro cannot allocate vector of size 641.3 Gb indica que o R não é capaz de alocar um vetor deste tamanho (641GB) ou a maquina não esta preparada para alocar 641GB. Uma abordagem para contornar esse problema seria trabalhar com uma representação de dados esparsos, evitando a conversão para um formato denso, que requer uma grande quantidade de memória. O pacote DESeq2 permite trabalhar com matrizes diretamente através do uso do pacote Matrix para criar a matriz de contagens. Não está a funcionar
+
+```{r enrimarker1}
+# 'counts' já é uma matriz esparsa:
+sparse_counts <- as(counts, "sparseMatrix")
+
+# Assuming 'sparse_counts' is a sparse matrix of counts and 'coldata' has the necessary metadata
+group <- factor(coldata$cluster)
+
+# Create a DGEList object from sparse matrix
+dge <- DGEList(counts=sparse_counts, group=group)
+
+# Proceed with analysis using edgeR
+dge <- calcNormFactors(dge)
+design <- model.matrix(~ group)
+dge <- estimateDisp(dge, design)
+fit <- glmQLFit(dge, design)
+result <- glmQLFTest(fit, coef=2) # Adjust 'coef' based on the comparison of interest
+topTags(result)
+
+```
+
+
+## Perform differential expression analysis
+
+Proximo passo? ... ainda em desenvolvimento...
+
+```{r exam3}
+#analise exploratoria do conteudo das colunas
+names(colData(full_cds))
+
+unique(colData(full_cds)$timepoint)
+unique(colData(full_cds)$expt)
+unique(colData(full_cds)$tissue)
+unique(colData(full_cds)$gene_target)
+unique(colData(full_cds)$embryo)
+unique(colData(full_cds)$sample)
+
+
+```
+
+```{r difexp1}
+
+# Extrair a matriz de contagens do objeto 'full_cds'
+counts <- counts(full_cds)
+
+# Obter os metadados de coluna (dados de amostra), que devem incluir a coluna 'cluster'
+coldata <- colData(full_cds)
+
+# Criar um objeto DESeqDataSet
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = coldata,
+                              design = ~ cluster)
+
+# Prossiga com a análise DESeq
+dds <- DESeq(dds)
+
+# Obter os resultados para comparações específicas de tempo
+results_1_vs_2 <- results(dds, contrast = c("timepoint", "1", "2"))
+
+# Visualizar os principais resultados
+head(results_1_vs_2)
+
+```
+
+## Cell type-specific differential expression analysis for a perturbation
+
+```{r pressure, echo=FALSE}
+
+# Load the zebrafish perturbation data
+perturb_cds <- readRDS("zscape_perturb_cds.RDS")
+
+# List the different genetic perturbations 
+unique(colData(perturb_cds)$gene_target)
+
+# Subset smoothened crispants and notochord cells (for example)
+smo_nc_cds <- perturb_cds[,colData(perturb_cds)$gene_target %in% c("smo", "ctrl-inj") & 
+            colData(perturb_cds)$cell_type_broad %in% c("notochord")]
+
+# Now select the timepoints 
+# note that the controls will include timepoints that are not included for smo
+smo_nc_cds <- smo_nc_cds[,colData(smo_nc_cds)$timepoint %in% c("24", "36")]
+
+# Use monocle3 to perform DE testing between controls and smo notochord cells
+deg_cds <- smo_nc_cds[Matrix::rowSums(SingleCellExperiment::counts(smo_nc_cds) > 0) > 10,] # filter for expressed genes
+fits <- fit_models(deg_cds, model_formula_str = "~gene_target", cores = 4)
+mod_coef <- coefficient_table(fits)
+
+# Parse the results table
+smo.celltype.degs <- mod_coef %>% 
+  mutate(up_in = case_when(
+    estimate < 0 ~ "ctrl",
+    estimate > 0 ~ "smo"))
+
+smo.celltype.degs <- smo.celltype.degs %>% 
+    filter(term != "(Intercept)") %>%
+    select(up_in, id, gene_short_name, q_value, estimate, -model_summary, -model)
+
+# filter for q-value < 0.05
+sig.smo.celltype.degs <- smo.celltype.degs %>%
+            filter(q_value < 0.05 ) %>%  
+            arrange(up_in, q_value)
+
+# check the deg number for each direction
+sig.smo.celltype.degs %>% 
+    group_by(up_in) %>%
+    tally()
+
+# save the differentially expressed genes as a csv
+fwrite(sig.smo.celltype.degs, "smo_nc_24-36h_q05_degs.csv", 
+        sep = ",", na = "NA")
+
+
+#Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```
