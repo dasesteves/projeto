@@ -1,5 +1,15 @@
 # Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells
 
+## Navegação rápida
+
+| Material | Ligação |
+| --- | --- |
+| Artigo final | [PDF](Artigo%20Final.pdf) |
+| Resultados e visualizações | [Results](Results/) |
+| Scripts de análise | [Scripts](Scripts/) |
+| Fontes do artigo | [LateX files](LateX%20files/) |
+| Entrega da primeira fase | [Phase 1](Phase%201/) |
+
 ## 1st year of Master Degree in Bioinformatics
 
 - **Name:** Diogo Esteves
