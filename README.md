@@ -1,14 +1,28 @@
-# Visualization of Single-Cell Transcriptomics of Zebrafish Pigment Cells
+# Células de pigmentação de peixe-zebra
 
-## Navegação rápida
+Projeto académico de análise e visualização de transcriptómica de célula única, desenvolvido por **Diogo Esteves** no mestrado em Bioinformática da Universidade do Minho. O trabalho explora linhagens celulares e a expressão de marcadores associados à diferenciação das células de pigmentação.
 
-| Material | Ligação |
-| --- | --- |
-| Artigo final | [PDF](Artigo%20Final.pdf) |
-| Resultados e visualizações | [Results](Results/) |
-| Scripts de análise | [Scripts](Scripts/) |
-| Fontes do artigo | [LateX files](LateX%20files/) |
-| Entrega da primeira fase | [Phase 1](Phase%201/) |
+[**Ler o artigo final**](Artigo%20Final.pdf) · [Ver os resultados](Results/) · [Consultar os scripts](Scripts/)
+
+## Uma das visualizações
+
+<a href="Results/expression_of_genes_in_pigment_cells_over_time.png">
+<img src="Results/expression_of_genes_in_pigment_cells_over_time.png" alt="Gráfico de expressão média de genes em células de pigmentação ao longo do tempo" width="600">
+</a>
+
+*Expressão de genes ao longo do tempo — figura original do projeto. Abre a imagem para consultar as legendas em detalhe; o enquadramento e a interpretação estão no artigo.*
+
+## Explorar o trabalho
+
+- [Resultados](Results/): figuras de expressão génica, projeções UMAP e comparações entre tempos.
+- [Scripts e condições de reprodução](Scripts/): código em R e notebooks, com as dependências e os limites conhecidos.
+- [Apresentação](Apresenta%C3%A7%C3%A3o_Projeto_PG28935.pptx): entrega da segunda fase.
+- [Fontes do artigo](LateX%20files/) e [entrega da primeira fase](Phase%201/).
+
+As figuras e o artigo são os materiais históricos do trabalho. A análise não foi reexecutada nesta revisão da documentação; os scripts não constituem um ambiente de reprodução fechado.
+
+<details>
+<summary>Contexto académico e descrição original</summary>
 
 ## 1st year of Master Degree in Bioinformatics
 
@@ -58,3 +72,5 @@ I would like to express my gratitude to my advisor, David Henriques, for his sup
 - **Phase 1:** Contains the final files from phase 1 project delivery.
 - **Results:** Contains visualisation results of the analysis.
 - **Scripts:** Contains scripts used for data processing, analysis, and visualisation.
+
+</details>
