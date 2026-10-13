@@ -66,7 +66,7 @@ options(timeout = 1800) # 30 minutos
 # URLs e caminhos para os arquivos
 urls <- list(
   reference_cds = "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE202639&format=file&file=GSE202639%5Freference%5Fcds%2ERDS%2Egz",
-  Projeto_utils = "https://raw.githubusercontent.com/dasesteves/projeto/main/Projeto_utils.R",
+  Projeto_utils = "https://raw.githubusercontent.com/dasesteves/projeto/main/Scripts/Saunders%20Rep/data/Projeto_utils.R",
   zperturb_beta_bin_results_broadtype_clean = "https://github.com/cole-trapnell-lab/sdg-zfish/raw/main/data/zperturb_beta-bin_results_broadtype_clean.csv.gz",
   zperturb_all_broadtype_summary_merge = "https://github.com/cole-trapnell-lab/sdg-zfish/raw/main/data/zperturb-all_broadtype_summary_merge.csv.gz"
 )

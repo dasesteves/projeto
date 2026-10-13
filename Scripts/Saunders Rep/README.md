@@ -15,7 +15,7 @@ Read the saved [HTML output](Saunders_rep.html) to inspect the existing analysis
 
 The notebook uses this folder as its working directory, with `data/` for inputs and `output/` for generated figures. Ensure those directories and the required inputs exist before running the relevant chunks.
 
-The download block points to `Projeto_utils.R` at the repository root, while the file is stored at [data/Projeto_utils.R](data/Projeto_utils.R). Use the local copy at the path loaded by `source("data/Projeto_utils.R")`.
+The download block retrieves the helper from its existing repository path, `Scripts/Saunders Rep/data/Projeto_utils.R`, and saves it as [data/Projeto_utils.R](data/Projeto_utils.R). The notebook loads that local file with `source("data/Projeto_utils.R")`; an existing local copy is not downloaded again.
 
 ## Notes
 
