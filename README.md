@@ -10,7 +10,7 @@ Projeto académico de análise e visualização de transcriptómica de célula �
 <img src="Results/expression_of_genes_in_pigment_cells_over_time.png" alt="Visualização histórica de estimativas de um modelo para grupos celulares pigmentares, por gene e tempo" width="600">
 </a>
 
-*Figura histórica do projeto. O cálculo usa estimativas de um modelo beta-binomial; consulta a [origem e os limites desta figura](Results/README.md#origem-e-limites-desta-figura) antes de interpretar o título e os eixos originais.*
+*Figura histórica do projeto. O cálculo usa estimativas de um modelo beta-binomial; consulta a [origem e os limites desta figura](https://github.com/dasesteves/projeto/tree/main/Results#origem-e-limites-desta-figura) antes de interpretar o título e os eixos originais.*
 
 ## Explorar o trabalho
 
