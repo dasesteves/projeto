@@ -7,17 +7,18 @@ Projeto académico de análise e visualização de transcriptómica de célula �
 ## Uma das visualizações
 
 <a href="Results/expression_of_genes_in_pigment_cells_over_time.png">
-<img src="Results/expression_of_genes_in_pigment_cells_over_time.png" alt="Gráfico de expressão média de genes em células de pigmentação ao longo do tempo" width="600">
+<img src="Results/expression_of_genes_in_pigment_cells_over_time.png" alt="Visualização histórica de estimativas de um modelo para grupos celulares pigmentares, por gene e tempo" width="600">
 </a>
 
-*Expressão de genes ao longo do tempo — figura original do projeto. Abre a imagem para consultar as legendas em detalhe; o enquadramento e a interpretação estão no artigo.*
+*Figura histórica do projeto. O cálculo usa estimativas de um modelo beta-binomial; consulta a [origem e os limites desta figura](Results/#origem-e-limites-desta-figura) antes de interpretar o título e os eixos originais.*
 
 ## Explorar o trabalho
 
-- [Resultados](Results/): figuras de expressão génica, projeções UMAP e comparações entre tempos.
+- [Resultados](Results/): figuras históricas, projeções UMAP e comparações entre tempos, com uma nota de proveniência para a figura acima.
 - [Scripts e condições de reprodução](Scripts/): código em R e notebooks, com as dependências e os limites conhecidos.
-- [Apresentação](Apresenta%C3%A7%C3%A3o_Projeto_PG28935.pptx): entrega da segunda fase.
 - [Fontes do artigo](LateX%20files/) e [entrega da primeira fase](Phase%201/).
+
+A apresentação não está disponível: o ficheiro PPTX guardado contém apenas dois bytes e não é uma apresentação válida. Para consultar a entrega, usa o artigo final acima.
 
 As figuras e o artigo são os materiais históricos do trabalho. A análise não foi reexecutada nesta revisão da documentação; os scripts não constituem um ambiente de reprodução fechado.
 
@@ -67,7 +68,7 @@ I would like to express my gratitude to my advisor, David Henriques, for his sup
 
 ## Project Structure
 
-- **Apresentação_Projeto_PG28935.pptx:** Project presentation - 2nd phase delivery
+- **Apresentação_Projeto_PG28935.pptx:** Historical placeholder for the 2nd phase presentation; the two-byte file is not a valid PPTX.
 - **LateX files:** Contains LaTeX files and images for the final article.
 - **Phase 1:** Contains the final files from phase 1 project delivery.
 - **Results:** Contains visualisation results of the analysis.
