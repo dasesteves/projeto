@@ -8,6 +8,8 @@ To generate new outputs in a separate directory, follow the [reproduction workfl
 
 The time-specific UMAPs are independent projections: positions and distances across maps do not represent cell trajectories. The modern reproduction checks the calculation, without adding biological conclusions.
 
+For model estimates and cell-abundance variability, the [four-plot and table module](../reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular) explains reproduction and interpretation (in Portuguese). The new PNG and CSV files are generated in your chosen local folder; they are not part of this historical gallery.
+
 ## A historical visualization
 
 [![Model estimates for pigment cell groups, by gene and time](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)

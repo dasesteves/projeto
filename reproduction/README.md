@@ -121,6 +121,29 @@ de falha, consultar os logs; não considerar uma pasta parcial como válida.
 - `figures-tables/abundance-by-time.png` e `abundance-by-group.png`: CV da
   abundância e distribuição de `cv_test_stat`, com linhas de origem e medianas.
 
+### Encontrar e conferir as saídas
+
+Os PNG e CSV deste módulo **não estão disponíveis para abrir nesta página**:
+são criados no teu computador pelo comando acima. Com o exemplo apresentado,
+abre `C:/repro/estimates-abundance/figures-tables` no Explorador de Ficheiros.
+Os PNG abrem num visualizador de imagens; os CSV podem ser consultados num
+editor de texto ou numa folha de cálculo (separador vírgula, decimal ponto).
+Preservar `NA` como ausência, não como zero. Não guardar alterações sobre os
+CSV usados para a verificação.
+
+| Gráfico PNG | Tabela CSV para conferir | O que representa |
+| --- | --- | --- |
+| `estimates-by-time.png` | `estimates-by-time.csv` | Média de `estimate` por gene e tempo; 59 combinações observadas e 36 ausentes. |
+| `estimates-ranking.png` | `estimates-ranking-top10.csv` e `estimates-ranking-all.csv` | Ordenação pela média de todas as linhas selecionadas de cada gene. |
+| `abundance-by-time.png` | `abundance-selected-times.csv` | CV da abundância, ajuste e limites já fornecidos, em quatro tempos. |
+| `abundance-by-group.png` | `abundance-all-filtered.csv` e `abundance-group-summary.csv` | Distribuição de `cv_test_stat` e medianas das 64 classes. |
+
+Todos estes ficheiros ficam em `figures-tables`. `estimate-source-rows.csv`
+permite rastrear as médias; `source_row` conta as linhas de dados do CSV de
+origem a partir de 1, excluindo o cabeçalho. `log-scale-audit.csv` documenta a
+validade dos valores para as escalas logarítmicas. Confirma primeiro os estados
+`completed` e `passed` indicados acima; uma pasta parcial não é um resultado válido.
+
 **São estimativas e estatísticas fornecidas pelo estudo, não expressão génica
 medida nem novos resultados biológicos.** As 36 combinações gene/tempo ausentes
 ficam NA. O ranking pondera igualmente as linhas de origem, não os tempos.

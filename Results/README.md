@@ -8,6 +8,8 @@ Para gerar novas saídas numa pasta separada, segue o [percurso de reprodução]
 
 Os UMAPs por tempo são projeções independentes: posições e distâncias entre mapas não representam trajetórias celulares. A reprodução atual verifica o cálculo, não acrescenta conclusões biológicas.
 
+Para as estimativas e a variabilidade da abundância celular, o [módulo de quatro gráficos e tabelas](../reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular) explica a execução e a interpretação. Os novos PNG e CSV são gerados na pasta escolhida no teu computador; não estão nesta galeria histórica.
+
 ## Uma visualização histórica
 
 [![Estimativas de um modelo para grupos celulares pigmentares, por gene e tempo](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)
