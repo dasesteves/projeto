@@ -12,6 +12,8 @@ Para as estimativas e a variabilidade da abundância celular, o [módulo de quat
 
 As [contagens e mapas da referência](../reproduction/README.md#contagens-e-mapas-da-referência) têm um percurso próprio: os seis PNG e três CSV são gerados localmente em `reference-maps/figures-tables`, usando o destino dos exemplos. Desenham coordenadas pré-calculadas num fundo comum, ao contrário dos UMAPs recalculados separadamente por tempo. Não substituem as imagens abaixo, não reproduzem o boxplot por `Oligo` e não demonstram equivalência com as figuras históricas.
 
+O [boxplot por tempo e Oligo](../reproduction/README.md#boxplot-por-tempo-e-oligo) tem agora um módulo separado, incluindo a obtenção dos metadados: o CSV habitual não contém `Oligo`. Os dois PNG e cinco CSV são gerados no teu computador, em `oligo-run/figures-tables` no exemplo do guia. Começa por `boxplot-historical.png` e `filter-summary-by-time.csv`; `excluded-groups.csv` identifica as exclusões. O corte histórico de `log10(n)` entre 1,5 e 4,5 retira grupos antes de calcular os quartis, não é apenas zoom. A segunda figura permite comparar sem esse corte; nenhuma substitui o [boxplot histórico da galeria](fig2_reference_cells_boxplot.png).
+
 ## Uma visualização histórica
 
 [![Estimativas de um modelo para grupos celulares pigmentares, por gene e tempo](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)

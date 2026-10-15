@@ -12,6 +12,8 @@ For model estimates and cell-abundance variability, the [four-plot and table mod
 
 The [reference counts and maps](../reproduction/README.md#contagens-e-mapas-da-referência) have their own workflow (instructions in Portuguese): six PNG and three CSV files are generated locally in `reference-maps/figures-tables`, under the example output location. They draw precomputed coordinates on a common background, unlike UMAPs recalculated separately by time. They do not replace the images below, reproduce the `Oligo` boxplot or establish equivalence with the historical figures.
 
+The [time/Oligo boxplot](../reproduction/README.md#boxplot-por-tempo-e-oligo) now has a separate module, including metadata acquisition (instructions in Portuguese): the usual CSV does not contain `Oligo`. Its two PNG and five CSV files are generated on your computer, in `oligo-run/figures-tables` with the guide's example paths. Start with `boxplot-historical.png` and `filter-summary-by-time.csv`; `excluded-groups.csv` identifies exclusions. The historical `log10(n)` cut between 1.5 and 4.5 removes groups before quartiles are calculated; it is not just a zoom. The second figure provides a comparison without that cut; neither replaces the [historical boxplot in this gallery](fig2_reference_cells_boxplot.png).
+
 ## A historical visualization
 
 [![Model estimates for pigment cell groups, by gene and time](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)

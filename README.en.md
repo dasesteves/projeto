@@ -10,6 +10,8 @@ To generate the **four model-estimate and cell-abundance variability plots**, wi
 
 To count cells by time and draw coordinates already supplied by the study, use the [reference counts and maps module](reproduction/README.md#contagens-e-mapas-da-referência) (instructions in Portuguese). It generates six PNG and three CSV files locally. These maps share a common reference; they are not the UMAPs recalculated separately by time in the pigment-cell subset.
 
+To generate the [time/Oligo boxplot and verification tables](reproduction/README.md#boxplot-por-tempo-e-oligo), follow the separate workflow (instructions in Portuguese). It explains how to obtain the reference object containing `Oligo` (4.23 GB) and generates two figures and five tables locally, with the historical filters and a comparison without the scale cut. It requires no PCA/UMAP and does not replace the academic figure.
+
 ## Authorship and sources
 
 The final paper is co-authored by **Diogo Esteves and David Henriques**. David Henriques (CSIC IIM, Vigo) supervised the project, undertaken in the Project course with **Professor Miguel Rocha**.

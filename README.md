@@ -10,6 +10,8 @@ Para gerar os **quatro gráficos de estimativas e variabilidade da abundância**
 
 Para contar as células por tempo e desenhar as coordenadas já fornecidas pelo estudo, segue o [módulo de contagens e mapas de referência](reproduction/README.md#contagens-e-mapas-da-referência). Gera seis PNG e três CSV localmente. Estes mapas usam uma referência comum; não são os UMAPs recalculados por tempo no subconjunto pigmentar.
 
+Para gerar o [boxplot por tempo e Oligo e as tabelas de conferência](reproduction/README.md#boxplot-por-tempo-e-oligo), segue o percurso separado: explica como obter o objeto de referência que contém `Oligo` (4,23 GB) e gera localmente duas figuras e cinco tabelas, com os filtros históricos e uma comparação sem corte da escala. Não exige PCA/UMAP nem substitui a figura académica.
+
 ## Autoria e fontes
 
 O artigo final é assinado por **Diogo Esteves e David Henriques**. David Henriques (CSIC IIM, Vigo) orientou o projeto, realizado na unidade curricular de Projeto, com o professor **Miguel Rocha**.
