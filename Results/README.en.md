@@ -10,6 +10,8 @@ The time-specific UMAPs are independent projections: positions and distances acr
 
 For model estimates and cell-abundance variability, the [four-plot and table module](../reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular) explains reproduction and interpretation (in Portuguese). The new PNG and CSV files are generated in your chosen local folder; they are not part of this historical gallery.
 
+The [reference counts and maps](../reproduction/README.md#contagens-e-mapas-da-referência) have their own workflow (instructions in Portuguese): six PNG and three CSV files are generated locally in `reference-maps/figures-tables`, under the example output location. They draw precomputed coordinates on a common background, unlike UMAPs recalculated separately by time. They do not replace the images below, reproduce the `Oligo` boxplot or establish equivalence with the historical figures.
+
 ## A historical visualization
 
 [![Model estimates for pigment cell groups, by gene and time](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)

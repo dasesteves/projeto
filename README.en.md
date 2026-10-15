@@ -8,6 +8,8 @@ An academic project on single-cell transcriptomics analysis and visualization, d
 
 To generate the **four model-estimate and cell-abundance variability plots**, with auditable tables, follow the [dedicated module](reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular) (instructions in Portuguese). Outputs are created locally and do not replace the academic figures.
 
+To count cells by time and draw coordinates already supplied by the study, use the [reference counts and maps module](reproduction/README.md#contagens-e-mapas-da-referência) (instructions in Portuguese). It generates six PNG and three CSV files locally. These maps share a common reference; they are not the UMAPs recalculated separately by time in the pigment-cell subset.
+
 ## Authorship and sources
 
 The final paper is co-authored by **Diogo Esteves and David Henriques**. David Henriques (CSIC IIM, Vigo) supervised the project, undertaken in the Project course with **Professor Miguel Rocha**.

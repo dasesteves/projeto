@@ -8,6 +8,8 @@ Projeto académico de análise e visualização de transcriptómica de célula �
 
 Para gerar os **quatro gráficos de estimativas e variabilidade da abundância**, com tabelas verificáveis, segue o [módulo dedicado](reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular). As saídas são criadas localmente, sem substituir as figuras académicas.
 
+Para contar as células por tempo e desenhar as coordenadas já fornecidas pelo estudo, segue o [módulo de contagens e mapas de referência](reproduction/README.md#contagens-e-mapas-da-referência). Gera seis PNG e três CSV localmente. Estes mapas usam uma referência comum; não são os UMAPs recalculados por tempo no subconjunto pigmentar.
+
 ## Autoria e fontes
 
 O artigo final é assinado por **Diogo Esteves e David Henriques**. David Henriques (CSIC IIM, Vigo) orientou o projeto, realizado na unidade curricular de Projeto, com o professor **Miguel Rocha**.

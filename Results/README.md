@@ -10,6 +10,8 @@ Os UMAPs por tempo são projeções independentes: posições e distâncias entr
 
 Para as estimativas e a variabilidade da abundância celular, o [módulo de quatro gráficos e tabelas](../reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular) explica a execução e a interpretação. Os novos PNG e CSV são gerados na pasta escolhida no teu computador; não estão nesta galeria histórica.
 
+As [contagens e mapas da referência](../reproduction/README.md#contagens-e-mapas-da-referência) têm um percurso próprio: os seis PNG e três CSV são gerados localmente em `reference-maps/figures-tables`, usando o destino dos exemplos. Desenham coordenadas pré-calculadas num fundo comum, ao contrário dos UMAPs recalculados separadamente por tempo. Não substituem as imagens abaixo, não reproduzem o boxplot por `Oligo` e não demonstram equivalência com as figuras históricas.
+
 ## Uma visualização histórica
 
 [![Estimativas de um modelo para grupos celulares pigmentares, por gene e tempo](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)
