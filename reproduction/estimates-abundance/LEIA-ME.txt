@@ -1,0 +1,85 @@
+GRÁFICOS DAS ESTIMATIVAS E DA VARIABILIDADE DA ABUNDÂNCIA CELULAR
+Módulo separado — preparado e validado em 15 de outubro de 2026.
+
+Finalidade
+Reproduzir os cálculos e visualizações selecionados do notebook Saunders_rep.Rmd
+(linhas 169–278), sem modificar o trabalho académico nem recalcular os modelos
+estatísticos do estudo. São duas análises com universos diferentes: estimativas
+filtradas para grupos pigmentares e variabilidade de todas as classes elegíveis.
+
+Fonte e rastreabilidade
+Os dois CSV são lidos diretamente de Scripts/Saunders Rep/data
+na revisão 223879e301b4483f5d5f4666051a3452d6cda2b1 de dasesteves/projeto.
+source.json identifica a revisão, o notebook e os SHA-256 originais e
+normalizados (CRLF para LF). A verificação aceita apenas essa diferença de
+terminações de linha; não modifica os ficheiros. A atribuição é a
+Saunders e colaboradores; estas tabelas já constam do repositório académico.
+source_row identifica a posição da linha de dados no CSV original, contando de 1,
+sem contar o cabeçalho. Não é um identificador de célula individual.
+
+O que consultar
+1. figures-tables/estimates-by-time.png: médias de estimate por gene e tempo.
+   Tabela: estimates-by-time.csv. São 274 linhas de origem, 19 genes e 59 grupos
+   observados. As 36 combinações não observadas permanecem NA, não zero.
+   estimate-source-rows.csv permite conferir todas as linhas que contribuíram.
+2. figures-tables/estimates-ranking.png: dez maiores médias de estimate por gene.
+   Tabelas: estimates-ranking-all.csv e estimates-ranking-top10.csv.
+   Cada linha de origem tem o mesmo peso; não se calcula a média simples das
+   médias por tempo. Os tempos com mais linhas têm maior peso no total.
+   Empates seriam ordenados alfabeticamente; não existem neste conjunto.
+3. figures-tables/abundance-by-time.png: CV da abundância versus células por embrião,
+   nos tempos 20, 22, 24 e 42, com células por embrião > 3 (150 linhas).
+   abundance-selected-times.csv preserva os campos originais e explicita CV ±
+   erro-padrão e o limiar p < 0,05. O ajuste e os limites são os já fornecidos
+   em model_fit/model_fit_lower/model_fit_upper. A faixa não é aqui designada
+   intervalo de confiança, pois essa interpretação não foi verificada.
+   Não há novo ajuste nem teste estatístico. O limiar é nominal: não se afirma
+   que há correção por comparações múltiplas. As barras seguem a seleção do
+   notebook (apenas p < 0,05). log-scale-audit.csv verifica os valores positivos;
+   nenhuma barra selecionada foi excluída por limite inferior não positivo.
+4. figures-tables/abundance-by-group.png: distribuição de cv_test_stat por classe.
+   abundance-all-filtered.csv contém as 492 linhas elegíveis, abrangendo os
+   tempos existentes; abundance-group-summary.csv contém contagens e medianas
+   das 64 classes. Cada observação do boxplot é uma linha classe/tempo da tabela,
+   não uma célula nem uma réplica experimental independente.
+
+Interpretação e diferenças de apresentação
+Os gráficos das estimativas NÃO representam expressão génica medida nem um
+novo teste de expressão diferencial. Os gráficos de abundância NÃO representam
+variância da expressão génica. Não se inferem mecanismos, causalidade, novos
+marcadores ou significância biológica a partir destes gráficos.
+Preservaram-se filtros, médias e campos do notebook; corrigiram-se os rótulos
+para descrever as quantidades utilizadas. A figura temporal usa painéis por
+gene, escala vertical comum e espaçamento temporal numérico, em vez da
+apresentação histórica categórica. As linhas são guias visuais, não trajetórias
+celulares nem previsões para tempos não observados. Não se afirma identidade
+visual com as figuras académicas. Não foram calculadas barras de incerteza para
+as médias de estimate: a dispersão dessas linhas não foi tratada como erro
+experimental. Os grupos de abundância não estão limitados a pigmentação.
+
+Como executar
+Na pasta reproduction, depois de preparar o ambiente indicado no README:
+python estimates_abundance.py --rscript <Rscript.exe> --library <biblioteca> --output <destino-novo>
+Usar aspas nos caminhos com espaços. Não requer PCA, UMAP nem os seus dados.
+O comando verifica os hashes das duas tabelas e as 135 versões do ambiente,
+executa R e confere os resultados com Python. O destino tem de ser novo.
+Não instala nem descarrega nada e não modifica o repositório de origem.
+Ambiente validado: Windows, R 4.6.1, dplyr 1.2.1, tidyr 1.3.2, ggplot2 4.0.3.
+Os detalhes ficam em environment e figures-tables/session-info.txt.
+
+No destino, receipt.json deve indicar completed e figures-tables/validation.json
+passed. Em caso de falha, consultar execution.log, verification.log e environment;
+não usar saídas parciais. Após corrigir a causa, escolher um destino novo.
+O verificador usa apenas Python padrão; confere filtros, médias, grelha de
+NA, ranking, intervalos, medianas e contagens com tolerância 1e-12.
+Para o executar separadamente a partir de reproduction:
+python estimates-abundance/verify.py --input-dir "../Scripts/Saunders Rep/data" --output "<destino>/figures-tables"
+Os hashes das figuras/tabelas ficam em validation.json. source_row conta linhas
+de dados a partir de 1, excluindo o cabeçalho. Não identifica células individuais.
+
+Limites
+A conferência demonstra coerência dos cálculos com as duas tabelas fornecidas.
+Não revalida os modelos do estudo a partir dos dados brutos, a independência das
+observações, as hipóteses estatísticas ou as conclusões biológicas. Este conjunto
+não executa PCA/UMAP nem altera a população de células desse percurso.
+Este módulo preserva o artigo, os notebooks e os resultados académicos originais.

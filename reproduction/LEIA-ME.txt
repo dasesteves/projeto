@@ -124,3 +124,7 @@ não devem ser apresentados como reprodução das entradas verificadas.
 TESTES LEVES
   python -m unittest discover -s scripts -p "test_*.py"
 Consultar VALIDACAO.txt para o que foi efetivamente testado nesta distribuição.
+
+MÓDULO OPCIONAL DE GRÁFICOS DAS TABELAS
+Consultar a secção dedicada em README.md e estimates-abundance/LEIA-ME.txt.
+É independente da PCA/UMAP e usa os CSV já presentes no repositório.

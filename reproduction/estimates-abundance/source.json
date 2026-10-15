@@ -1,0 +1,14 @@
+{
+  "revision": "223879e301b4483f5d5f4666051a3452d6cda2b1",
+  "files": {
+    "zperturb_beta_bin_results_broadtype_clean.csv": "d933c7a483be5ba70b4f5c08428600be513c35fc8a23be23a1af4237c9b19eff",
+    "ref_broad_celltype_disps.csv": "c34946e8eff332902199ee21d96546a0cd7edefe3fca1bb1ab690fb1093066b6"
+  },
+  "source": "Scripts/Saunders Rep/Saunders_rep.Rmd:169-278",
+  "publication": false,
+  "original_byte_sha256": {
+    "zperturb_beta_bin_results_broadtype_clean.csv": "d933c7a483be5ba70b4f5c08428600be513c35fc8a23be23a1af4237c9b19eff",
+    "ref_broad_celltype_disps.csv": "e3b2552447b2e5f6958ea5920ddb895e54968a756d7d9bc514c2becb7b7672ff"
+  },
+  "hash_normalization": "CRLF to LF only"
+}

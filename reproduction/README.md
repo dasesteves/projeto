@@ -1,18 +1,27 @@
-# Reproduzir a agregação, a PCA e os UMAPs
+# Reproduzir a agregação, os gráficos das tabelas, a PCA e os UMAPs
 
 Este percurso separado executa uma parte delimitada da análise: agregação de
-estimativas do modelo, normalização, PCA global e UMAPs para 18, 24, 36, 48 e 72h.
+estimativas do modelo, gráficos das tabelas, normalização, PCA global e UMAPs
+para 18, 24, 36, 48 e 72h.
 Não substitui o artigo, os notebooks ou as figuras académicas, nem reproduz todos
 os métodos do projeto (por exemplo, Monocle e Slingshot).
+
+## Escolher o percurso
+
+- **Só os quatro gráficos e as tabelas:** seguir [esta secção](#gráficos-das-estimativas-e-da-abundância-celular).
+  Não exige a matriz de contagens, a PCA nem os UMAPs.
+- **Agregação, PCA e UMAPs:** seguir a sequência completa abaixo.
 
 ## Antes de começar
 
 - Windows x64 e Python 3.10 ou superior. O Python não é instalado por este conjunto.
 - Windows PowerShell (`powershell.exe`), usado para verificar a assinatura do R.
 - Internet para obter o instalador R, os pacotes e os dados públicos.
-- Memória e disco: validado num computador com 32 GB de RAM; o objeto R chega a
+- Memória e disco **do percurso PCA/UMAP**: validado num computador com 32 GB de RAM; o objeto R chega a
   cerca de 6 GB, além de memória temporária. Os downloads e dados descomprimidos
   ocupam cerca de 4 GB; reservar espaço adicional para R, biblioteca e resultados.
+  Estes valores não são requisitos mínimos dos gráficos das tabelas; não foi
+  medido um mínimo de memória para esse módulo.
 - Usar uma consola normal, sem privilégios de administrador. Escolher pastas
   novas fora do repositório. Os comandos recusam destinos existentes.
 
@@ -71,6 +80,55 @@ usar um destino novo apenas para a etapa falhada. Não é necessário repetir
 etapas anteriores que terminaram com sucesso. Se faltar uma versão no servidor,
 não instalar a mais recente como substituição: o hash tem de coincidir.
 
+## Gráficos das estimativas e da abundância celular
+
+Esta etapa é independente da PCA e dos UMAPs. Usa apenas os dois CSV já
+incluídos em `Scripts/Saunders Rep/data`, com hashes verificados; não precisa de
+descarregar as matrizes de contagens. Reutiliza o R e a biblioteca preparados
+acima. Manter a estrutura do projeto: não copiar apenas a pasta `reproduction`.
+
+**Se ainda não preparou o ambiente**, abrir o PowerShell na pasta `reproduction`
+e executar apenas estes comandos, um de cada vez (Python 3.10+ é necessário):
+
+```powershell
+python download_exact.py runtime --output C:/repro/installer
+python install_r_windows.py --installer C:/repro/installer/R-4.6.1-win.exe --output C:/repro/runtime
+python download_exact.py packages --output C:/repro/packages
+python restore_windows.py --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --archives C:/repro/packages --library C:/repro/library
+```
+
+Substituir `C:/repro` por uma pasta sua. Se R 4.6.1 já existe, omitir os dois
+primeiros comandos e usar esse `Rscript.exe`. Se a biblioteca isolada já estiver
+restaurada, reutilizá-la; não repetir downloads/restauros. Este módulo verifica
+as 135 versões do ambiente partilhado, embora use diretamente apenas uma parte
+dos pacotes. Não precisa de executar `download_exact.py data` nem `run.py`.
+A instalação do R tem os efeitos no registo do Windows descritos acima.
+
+Na pasta `reproduction`, executar:
+
+```powershell
+python estimates_abundance.py --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --output C:/repro/estimates-abundance
+```
+
+O comando verifica as versões, gera quatro PNG e as tabelas CSV e confere os
+cálculos independentemente com Python. Usar uma pasta de destino nova. Em caso
+de falha, consultar os logs; não considerar uma pasta parcial como válida.
+
+- `receipt.json`: deve indicar `completed`.
+- `figures-tables/validation.json`: deve indicar `passed`.
+- `figures-tables/estimates-by-time.png` e `estimates-ranking.png`: médias do
+  campo `estimate`, com tabelas por gene/tempo e ranking verificável.
+- `figures-tables/abundance-by-time.png` e `abundance-by-group.png`: CV da
+  abundância e distribuição de `cv_test_stat`, com linhas de origem e medianas.
+
+**São estimativas e estatísticas fornecidas pelo estudo, não expressão génica
+medida nem novos resultados biológicos.** As 36 combinações gene/tempo ausentes
+ficam NA. O ranking pondera igualmente as linhas de origem, não os tempos.
+A abundância abrange todas as classes elegíveis, não apenas pigmentação.
+Nenhum modelo é reajustado; os limites da faixa vêm da tabela e o limiar de p
+é nominal. As figuras são novas apresentações, não substituições das académicas.
+[Interpretação, rastreabilidade e limites completos](estimates-abundance/LEIA-ME.txt).
+
 ## Evidência e limites
 
 O percurso foi executado com R 4.6.1, 135 versões de pacotes fixadas, downloads
@@ -91,4 +149,6 @@ ou autoria dos dados é atribuída por este conjunto.
 
 Detalhes: [instruções completas](LEIA-ME.txt), [validação](VALIDACAO.txt),
 [versões](versions.csv), [origens e hashes dos dados](data-downloads.json).
-Os dados, instaladores, bibliotecas e saídas não estão incluídos no repositório.
+As matrizes grandes descarregadas, os instaladores, as bibliotecas e as saídas
+não estão incluídos neste conjunto. Os dois CSV das estimativas e da abundância
+já pertencem ao repositório académico e são reutilizados sem alteração.

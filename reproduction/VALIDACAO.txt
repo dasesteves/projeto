@@ -47,3 +47,12 @@ incluindo 1323 sem tempo. Continua sem teste numa máquina/VM limpa.
 
 Os originais académicos foram novamente comparados com a revisão Git de origem.
 Nada publicado, nenhum commit ou push.
+
+MÓDULO DE ESTIMATIVAS/ABUNDÂNCIA — VALIDAÇÃO LOCAL
+Executado pelo comando estimates_abundance.py numa cópia extraída do Git.
+135 versões verificadas; quatro PNG e todos os CSV iguais byte a byte à
+entrega local anterior. Verificação independente aprovada (tolerância 1e-12).
+Recusa de destino existente confirmada. Fontes LF/CRLF aceites após
+normalização explícita apenas das terminações de linha para conferir hashes.
+A evidência limita-se às tabelas fornecidas; sem novos modelos/biologia.
+Validação anterior à integração; originais académicos preservados.
