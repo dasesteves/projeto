@@ -1,0 +1,677 @@
+[
+  {
+    "file": "abind_1.4-8.zip",
+    "sha256": "36386ba050ad3851303801fd7b2c15368ae2dfe80a013a310c7e9fc083f09754",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/abind_1.4-8.zip"
+  },
+  {
+    "file": "askpass_1.2.1.zip",
+    "sha256": "97eeafe4ef25a7715a5df194251f18d4f66604c2c979e2357fd049b124f8d433",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/askpass_1.2.1.zip"
+  },
+  {
+    "file": "base64enc_0.1-6.zip",
+    "sha256": "546152c4598bf8e108f1154d27c0b5ef927318a31ca71b336c7ede22bb04dab8",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/base64enc_0.1-6.zip"
+  },
+  {
+    "file": "BH_1.90.0-1.zip",
+    "sha256": "3cf2fd28be791a89e6bed19c5750afd758bfd8acb45db50089b18f154a3eebda",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/BH_1.90.0-1.zip"
+  },
+  {
+    "file": "bitops_1.1-0.zip",
+    "sha256": "aaae02c37d8b1f32a2ac1d11462b58be1d87818460d00c7dd7d105074b8521dd",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/bitops_1.1-0.zip"
+  },
+  {
+    "file": "bslib_0.12.0.zip",
+    "sha256": "267cd16d70fbaddd0785bc18063f678080659a9334159b806527ff96fb75effd",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/bslib_0.12.0.zip"
+  },
+  {
+    "file": "cachem_1.1.0.zip",
+    "sha256": "b8dad3d6801c9e53baa94a57f7e0769f3535a406a5e33575f21319d92c8c1c85",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/cachem_1.1.0.zip"
+  },
+  {
+    "file": "caTools_1.18.4.zip",
+    "sha256": "70467687aecbff459218bb291b7504544ac02fe621d8ee96762b1d895a2714ee",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/caTools_1.18.4.zip"
+  },
+  {
+    "file": "cli_3.6.6.zip",
+    "sha256": "7574eb3ff4a42c0a713d79a5ac30ef899b57eef2d17011e8ce83771eb84dc166",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/cli_3.6.6.zip"
+  },
+  {
+    "file": "commonmark_2.0.0.zip",
+    "sha256": "66c528a6d8402a02dc05fa8e778bd9d795ba39c4e9f427f843509d9473c4eac0",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/commonmark_2.0.0.zip"
+  },
+  {
+    "file": "cowplot_1.2.0.zip",
+    "sha256": "919deb77be658b768647836503b689e06ec0c8bc282b1bb4e3114d6137b9745d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/cowplot_1.2.0.zip"
+  },
+  {
+    "file": "cpp11_0.5.5.zip",
+    "sha256": "b88b174bc6aa506b207f080590b69dfa93b856dbe185efe09861dd61427ed444",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/cpp11_0.5.5.zip"
+  },
+  {
+    "file": "crosstalk_1.2.2.zip",
+    "sha256": "4e41f4a4c747145803021550189e5c728079368854f7683660c8174cc321da6d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/crosstalk_1.2.2.zip"
+  },
+  {
+    "file": "curl_8.0.0.zip",
+    "sha256": "4a94cacf65a2c0b4c5ae96555901b78da975019037a62b29fc34a047ebd049e5",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/curl_8.0.0.zip"
+  },
+  {
+    "file": "data.table_1.18.6.1.zip",
+    "sha256": "917503de4212280a0720fd9b7776579b63dc9e0d48f3fff1b4e176b5b083c91d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/data.table_1.18.6.1.zip"
+  },
+  {
+    "file": "deldir_2.0-4.zip",
+    "sha256": "bb9479a1a897b30bd45e3b65916ee130899f8e95d58462f02bf1adf738463c01",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/deldir_2.0-4.zip"
+  },
+  {
+    "file": "digest_0.6.39.zip",
+    "sha256": "906c7903649838f80f6aa96ed6e9af2039901c9f210c3dba1e0b421ac9cd8092",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/digest_0.6.39.zip"
+  },
+  {
+    "file": "dotCall64_1.2.zip",
+    "sha256": "4db886b54a25592c09c875fb17301ebbdb2980369dfa45b2bed62b516492a68c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/dotCall64_1.2.zip"
+  },
+  {
+    "file": "dplyr_1.2.1.zip",
+    "sha256": "e85c08bbe784a67764dd14e4af6e719798ae42885f0583d8fedb0ff8cd347009",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/dplyr_1.2.1.zip"
+  },
+  {
+    "file": "dqrng_0.4.1.zip",
+    "sha256": "1a81cf7300bbba294fcf72a14bc038c9150fd15d56b2862550daccfe36dd102f",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/dqrng_0.4.1.zip"
+  },
+  {
+    "file": "evaluate_1.0.5.zip",
+    "sha256": "0a2f45dfb4840f01c02f2d9ed5fbae0d4a18becc833a37970019b84eb620d5f6",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/evaluate_1.0.5.zip"
+  },
+  {
+    "file": "farver_2.1.2.zip",
+    "sha256": "21ce5269957fb12930c8f3db7d6c5c0926a2bab4a8c25e4b9c272b1f92a56175",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/farver_2.1.2.zip"
+  },
+  {
+    "file": "fastDummies_1.7.6.zip",
+    "sha256": "89c77127b82aedf48b7d5087970e90c97642fc6a2d089c8bc81cb7e87b929006",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/fastDummies_1.7.6.zip"
+  },
+  {
+    "file": "fastmap_1.2.0.zip",
+    "sha256": "0c9a1f758bd753de38774355b247cff639c72fc3ed32dc5520980af96d568307",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/fastmap_1.2.0.zip"
+  },
+  {
+    "file": "fitdistrplus_1.2-6.zip",
+    "sha256": "d0f9dc348ffc4c5609f12a00e981d17201139203556bf55dcb95dd6d907d5c22",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/fitdistrplus_1.2-6.zip"
+  },
+  {
+    "file": "FNN_1.1.4.1.zip",
+    "sha256": "c7104e3a7fa6f58c7d5f228e821eff41786685f2fa476564115732756bb59860",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/FNN_1.1.4.1.zip"
+  },
+  {
+    "file": "fontawesome_0.5.3.zip",
+    "sha256": "ee8dafa84744ed56add134e60acd5dc2f4b87318503abb2a98ed6f78921e90c1",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/fontawesome_0.5.3.zip"
+  },
+  {
+    "file": "fs_2.1.0.zip",
+    "sha256": "fe0f6a024f3f59f2e4d5f2c8875ed37c986e07e56cac26383b4341a29d5f6f51",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/fs_2.1.0.zip"
+  },
+  {
+    "file": "future_1.76.0.zip",
+    "sha256": "ed5ed14f85fa088b93ccddabf4881122b3e7f37e605aa94bc029ae5b8fc773e4",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/future_1.76.0.zip"
+  },
+  {
+    "file": "future.apply_1.20.2.zip",
+    "sha256": "82f6fdfc1f8297d4e691c97385d8a905bbbf3f38376726492570775bc181d16a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/future.apply_1.20.2.zip"
+  },
+  {
+    "file": "generics_0.1.4.zip",
+    "sha256": "1ed5a6a6f92780e9e004784cce71bd919b2386068ae2312ff52e334de3536762",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/generics_0.1.4.zip"
+  },
+  {
+    "file": "ggplot2_4.0.3.zip",
+    "sha256": "8f7e23885aeabcf6db0e671c9c0013473cb05d63ba81e30bf2f450397ffd9687",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/ggplot2_4.0.3.zip"
+  },
+  {
+    "file": "ggrepel_0.9.8.zip",
+    "sha256": "55db9be00730f76786ab05bc69b4c218038a99953fd0a2b8ae05c7dfa1c992de",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/ggrepel_0.9.8.zip"
+  },
+  {
+    "file": "ggridges_0.5.7.zip",
+    "sha256": "1467632b3606295af9f9722dcd13293f3586fc790585682122ef5e6d7225744a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/ggridges_0.5.7.zip"
+  },
+  {
+    "file": "globals_0.20.0.zip",
+    "sha256": "33dc4403c962658324975e151b64cb3e5109eaa7dfb174f0e0e8865cf424adb7",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/globals_0.20.0.zip"
+  },
+  {
+    "file": "glue_1.8.1.zip",
+    "sha256": "422f5c2898986aec3a4ecddb4206400f3e5627c27a106a584a09573c382b7b55",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/glue_1.8.1.zip"
+  },
+  {
+    "file": "goftest_1.2-3.zip",
+    "sha256": "ca586698a7814bda5d33153ae36ac7a4def9fc61f071d7a330a5dc43e9ec19fd",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/goftest_1.2-3.zip"
+  },
+  {
+    "file": "gplots_3.3.0.zip",
+    "sha256": "19277caa1730a0c0abe48dd782f4ecb48ade82e4a180fd0288ca12097ef4a5b0",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/gplots_3.3.0.zip"
+  },
+  {
+    "file": "gridExtra_2.3.1.zip",
+    "sha256": "d7483d09b8e7bf2f173dfb8de602ad3c785c34233ed978b956f5d2fefe807e05",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/gridExtra_2.3.1.zip"
+  },
+  {
+    "file": "gtable_0.3.6.zip",
+    "sha256": "6a65d53640013fff173ed06a84142a6034af403cdabe5402100488c584143a5b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/gtable_0.3.6.zip"
+  },
+  {
+    "file": "gtools_3.9.5.zip",
+    "sha256": "ba2b269dcf30ae2de3822f136f4b5220f73ca79ccee7d4f887f0358671a8b558",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/gtools_3.9.5.zip"
+  },
+  {
+    "file": "here_1.0.2.zip",
+    "sha256": "06c1b3f6a4f8778d6d76cb173cbea6ee705def7284419d3f48f75a78ec62cefb",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/here_1.0.2.zip"
+  },
+  {
+    "file": "highr_0.12.zip",
+    "sha256": "c52695ec824b2d2174a8036ee72f4f16d02b66a362d53f7135afdbc39744d42e",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/highr_0.12.zip"
+  },
+  {
+    "file": "htmltools_0.5.9.zip",
+    "sha256": "84e212226e7e06125d8230f68916c809e51ae9993080f479340ea1555b08a739",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/htmltools_0.5.9.zip"
+  },
+  {
+    "file": "htmlwidgets_1.6.4.zip",
+    "sha256": "f5bd086df5ca1e49f6bebc0275153a4f86bce5d4b480aa5aeddea78bf3031982",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/htmlwidgets_1.6.4.zip"
+  },
+  {
+    "file": "httpuv_1.6.17.zip",
+    "sha256": "e167d6d4f094b8a46f44cd49d24b53f6832b64b5a7755b7ecba697dcce579eba",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/httpuv_1.6.17.zip"
+  },
+  {
+    "file": "httr_1.4.9.zip",
+    "sha256": "5dddf3c4fc2271ad9b4cb8267cbe4aedcdd3790845325afb6defeb9e0dc15691",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/httr_1.4.9.zip"
+  },
+  {
+    "file": "ica_1.0-3.zip",
+    "sha256": "b3323ebebac5bbb005866d8155e81ae54827ffa9a448d1ca01debf1c981790ec",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/ica_1.0-3.zip"
+  },
+  {
+    "file": "igraph_2.3.4.zip",
+    "sha256": "04767b4c0ea6d1928e67622f75b0c76cbe68fd7299f346e41b142f54540e261c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/igraph_2.3.4.zip"
+  },
+  {
+    "file": "irlba_2.4.1.zip",
+    "sha256": "4adc5f9678b975d432c624b67d9161a51389719054d0c4f4cafb4ba58105bef7",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/irlba_2.4.1.zip"
+  },
+  {
+    "file": "isoband_0.3.0.zip",
+    "sha256": "78ac840de97c475661c8c6677662bc3435fe00489fb7bb6109aa038d12487c94",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/isoband_0.3.0.zip"
+  },
+  {
+    "file": "jquerylib_0.1.4.zip",
+    "sha256": "ffe9a088b1cc158693052d8245aec76db465818911cea0deae3cdf59d28d5a3c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/jquerylib_0.1.4.zip"
+  },
+  {
+    "file": "jsonlite_2.0.0.zip",
+    "sha256": "806383ff910e5236b5158ab8efbddc92c183dde12d423423fafad39bf6324c92",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/jsonlite_2.0.0.zip"
+  },
+  {
+    "file": "knitr_1.52.zip",
+    "sha256": "1f6bc03160fd97e42e97b8fa0042b3acc10b8c86ab95485336b05f880146c98d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/knitr_1.52.zip"
+  },
+  {
+    "file": "labeling_0.4.3.zip",
+    "sha256": "a5d4772de28813c6730a37e5a4b9605cf1b941344a319e56af7bacf4680ea82e",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/labeling_0.4.3.zip"
+  },
+  {
+    "file": "later_1.4.8.zip",
+    "sha256": "b983375177f86ca0446c894b61417735a14f582d93868be0599433e31f9d9b1d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/later_1.4.8.zip"
+  },
+  {
+    "file": "lazyeval_0.2.3.zip",
+    "sha256": "4c5510e0025604a9c248b48dd7a3b3227b942a5961280aa93afcc4b95fb1da41",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/lazyeval_0.2.3.zip"
+  },
+  {
+    "file": "lifecycle_1.0.5.zip",
+    "sha256": "ce1c81b8970e567db2874a37adf517cb987adbed77a763760f98014bc6a850a5",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/lifecycle_1.0.5.zip"
+  },
+  {
+    "file": "listenv_1.1.0.zip",
+    "sha256": "fb3e47382a5b66771c2773b7f48bd42091cb062f23a5b0e9cc27ed56e210335a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/listenv_1.1.0.zip"
+  },
+  {
+    "file": "lmtest_0.9-40.zip",
+    "sha256": "4a4c3398c909a009f7d84b0f7ccf0617d34767751e2436050d05d15ce474a3a8",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/lmtest_0.9-40.zip"
+  },
+  {
+    "file": "magrittr_2.0.5.zip",
+    "sha256": "2e0a97ae6a03eb2a9f31874bc378813f51ff42036cdadf8155f6465f722f2e74",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/magrittr_2.0.5.zip"
+  },
+  {
+    "file": "matrixStats_1.5.0.zip",
+    "sha256": "71691e5d99fbcf71b1a2c501b0257c179cdcda894e1c7ef56f2afe50f690db59",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/matrixStats_1.5.0.zip"
+  },
+  {
+    "file": "memoise_2.0.1.zip",
+    "sha256": "60477b1cd280953e0e3df306e9b5b5e01bd6139744feb0c9d262886ef4585dea",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/memoise_2.0.1.zip"
+  },
+  {
+    "file": "mime_0.13.zip",
+    "sha256": "aebf2a458ec548692cb113d07e7aea47efb646d1430e47ed7b0105bb28f1a75d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/mime_0.13.zip"
+  },
+  {
+    "file": "miniUI_0.1.2.zip",
+    "sha256": "023a18f658a7d5a3e4896d788d6d7752efb4a40bd5ba318155db1bbea48c42a9",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/miniUI_0.1.2.zip"
+  },
+  {
+    "file": "openssl_2.4.2.zip",
+    "sha256": "6f733ad08f8678374c1be1a53a4a5b8c1112874e427ccf2849eb6d8e262cb772",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/openssl_2.4.2.zip"
+  },
+  {
+    "file": "otel_0.2.0.zip",
+    "sha256": "91bcd5df56e921ba9c44c14b805068e7bdb047d06f785affc20487f1ddfdefbb",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/otel_0.2.0.zip"
+  },
+  {
+    "file": "parallelly_1.48.0.zip",
+    "sha256": "bd65ecf8a0c684b8f75a37a0661f969a62bef798e53e07362dc22bb412f6c3db",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/parallelly_1.48.0.zip"
+  },
+  {
+    "file": "patchwork_1.3.2.zip",
+    "sha256": "342173511784b21d2097f40db2204cb0c2770ae82ac6cfc91d02cb4d9df4b216",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/patchwork_1.3.2.zip"
+  },
+  {
+    "file": "pbapply_1.7-5.zip",
+    "sha256": "563829331e7bdf76b429ff628a7cede832dcbdb8bd8a0b7bb982044e4541891a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/pbapply_1.7-5.zip"
+  },
+  {
+    "file": "pillar_1.11.1.zip",
+    "sha256": "e6825527412c73cc2b8f5cc7f2e220ef1591464832c565ba2c42eab46d8689f6",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/pillar_1.11.1.zip"
+  },
+  {
+    "file": "pkgconfig_2.0.3.zip",
+    "sha256": "7a103e1e55bf93bec3459436c22e9e3b70791ab6cb430534d36a112394d7b174",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/pkgconfig_2.0.3.zip"
+  },
+  {
+    "file": "plotly_4.12.1.zip",
+    "sha256": "ae1d24d396c81f8bc5a2a7d71727f0af47c768a7c940785a698bfa9c7fb9c2b6",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/plotly_4.12.1.zip"
+  },
+  {
+    "file": "plyr_1.8.9.zip",
+    "sha256": "e440a4de7926243e99da7980efe7ba824440edfcc8662c9714306316b29b29ef",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/plyr_1.8.9.zip"
+  },
+  {
+    "file": "png_0.1-9.zip",
+    "sha256": "bd070cbf5c61b294aa6ddf17eb2df92ababeadb5a37a63cdd8a03e45b82043d0",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/png_0.1-9.zip"
+  },
+  {
+    "file": "polyclip_1.10-7.zip",
+    "sha256": "cab2e1d1e68d149cb3705638f672b091418d3e3e1486d9aac7ed8cf52ad5d13e",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/polyclip_1.10-7.zip"
+  },
+  {
+    "file": "progressr_1.0.0.zip",
+    "sha256": "9cd33175f5eb54d24394988f15cf8f698d2220045ae215651e51162fc3359868",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/progressr_1.0.0.zip"
+  },
+  {
+    "file": "promises_1.5.0.zip",
+    "sha256": "abd8369709f702f1f547d113ed4a4d029756b896fa7c8222e37137ae181cd886",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/promises_1.5.0.zip"
+  },
+  {
+    "file": "purrr_1.2.2.zip",
+    "sha256": "eb4feee85e14988a4bafcea37842dcad91af5cc3079711ba63f54d5a198d81a1",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/purrr_1.2.2.zip"
+  },
+  {
+    "file": "R6_2.6.1.zip",
+    "sha256": "a8fc4618b13432cb636c881ec7bc6c4919695c8cbe7913def270502a4ce8d67b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/R6_2.6.1.zip"
+  },
+  {
+    "file": "RANN_2.6.3.zip",
+    "sha256": "29b3c8cb7f8d3ef0b5cf0df8e812275519c9b6756ff2db85cad7ce3e76a0fae2",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RANN_2.6.3.zip"
+  },
+  {
+    "file": "rappdirs_0.3.4.zip",
+    "sha256": "028464d90bf809f8a94f5fd155e4ed222548352dcf1bf71a2ab6b8ef709b7db5",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/rappdirs_0.3.4.zip"
+  },
+  {
+    "file": "RColorBrewer_1.1-3.zip",
+    "sha256": "b8880e323f75149e90e0300684626a3de0692523a972932b27b7474dfa6beac7",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RColorBrewer_1.1-3.zip"
+  },
+  {
+    "file": "Rcpp_1.1.2.zip",
+    "sha256": "ddcb20dd29d114524ccd617a5b79a4d6b88ac12bb286b1d1383f47dd2bc0ae4b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/Rcpp_1.1.2.zip"
+  },
+  {
+    "file": "RcppAnnoy_0.0.23.zip",
+    "sha256": "d3d246dc5ce22abc5725098be004f598ff05adbb69c6115f64676b383b83dc72",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppAnnoy_0.0.23.zip"
+  },
+  {
+    "file": "RcppArmadillo_15.6.0-1.zip",
+    "sha256": "d88eeabab9ce320ee7e784656053aebaa1700249b529fa78320903f372676da3",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppArmadillo_15.6.0-1.zip"
+  },
+  {
+    "file": "RcppEigen_0.3.4.0.2.zip",
+    "sha256": "f2f802065d2766ff784c087dfa98d966ce4a86d589c5e70e1deccdda7b869d92",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppEigen_0.3.4.0.2.zip"
+  },
+  {
+    "file": "RcppHNSW_0.7.0.zip",
+    "sha256": "a9e5bbdc15c4159f27a58c2140d2612bd36e539ef1f6fd8a1b2214827586692c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppHNSW_0.7.0.zip"
+  },
+  {
+    "file": "RcppProgress_0.4.2.zip",
+    "sha256": "f8f89cf604c541bc5242697584b9045718e36a18decf2cae307ba572f879788b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppProgress_0.4.2.zip"
+  },
+  {
+    "file": "RcppThread_2.4.0.zip",
+    "sha256": "5219963c96fcbaab8448c210a18bb36273616cb84b0c323e878749f73b0077cd",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppThread_2.4.0.zip"
+  },
+  {
+    "file": "RcppTOML_0.2.3.zip",
+    "sha256": "3a1cd26f77125d765191dc4eb55e6a248136f7ef7b53bc5125a3a904d44871c4",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RcppTOML_0.2.3.zip"
+  },
+  {
+    "file": "reshape2_1.4.5.zip",
+    "sha256": "381427a1dabe400404f647b7e324a8d2120e700e695474e16c0bd9b860071610",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/reshape2_1.4.5.zip"
+  },
+  {
+    "file": "reticulate_1.47.0.zip",
+    "sha256": "aeb75113ae47d0d3ed88f7872d1e7268c028d98c1df27a8c4c0a170e28d35cf6",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/reticulate_1.47.0.zip"
+  },
+  {
+    "file": "rlang_1.3.0.zip",
+    "sha256": "0dd01d7a9ab44dc7dea60d9742d06addb430224d38ecc96d12bc0a4f4ba29b8c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/rlang_1.3.0.zip"
+  },
+  {
+    "file": "rmarkdown_2.32.zip",
+    "sha256": "1acb4b7718bb3d700ff32410845b91a0f8fba9d67e768dc2d052f3c2d183e1ca",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/rmarkdown_2.32.zip"
+  },
+  {
+    "file": "ROCR_1.0-12.zip",
+    "sha256": "1f474e5dd00c10eb30098836af9b55b40c5ebc3ebee0b19291acfd0cada26bd6",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/ROCR_1.0-12.zip"
+  },
+  {
+    "file": "rprojroot_2.1.1.zip",
+    "sha256": "a7576a089f8f161a26430a9f8b14f4e74f0410267c7ec7a7f4b1049615e8480a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/rprojroot_2.1.1.zip"
+  },
+  {
+    "file": "RSpectra_0.16-2.zip",
+    "sha256": "d0b05d01cefb50c7703994e418bd43b0818692cbff8bedcb6b350ad19f04e17b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/RSpectra_0.16-2.zip"
+  },
+  {
+    "file": "Rtsne_0.17.zip",
+    "sha256": "452e80be7de3f91d24d58b29afc06ec71fc71f868a5ea7da97f5585c8aaedb4b",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/Rtsne_0.17.zip"
+  },
+  {
+    "file": "S7_0.2.2.zip",
+    "sha256": "419d0d5f4abf9030eb6b6b3e4d133afb5b3825904e0afc064e404d4e68c18d52",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/S7_0.2.2.zip"
+  },
+  {
+    "file": "sass_0.4.10.zip",
+    "sha256": "ccbe4f78f781cbfa6b78422f1ef6e316cfe060b1f797405a982082f2553c7f80",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sass_0.4.10.zip"
+  },
+  {
+    "file": "scales_1.4.0.zip",
+    "sha256": "63188bffb2a97e386d70005a60032ea4216351b6643dbc03957c7c6a19727ba9",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/scales_1.4.0.zip"
+  },
+  {
+    "file": "scattermore_1.2.zip",
+    "sha256": "3292f83c89e37765ab4af80689c4069966dda520c1faa5b7f875f0f4adbabca7",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/scattermore_1.2.zip"
+  },
+  {
+    "file": "sctransform_0.4.3.zip",
+    "sha256": "08feba9aa404b5a71d5a192bc8e7e0cedd30e95ca4b4d7abc01cbf8c34ffba06",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sctransform_0.4.3.zip"
+  },
+  {
+    "file": "Seurat_5.6.0.zip",
+    "sha256": "c7a5cdb36784fb64e790f8c062b09eabce6431c891273a6c62a8d8a621d69a12",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/Seurat_5.6.0.zip"
+  },
+  {
+    "file": "SeuratObject_5.4.0.zip",
+    "sha256": "0b41eae60d306e5444b38f3a4bf00cb4cc55690d06183f7f892dda4840ae48c2",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/SeuratObject_5.4.0.zip"
+  },
+  {
+    "file": "shiny_1.14.0.zip",
+    "sha256": "31f428c7205f5746ce3368e0d3b395ceb4d4f80458de60d8586e2515d1e829e8",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/shiny_1.14.0.zip"
+  },
+  {
+    "file": "sitmo_2.0.2.zip",
+    "sha256": "15fccd958878421c8fe35df4f231adc504ecd392bf7fff61fb533265ef95f277",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sitmo_2.0.2.zip"
+  },
+  {
+    "file": "sourcetools_0.1.7-2.zip",
+    "sha256": "122ffc6d1bf4d551de9685e414a41f3b915936af4718dfc6a6de393a4eef8215",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sourcetools_0.1.7-2.zip"
+  },
+  {
+    "file": "sp_2.2-4.zip",
+    "sha256": "469a695321b080b98a1046d565d1fb4b764bd71d741037c4a8a8228a3d9b383e",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sp_2.2-4.zip"
+  },
+  {
+    "file": "spam_2.11-4.zip",
+    "sha256": "3d130b27c6033f0b0a8aff3a1e97761e426fe4656a4f11cb76cf1773ae96eb4a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spam_2.11-4.zip"
+  },
+  {
+    "file": "spatstat.data_3.1-9.zip",
+    "sha256": "4b4e856f8e6a9f17ffa900738e61af45d393137af59ce6714b26af5724b5ce47",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.data_3.1-9.zip"
+  },
+  {
+    "file": "spatstat.explore_3.8-3.zip",
+    "sha256": "fbf3631cbcd4996880defe405760ee62a9153c8f53963f7d8688874987fbbc37",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.explore_3.8-3.zip"
+  },
+  {
+    "file": "spatstat.geom_3.8-3.zip",
+    "sha256": "174a875609112e0b19829316e2dd9c2f8f2469d06bda8ca3d1a7a03e21bf69c3",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.geom_3.8-3.zip"
+  },
+  {
+    "file": "spatstat.random_3.5-2.zip",
+    "sha256": "5b8b8ee5ac16db173c5910a12d8be43d81e4e8fa98c45597d47b3e4a180a7aae",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.random_3.5-2.zip"
+  },
+  {
+    "file": "spatstat.sparse_3.2-0.zip",
+    "sha256": "ba25dbdf2697bc21b069ebc442b72020e31ee4a04bad1939a2d9f6803ad76cec",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.sparse_3.2-0.zip"
+  },
+  {
+    "file": "spatstat.univar_3.2-0.zip",
+    "sha256": "c67c5c595a26dfeb307918f5c217e774daa4c93629717c5364f9f892e825c1f3",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.univar_3.2-0.zip"
+  },
+  {
+    "file": "spatstat.utils_3.2-5.zip",
+    "sha256": "0516100046d1c911d0c58799a74c29b26b144cd8bffd5ddad6c691f568b45905",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/spatstat.utils_3.2-5.zip"
+  },
+  {
+    "file": "stringi_1.8.9.zip",
+    "sha256": "9efc015dda4622aab581fb6f98f434f4f7e30cbcf7b69fe73f3468d09308ff33",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/stringi_1.8.9.zip"
+  },
+  {
+    "file": "stringr_1.6.0.zip",
+    "sha256": "d14a8950758b95f7a6d723628dfa29729c50bab1f9f3d4a4d7be1af2a29e5b14",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/stringr_1.6.0.zip"
+  },
+  {
+    "file": "sys_3.4.3.zip",
+    "sha256": "6b8def05ad6f70a6df8d8e4892c602fe31b5f04fcb59968585ab32d49c203801",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/sys_3.4.3.zip"
+  },
+  {
+    "file": "tensor_1.5.1.zip",
+    "sha256": "c78cee0a6556ff1dd23cdbd168ce9889f80e02c8fccef6c6215567622a81e9b5",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/tensor_1.5.1.zip"
+  },
+  {
+    "file": "tibble_3.3.1.zip",
+    "sha256": "da9374df6f4950f4b7484e5dc4b883ca59ba86ecee190a7eef2f8b17a7776802",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/tibble_3.3.1.zip"
+  },
+  {
+    "file": "tidyr_1.3.2.zip",
+    "sha256": "2a32dffd9094efe883f94b0919c90af962d6862e05a3192c8f4edee5bc9921d4",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/tidyr_1.3.2.zip"
+  },
+  {
+    "file": "tidyselect_1.2.1.zip",
+    "sha256": "f132cc20fa00e1c059e379ad147ad03a541b7fad42b09ae87c5e214988eea8af",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/tidyselect_1.2.1.zip"
+  },
+  {
+    "file": "tinytex_0.61.zip",
+    "sha256": "7cef1ec2b94b26989b6332dc55a26009dcd3bc960cb8cded5b5791422f280488",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/tinytex_0.61.zip"
+  },
+  {
+    "file": "utf8_1.2.6.zip",
+    "sha256": "1149e6888f61577ffd961926b38d141dcdce101ff4368bad9af2fa9d8632715c",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/utf8_1.2.6.zip"
+  },
+  {
+    "file": "uwot_0.2.5.zip",
+    "sha256": "da4111fc95e16382388cad9d51a05fa6ded3f70e761721b4b857d6cc20e9e13a",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/uwot_0.2.5.zip"
+  },
+  {
+    "file": "vctrs_0.7.3.zip",
+    "sha256": "ca8aed7c14602a78e53c564719c740e92db108b89da0aeaf0c3f324a72662229",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/vctrs_0.7.3.zip"
+  },
+  {
+    "file": "viridisLite_0.4.3.zip",
+    "sha256": "c0b03efafda61afa646b1c9197f5a657d70329e87d0ea6c998874908fd55799d",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/viridisLite_0.4.3.zip"
+  },
+  {
+    "file": "withr_3.0.3.zip",
+    "sha256": "fc8018f9fa7cc229b8da5ed3439cb87e8d1c94629ddd2464fdc6ea5e26ea3b52",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/withr_3.0.3.zip"
+  },
+  {
+    "file": "xfun_0.61.zip",
+    "sha256": "024031c41d99014e688927ec0702b594d8327ba12d4a83884d467d0ad239bd80",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/xfun_0.61.zip"
+  },
+  {
+    "file": "xtable_1.8-8.zip",
+    "sha256": "ae53808f17a484a12dceac1b48c8df58a6cb887712cd3a314df0075a3d01e300",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/xtable_1.8-8.zip"
+  },
+  {
+    "file": "yaml_2.3.12.zip",
+    "sha256": "41242d02bbd3135b8d83f27c209950d6f8f2e278648891252745aba7d8e3a9e0",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/yaml_2.3.12.zip"
+  },
+  {
+    "file": "zoo_1.9-1.zip",
+    "sha256": "07b9014089434a6d9fbb5dab2e1d31f6749b94a6dc22f4454d17e812d063519f",
+    "url": "https://cran.r-project.org/bin/windows/contrib/4.6/zoo_1.9-1.zip"
+  }
+]

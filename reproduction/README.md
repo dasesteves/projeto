@@ -1,0 +1,94 @@
+# Reproduzir a agregação, a PCA e os UMAPs
+
+Este percurso separado executa uma parte delimitada da análise: agregação de
+estimativas do modelo, normalização, PCA global e UMAPs para 18, 24, 36, 48 e 72h.
+Não substitui o artigo, os notebooks ou as figuras académicas, nem reproduz todos
+os métodos do projeto (por exemplo, Monocle e Slingshot).
+
+## Antes de começar
+
+- Windows x64 e Python 3.10 ou superior. O Python não é instalado por este conjunto.
+- Windows PowerShell (`powershell.exe`), usado para verificar a assinatura do R.
+- Internet para obter o instalador R, os pacotes e os dados públicos.
+- Memória e disco: validado num computador com 32 GB de RAM; o objeto R chega a
+  cerca de 6 GB, além de memória temporária. Os downloads e dados descomprimidos
+  ocupam cerca de 4 GB; reservar espaço adicional para R, biblioteca e resultados.
+- Usar uma consola normal, sem privilégios de administrador. Escolher pastas
+  novas fora do repositório. Os comandos recusam destinos existentes.
+
+## Executar
+
+Obter o projeto com Git ou com **Code → Download ZIP** no GitHub e extrair o
+arquivo. Abrir o PowerShell na pasta `reproduction` (onde está `run.py`).
+Confirmar `python --version`: é necessário Python 3.10 ou superior. Se o comando
+não existir ou abrir a Microsoft Store, instalar Python de python.org antes de
+prosseguir; se apenas `py -3` funcionar, usá-lo em vez de `python` em todos os comandos.
+
+Os exemplos usam `C:/repro`; substituir esse prefixo por uma pasta com permissão
+de escrita, mantendo-o consistente. Colocar caminhos entre aspas se tiverem espaços.
+Não usar uma pasta já ocupada por outra execução.
+
+Se já houver R 4.6.1 x64 instalado, podem omitir-se os dois primeiros comandos e
+usar o caminho explícito desse `Rscript.exe`. A biblioteca de pacotes continua
+separada. Uma segunda instalação pode atualizar o registo de desinstalação da
+primeira; não é necessário instalar outra cópia só para executar esta análise.
+
+```powershell
+python download_exact.py runtime --output C:/repro/installer
+python install_r_windows.py --installer C:/repro/installer/R-4.6.1-win.exe --output C:/repro/runtime
+python download_exact.py packages --output C:/repro/packages
+python download_exact.py data --output C:/repro/data
+python restore_windows.py --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --archives C:/repro/packages --library C:/repro/library
+python run.py environment --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --output C:/repro/check
+python run.py aggregate --input-dir C:/repro/data --output C:/repro/aggregate
+python run.py pca --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --input-dir C:/repro/data --output C:/repro/pca
+python run.py umap --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --pca C:/repro/pca/isolated-global-pca.rds --output C:/repro/umap
+```
+
+**Executar um comando de cada vez e parar se falhar.** Consultar o recibo e os
+logs na pasta de destino; uma pasta parcial não é uma execução válida.
+Os downloads exigem os hashes exatos: não substituir versões para ultrapassar
+uma indisponibilidade. O instalador R verifica também a assinatura.
+
+R é instalado por utilizador, sem alterar PATH nem criar atalhos; o instalador
+regista a desinstalação no Windows e pode atualizar essa entrada de outra cópia
+R 4.6.1. Não é uma distribuição portátil sem registo. Não requer RStudio ou
+Rtools para o percurso com os binários Windows registados.
+
+## O que consultar no fim
+
+- `aggregate/mean-model-estimates.csv`: médias das estimativas, não expressão medida.
+- `pca/`: controlos das células/metadados, normalização e PCA global de 20 componentes.
+- `umap/umap-reproduction/`: coordenadas CSV, objetos RDS e cinco figuras PNG.
+- `receipt.json`: deve indicar `completed` nas etapas `environment`, `aggregate`,
+  `pca` e `umap`. Downloads usam `download-receipt.json`; instalação R usa
+  `runtime-receipt.json`, ambos com estado `verified`.
+- O restauro de pacotes não produz recibo próprio: só prosseguir após `environment`
+  passar e `check/package-check.csv` confirmar as 135 versões.
+
+Se algum comando falhar, parar: consultar o erro e os logs, corrigir a causa e
+usar um destino novo apenas para a etapa falhada. Não é necessário repetir
+etapas anteriores que terminaram com sucesso. Se faltar uma versão no servidor,
+não instalar a mais recente como substituição: o hash tem de coincidir.
+
+## Evidência e limites
+
+O percurso foi executado com R 4.6.1, 135 versões de pacotes fixadas, downloads
+novos e uma biblioteca nova. A agregação e as coordenadas coincidiram com a
+reprodução moderna anterior no mesmo Windows. **Não se demonstrou equivalência
+numérica com as figuras históricas nem portabilidade para outro sistema.**
+
+A PCA preserva 22 757 células, incluindo 1 323 sem tempo. Os cinco UMAPs usam
+337, 2 059, 3 926, 4 928 e 3 297 células. São projeções separadas: os eixos não
+constituem um sistema temporal comum. Não há imputação dos tempos ausentes.
+
+Dados e código de origem: Saunders e colaboradores, série pública
+[GSE202639](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639).
+O percurso deriva de [Saunders_rep.Rmd](../Scripts/Saunders%20Rep/Saunders_rep.Rmd),
+na revisão `1f80c994a6cab28ccc108b44fefed76361b1e3a0`. Preservam-se as
+[atribuições académicas](../README.md#autoria-e-fontes); nenhuma licença nova
+ou autoria dos dados é atribuída por este conjunto.
+
+Detalhes: [instruções completas](LEIA-ME.txt), [validação](VALIDACAO.txt),
+[versões](versions.csv), [origens e hashes dos dados](data-downloads.json).
+Os dados, instaladores, bibliotecas e saídas não estão incluídos no repositório.

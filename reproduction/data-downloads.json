@@ -1,0 +1,5 @@
+[
+ {"file":"GSE202639_reference_cell_metadata.csv.gz","url":"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_cell_metadata.csv.gz","sha256":"608f12daca85b58104b0716b281678fa3d0eac584ee073b79e8244cb193c6bf5","unpack":"reference_cell_metadata.csv","unpacked_sha256":"546a8b8a47e6b746e0a652a90a09a29c7b8f64227e3eac259d1ef64daeb0ebf0"},
+ {"file":"GSE202639_reference_raw_counts.RDS.gz","url":"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_raw_counts.RDS.gz","sha256":"0fc37839a559a31715b4ed51e2b82a9cd2fadd65d902d2c047f837479d1399b3","unpack":"reference_raw_counts.RDS","unpacked_sha256":"7a3835a5b5f1ba4e45070a26b386d588adcc0d52612f38d376ae3317a8c9879e"},
+ {"file":"zperturb_beta_bin_results_broadtype_clean.csv","url":"https://raw.githubusercontent.com/dasesteves/projeto/1f80c994a6cab28ccc108b44fefed76361b1e3a0/Scripts/Saunders%20Rep/data/zperturb_beta_bin_results_broadtype_clean.csv","sha256":"d933c7a483be5ba70b4f5c08428600be513c35fc8a23be23a1af4237c9b19eff"}
+]

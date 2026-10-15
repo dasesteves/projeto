@@ -1,0 +1,49 @@
+VALIDAÇÃO DO CONJUNTO — 15/10/2026
+
+Executados pelo run.py, no ambiente isolado Windows/R 4.6.1:
+- environment: 135 versões verificadas;
+- aggregate: saída idêntica byte a byte à execução anterior validada contra R;
+- pca: percurso completo reexecutado com dados reais, 22757 células preservadas;
+  metadados e genes variáveis iguais; diferença máxima nas coordenadas PCA = 0;
+- umap: cinco mapas reexecutados a partir da PCA produzida pelo conjunto;
+  identificadores iguais e diferença máxima nas coordenadas CSV = 0 para cada
+  tempo, relativamente à execução isolada anterior neste mesmo ambiente.
+
+Isto demonstra que a consolidação preservou o cálculo já validado nesta máquina;
+NÃO demonstra identidade com os resultados académicos históricos ou com outros
+sistemas/compilações. Não foram comparados píxeis das figuras como critério.
+
+Oito testes Python passaram. A recusa de sobrescrita foi executada e o resultado
+existente ficou intacto. O restauro rejeitou arquivos ausentes antes de criar
+a biblioteca de destino. Os hashes dos 135 ZIPs foram obtidos do cache utilizado.
+Restauro completo posterior: 135 pacotes instalados numa segunda biblioteca
+vazia, versões e caminhos de carregamento confirmados. Agregação, PCA e cinco
+UMAPs reexecutados pelo ZIP extraído, com diferenças zero face à execução
+isolada anterior. Reutilizados o runtime R, o cache e os dados desta máquina.
+A falta de quebra de linha na lista de arquivos causou um aviso não impeditivo;
+o gerador foi corrigido e a leitura validada sem avisos. A extração original
+testada permanece preservada nos recibos locais.
+Downloads online posteriores, sem cache local: 135/135 pacotes e 3/3 entradas
+obtidos por GET completo, todos com SHA-256 idêntico. Os dois arquivos GEO
+foram descomprimidos uma vez e os hashes resultantes também coincidiram.
+Onze testes Python passaram, incluindo falha de rede e checksum incorreto;
+a recusa de destino existente foi executada com saída 1, sem sobrescrita.
+Não se testou computador/VM novo ou outras plataformas. A disponibilidade
+observada em 15/10/2026 não garante retenção futura das versões no CRAN.
+Na verificação inicial dos downloads não se repetiram PCA/UMAP; a execução
+completa posterior com o novo R está descrita abaixo.
+Bootstrap R posterior: instalador novamente obtido do CRAN com hash idêntico,
+assinatura válida; R 4.6.1 x64 instalado e executado numa pasta nova. As primeiras
+três tentativas foram travadas antes de instalar por resolução do módulo de
+assinatura Windows PowerShell; importação explícita do módulo oficial corrigida.
+135 pacotes restaurados dos novos downloads numa biblioteca nova; environment
+passou e Seurat, uwot e data.table foram carregados com sucesso pelo novo R.
+Recusa de destino existente e de instalador incorreto testadas antes de execução.
+Não é instalação sem registo: existe entrada de desinstalação por utilizador.
+Python/Windows continuam pré-requisitos. A análise completa foi posteriormente executada com este novo runtime, biblioteca
+e dados novos: agregação e cinco CSV UMAP idênticos; PCA (coordenadas, loadings e
+desvios-padrão), metadados e genes variáveis idênticos. Preservadas 22757 células,
+incluindo 1323 sem tempo. Continua sem teste numa máquina/VM limpa.
+
+Os originais académicos foram novamente comparados com a revisão Git de origem.
+Nada publicado, nenhum commit ou push.

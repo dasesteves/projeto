@@ -1,0 +1,126 @@
+REPRODUÇÃO SEPARADA — PROJETO PEIXE-ZEBRA
+
+Finalidade: executar a agregação e o percurso de PCA global/UMAPs temporais
+sem editar o notebook, artigo ou figuras académicas. Conjunto local não publicado.
+Fonte académica: dasesteves/projeto, revisão
+1f80c994a6cab28ccc108b44fefed76361b1e3a0, Scripts/Saunders Rep/Saunders_rep.Rmd.
+Este conjunto deriva das operações desse notebook; preservar as atribuições
+do projeto e do estudo Saunders e colaboradores. Não é uma reedição do artigo
+nem atribui autoria nova dos métodos/dados. Nenhuma licença nova é concedida.
+
+REQUISITOS
+Python 3.10+ (biblioteca padrão), R 4.6.1, biblioteca de pacotes isolada.
+Ambiente executado: Windows x64, Seurat 5.6.0, SeuratObject 5.4.0.
+versions.csv regista 135 pacotes instalados; não são as versões históricas.
+O executor exige estas versões para evitar atualização silenciosa do ambiente.
+Foi testado num computador com 32 GB RAM. A escala produz objeto de cerca de
+6 GB, com memória adicional transitória. Reservar margem de RAM e disco;
+não executar em paralelo com outra análise pesada. Dados completos comprimidos
+somam cerca de 1,33 GB; existem também cópias descomprimidas e saídas.
+
+PREPARAR O AMBIENTE
+Obter e instalar R 4.6.1 numa pasta nova (Windows x64):
+
+  python download_exact.py runtime --output "C:/repro/instalador"
+  python install_r_windows.py --installer "C:/repro/instalador/R-4.6.1-win.exe" --output "C:/repro/runtime"
+
+O download verifica SHA-256; a instalação volta a verificá-lo e exige assinatura
+Authenticode válida. Recusa destinos existentes. Usa instalação por utilizador,
+sem tarefas opcionais, atalhos ou alteração de PATH. O instalador oficial
+regista a desinstalação no Windows e pode atualizar a entrada de outra cópia
+4.6.1 do mesmo utilizador: não é uma extração portátil sem registo.
+Não executar a partir de uma consola elevada. O novo executável fica em:
+  C:/repro/runtime/R-4.6.1/bin/Rscript.exe
+O recibo runtime-receipt.json só fica verified após confirmar versão, arquitetura,
+R.home e cálculo simples. Em caso de erro, consultar signature-check.txt,
+install.log e o recibo; conservar a pasta parcial e usar outra numa nova tentativa.
+Não há mudança automática de versão nem desativação da verificação de assinatura.
+O bootstrap requer Python 3.10+ e Windows PowerShell; não instala Python.
+Referência oficial das opções: https://cran.r-project.org/bin/windows/base/rw-FAQ.html
+Não é instalado por run.py. É possível reutilizar um R compatível existente.
+windows-packages.json contém nomes, URLs de origem e SHA-256 dos ZIPs exatos.
+Para obter as versões exatas sem cache local, executar a partir desta pasta:
+
+  python download_exact.py packages --output "C:/repro/pacotes"
+  python download_exact.py data --output "C:/repro/dados"
+
+Os destinos têm de ser novos. O primeiro comando obtém os 135 ZIPs; o segundo
+obtém os dois arquivos GEO e o CSV fixado à revisão Git académica. Confere
+SHA-256 e descomprime exatamente uma camada dos dois arquivos GEO, conferindo
+também os hashes descomprimidos. Não instala nem executa a análise.
+Cada destino recebe download-receipt.json com endereços, hashes e resultado.
+Só status verified e código de saída 0 permitem prosseguir. Uma falha conserva
+ficheiros .part para diagnóstico; não os usar. Repetir numa pasta nova.
+Não há troca automática de versão nem alternativa silenciosa de servidor.
+Os endereços podem desaparecer: nesse caso é necessário localizar um arquivo
+idêntico pelo hash ou rever explicitamente o ambiente. O kit não inclui dados
+nem binários. Reservar cerca de 4 GB para esta obtenção, além das saídas R.
+
+Depois do download dos pacotes:
+
+  python restore_windows.py --rscript "C:/repro/runtime/R-4.6.1/bin/Rscript.exe" --archives "C:/repro/pacotes" --library "C:/repro/library"
+
+Este comando instala apenas os 135 arquivos do manifesto, depois de verificar
+todos os hashes; exige biblioteca de destino ainda inexistente. Não altera PATH.
+É específico de Windows x64. Não foi testada portabilidade Linux/macOS.
+Validar sempre o resultado com a etapa environment, que termina com erro se
+faltar um pacote ou alguma versão diferir. Não usar o sucesso do instalador
+como prova de que todas as dependências ficaram utilizáveis.
+
+ENTRADAS
+Para aggregate, colocar na pasta de dados:
+  zperturb_beta_bin_results_broadtype_clean.csv
+Disponível no repositório académico em Scripts/Saunders Rep/data/ na revisão
+indicada. A saída corresponde a estimativas do modelo, não expressão medida.
+
+O comando data prepara as entradas para pca a partir dos ficheiros públicos:
+https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_cell_metadata.csv.gz
+https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_raw_counts.RDS.gz
+Hashes dos ficheiros usados encontram-se em source-evidence.json.
+Descomprimir UMA camada gzip de cada um, guardando os nomes:
+  reference_cell_metadata.csv
+  reference_raw_counts.RDS
+O RDS mantém compressão interna e é lido diretamente por readRDS. Não converter
+o RDS para CSV ou matriz densa. Não copiar estes dados para o repositório Git.
+
+EXECUÇÃO — exemplos a partir desta pasta
+Substituir caminhos de R, biblioteca, dados e saídas pelos do computador.
+Todos os diretórios --output têm de ser novos; saídas existentes são recusadas.
+
+  python run.py environment --rscript "C:/repro/runtime/R-4.6.1/bin/Rscript.exe" --library "C:/repro/library" --output "C:/repro/runs/environment-01"
+  python run.py aggregate --input-dir "C:/repro/dados" --output "C:/repro/runs/aggregate-01"
+  python run.py pca --rscript "C:/repro/runtime/R-4.6.1/bin/Rscript.exe" --library "C:/repro/library" --input-dir "C:/repro/dados" --output "C:/repro/runs/pca-01"
+  python run.py umap --rscript "C:/repro/runtime/R-4.6.1/bin/Rscript.exe" --library "C:/repro/library" --pca "C:/repro/runs/pca-01/isolated-global-pca.rds" --output "C:/repro/runs/umap-01"
+
+aggregate é independente de R; pca e umap verificam o ambiente antes do cálculo.
+Cada execução tem receipt.json com hashes de entrada e estado, execution.log
+quando usa R, verificações e saídas próprias. Uma falha deixa a pasta parcial
+com status failed; não a tratar como resultado. Usar outra pasta na repetição.
+O executor não altera as entradas, não instala, não publica e não descarrega.
+
+O QUE CADA ETAPA FAZ
+aggregate: filtro phore|pigmented, média de estimate por gene1/timepoint.
+Na entrada validada: 59 grupos; 36 combinações não observadas não são zeros.
+pca: filtro de pigmentação, criação Seurat, NormalizeData, 1000 genes variáveis
+por vst, ScaleData em todos os genes, PCA global de 20 componentes.
+Preserva 22757 células, incluindo 1323 sem timepoint. Verifica identidade de
+células/metadados em cada etapa e fórmula normalizada numa amostra de 20 células.
+umap: reutiliza PCA global, seleciona 18/24/36/48/72h, calcula projeções separadas.
+Populações verificadas: 337/2059/3926/4928/3297. Coordenadas CSV/RDS e PNG ficam
+em umap-reproduction/ dentro da saída. PNG de revisão: 150 dpi, fundo branco.
+
+LIMITES
+As versões atuais executam o método; não demonstram equivalência numérica com
+o ambiente histórico desconhecido. As figuras têm disposição diferente.
+As 1323 células sem tempo não são imputadas nem removidas antes da PCA.
+UMAPs separados não partilham um sistema de coordenadas temporal comparável.
+As projeções não constituem testes de expressão diferencial ou novas conclusões.
+O RDS de PCA contém coordenadas/loadings/metadados, não o objeto Seurat completo.
+A associação original dos metadados foi verificada nas entradas oficiais, cuja
+ordem coincide; não generalizar este percurso a dados arbitrários sem controlos.
+Se usar entradas diferentes, os hashes registam essa diferença, mas os resultados
+não devem ser apresentados como reprodução das entradas verificadas.
+
+TESTES LEVES
+  python -m unittest discover -s scripts -p "test_*.py"
+Consultar VALIDACAO.txt para o que foi efetivamente testado nesta distribuição.

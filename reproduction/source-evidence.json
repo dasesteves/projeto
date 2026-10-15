@@ -1,0 +1,22 @@
+{
+  "all_metadata_and_count_ids_same_set": true,
+  "metadata_count_order_mismatches": 0,
+  "metadata_ids": 1241018,
+  "count_ids": 1241018,
+  "historical_umap_sizes": {
+    "18": 337,
+    "24": 2059,
+    "36": 3926,
+    "48": 4928,
+    "72": 3297
+  },
+  "metadata_umap_sizes_match_history": true,
+  "same_missing_timepoint_cells_excluded_per_selection": 1323,
+  "other_known_times_not_selected": 6887,
+  "hashes": {
+    "GSE202639_reference_cell_metadata.csv.gz": "608f12daca85b58104b0716b281678fa3d0eac584ee073b79e8244cb193c6bf5",
+    "GSE202639_reference_raw_counts.RDS.gz": "0fc37839a559a31715b4ed51e2b82a9cd2fadd65d902d2c047f837479d1399b3",
+    "reference_raw_counts.RDS": "7a3835a5b5f1ba4e45070a26b386d588adcc0d52612f38d376ae3317a8c9879e"
+  },
+  "scope": "Input alignment and historical output comparison; Seurat object creation and UMAP not executed"
+}

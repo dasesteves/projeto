@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.part
+*.zip
+*.exe
+*.rds
+*.RDS
+runs/
+data/
+packages/
+library/
+runtime/

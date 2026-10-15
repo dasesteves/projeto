@@ -28,6 +28,6 @@ The work uses data and code from **Saunders and colleagues**; the paper identifi
 
 The presentation is unavailable: the stored PPTX contains only two bytes and is not a valid presentation. Use the final paper linked above to consult the submission.
 
-The figures and paper are historical project materials. This documentation review did not rerun the analysis; the scripts do not provide a fully specified reproducible environment.
+The historical figures and paper are preserved. A [separate reproduction workflow](reproduction/) provides verified inputs and pinned versions for aggregation, global PCA and five UMAPs (instructions in Portuguese). It does not cover every project method or establish numerical equivalence with the historical figures.
 
 [Original academic description and acknowledgements (expand the section in the Portuguese README)](README.md) · [Diogo Esteves's profile](https://github.com/dasesteves/dasesteves/blob/main/README.en.md)

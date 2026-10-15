@@ -28,7 +28,7 @@ O trabalho utiliza dados e código de **Saunders e colaboradores**; o artigo ide
 
 A apresentação não está disponível: o ficheiro PPTX guardado contém apenas dois bytes e não é uma apresentação válida. Para consultar a entrega, usa o artigo final acima.
 
-As figuras e o artigo são os materiais históricos do trabalho. A análise não foi reexecutada nesta revisão da documentação; os scripts não constituem um ambiente de reprodução fechado.
+As figuras e o artigo são os materiais históricos do trabalho e permanecem preservados. O [percurso de reprodução separado](reproduction/) permite executar a agregação, a PCA global e cinco UMAPs com versões e dados verificados. Este percurso não cobre todos os métodos do projeto nem demonstra equivalência numérica com as figuras históricas.
 
 [Perfil de Diogo Esteves](https://github.com/dasesteves) · [Apresentação em inglês](README.en.md)
 
