@@ -4,7 +4,7 @@
 
 An academic project on single-cell transcriptomics analysis and visualization, developed by **Diogo Esteves** during the master's degree in Bioinformatics at the University of Minho. The project explores cell lineages and markers associated with pigment cell differentiation.
 
-[**Read the final paper**](Artigo%20Final.pdf) · [View results](Results/README.en.md) · [Explore scripts](Scripts/README.en.md)
+[**Read the final paper**](Artigo%20Final.pdf) · [View results](Results/README.en.md) · [Explore scripts](Scripts/README.en.md) · [**Run the reproduction workflow**](reproduction/README.md)
 
 ## Authorship and sources
 

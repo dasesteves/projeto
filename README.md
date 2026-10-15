@@ -4,7 +4,7 @@
 
 Projeto académico de análise e visualização de transcriptómica de célula única, desenvolvido por **Diogo Esteves** no mestrado em Bioinformática da Universidade do Minho. O trabalho explora linhagens celulares e a expressão de marcadores associados à diferenciação das células de pigmentação.
 
-[**Ler o artigo final**](Artigo%20Final.pdf) · [Ver os resultados](Results/) · [Consultar os scripts](Scripts/)
+[**Ler o artigo final**](Artigo%20Final.pdf) · [Ver os resultados](Results/) · [Consultar os scripts](Scripts/) · [**Reproduzir a análise**](reproduction/README.md)
 
 ## Autoria e fontes
 

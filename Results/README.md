@@ -4,6 +4,10 @@
 
 Figuras do projeto de transcriptómica de células de pigmentação de peixe-zebra. Para os métodos, contexto e interpretação, consulta o [artigo final](../Artigo%20Final.pdf).
 
+Para gerar novas saídas numa pasta separada, segue o [percurso de reprodução](../reproduction/README.md). As imagens desta galeria são históricas e não são substituídas por essas saídas.
+
+Os UMAPs por tempo são projeções independentes: posições e distâncias entre mapas não representam trajetórias celulares. A reprodução atual verifica o cálculo, não acrescenta conclusões biológicas.
+
 ## Uma visualização histórica
 
 [![Estimativas de um modelo para grupos celulares pigmentares, por gene e tempo](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)
@@ -20,7 +24,7 @@ O [notebook Saunders_rep.Rmd](https://github.com/dasesteves/projeto/blob/ce92899
 
 **Como ler:** o eixo original diz “Mean Expression”, mas o valor calculado é a média de estimativas beta-binomiais. Não equivale a expressão génica média calculada diretamente das contagens de RNA. O [código de origem do estudo](https://github.com/cole-trapnell-lab/sdg-zfish/blob/4fa0bf88dc642b58f1b2a3b7789143e3f44a824a/figure_code/Saunders_Srivatsan_2023_Fig3.R#L69) identifica estes dados como resultados de abundância celular diferencial.
 
-**Contribuição e limites:** o projeto de Diogo Esteves utiliza dados e código do estudo de Saunders e colaboradores; o [artigo final é assinado por Diogo Esteves e David Henriques](https://github.com/dasesteves/projeto/blob/ce928997ab677c6ab3442ca9221aebfedb1f158b/LateX%20files/Artigo%20Final.tex#L18). Esta nota documenta a cadeia encontrada nas fontes. A análise não foi reexecutada, não há registo do ambiente da execução original e não foi validada a interpretação biológica da agregação destas estimativas. A imagem e o artigo históricos permanecem inalterados.
+**Contribuição e limites:** o projeto de Diogo Esteves utiliza dados e código do estudo de Saunders e colaboradores; o [artigo final é assinado por Diogo Esteves e David Henriques](https://github.com/dasesteves/projeto/blob/ce928997ab677c6ab3442ca9221aebfedb1f158b/LateX%20files/Artigo%20Final.tex#L18). Esta nota documenta a cadeia encontrada nas fontes. A agregação foi entretanto reexecutada no percurso separado e comparada com o cálculo original. Não há registo do ambiente da execução académica original nem foi validada a interpretação biológica da agregação destas estimativas. A imagem e o artigo históricos permanecem inalterados.
 
 ## Consultar todas as figuras
 

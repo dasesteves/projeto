@@ -6,6 +6,8 @@
 
 This folder contains all the scripts used for data processing, analysis, and visualization related to the single-cell transcriptomic analysis of zebrafish pigment cells.
 
+To run aggregation, global PCA and the five UMAPs, start with the [verified reproduction workflow](../reproduction/README.md) (instructions in Portuguese). This folder preserves the academic notebooks; it is not the entry point for that workflow.
+
 ## Contents
 
 - **analise_remota_scripts.Rmd:** Script for remote analysis of single-cell transcriptomics data.
@@ -19,9 +21,9 @@ These are analysis notebooks, with no single execution order documented for the 
 
 - `UMAP_simple.Rmd` installs R and Python packages, downloads GEO data and uses the active RStudio document to set the working directory. It references `raw_counts` without loading that object, and inspects `cell_metadata` before its loading section. It therefore needs preparation before execution in a fresh session.
 - The [Saunders notebook](Saunders%20Rep/) uses relative `data/` and `output/` paths. Its README records the working-directory and dependency requirements.
-- The repository has no `renv.lock` or other file fixing the R package versions. Record `sessionInfo()` when reproducing an analysis; the original package versions are not established here.
+- The historical package versions for these notebooks are not established. The separate workflow pins its own [reproduction versions](../reproduction/versions.csv); these do not reconstruct the original academic environment.
 
-This documentation review did not rerun the analyses or validate the historical results.
+The separate workflow was executed and compared with the previous modern reproduction. This does not validate all notebooks in this folder or establish numerical equivalence with the historical results.
 
 ## Notes
 

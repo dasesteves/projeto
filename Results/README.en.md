@@ -4,6 +4,10 @@
 
 Figures from the zebrafish pigment cell transcriptomics project. Read the [final paper](../Artigo%20Final.pdf) for methods, context and interpretation.
 
+To generate new outputs in a separate directory, follow the [reproduction workflow](../reproduction/README.md) (instructions in Portuguese). This gallery contains historical images, which are not replaced by those outputs.
+
+The time-specific UMAPs are independent projections: positions and distances across maps do not represent cell trajectories. The modern reproduction checks the calculation, without adding biological conclusions.
+
 ## A historical visualization
 
 [![Model estimates for pigment cell groups, by gene and time](expression_of_genes_in_pigment_cells_over_time.png)](expression_of_genes_in_pigment_cells_over_time.png)
@@ -20,7 +24,7 @@ The [Saunders_rep.Rmd notebook](https://github.com/dasesteves/projeto/blob/ce928
 
 **How to read it:** the original axis says “Mean Expression”, but the calculated value is the mean of beta-binomial estimates. It is not mean gene expression calculated directly from RNA counts. The [study's source code](https://github.com/cole-trapnell-lab/sdg-zfish/blob/4fa0bf88dc642b58f1b2a3b7789143e3f44a824a/figure_code/Saunders_Srivatsan_2023_Fig3.R#L69) identifies these data as differential cell abundance results.
 
-**Contribution and limitations:** Diogo Esteves's project uses data and code from the study by Saunders and colleagues; the [final paper is co-authored by Diogo Esteves and David Henriques](https://github.com/dasesteves/projeto/blob/ce928997ab677c6ab3442ca9221aebfedb1f158b/LateX%20files/Artigo%20Final.tex#L18). This note documents the provenance found in the sources. The analysis has not been rerun, the original execution environment is not recorded, and the biological interpretation of aggregating these estimates has not been validated. The historical image and paper remain unchanged.
+**Contribution and limitations:** Diogo Esteves's project uses data and code from the study by Saunders and colleagues; the [final paper is co-authored by Diogo Esteves and David Henriques](https://github.com/dasesteves/projeto/blob/ce928997ab677c6ab3442ca9221aebfedb1f158b/LateX%20files/Artigo%20Final.tex#L18). This note documents the provenance found in the sources. The aggregation has since been rerun in the separate workflow and compared with the original calculation. The original academic execution environment is not recorded, and the biological interpretation of aggregating these estimates has not been validated. The historical image and paper remain unchanged.
 
 ## Browse all figures
 
