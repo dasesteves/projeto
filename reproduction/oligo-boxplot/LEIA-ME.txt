@@ -1,0 +1,91 @@
+BOXPLOT POR TEMPO E OLIGO
+
+Começar pela secção "Boxplot por tempo e Oligo" em ../README.md. O comando
+oligo_boxplot.py encadeia ambiente, extração, exportação, desenho e verificação.
+Não executar manualmente cada etapa nem usar um CSV sem Oligo como substituto.
+
+Obtenção dos metadados
+O download opcional reference-object obtém o objeto público fixado em source.json.
+Não altera os downloads habituais de data. O objeto tem duas camadas gzip; manter
+o ficheiro descarregado intacto. O comando verifica o SHA256 completo antes de
+ler o objeto. extract_stream.py percorre a serialização XDR e extrai apenas colData;
+não carrega matrizes em memória nem executa funções gravadas no objeto.
+É um leitor específico para ESTE hash, não um leitor RDS genérico. Não substituir
+o objeto por outra versão nem editar hashes para ultrapassar erros.
+
+export_metadata.py conserva os nomes de células, a ordem e os NA e produz seis
+campos: cell, timepoint, Oligo, embryo, expt e gene_target. Confere 1 241 018 linhas
+e o hash exato da exportação. Não depende da pasta de trabalho de quem preparou
+o módulo. O CSV público reference_cell_metadata.csv não contém Oligo; por isso
+não permite executar diretamente este percurso.
+
+Os hashes são os dos ficheiros obtidos e verificados na preparação, não uma
+assinatura ou um checksum publicado pelo fornecedor. Fonte: Saunders, Srivatsan
+et al.; GEO GSE202639 / ZSCAPE. URL exato e hash em source.json.
+Contrato de cálculo: Figura 1b de Fig1.R upstream na revisão
+4fa0bf88dc642b58f1b2a3b7789143e3f44a824a, também presente em
+Scripts/Saunders Rep/Saunders_rep.Rmd na revisão académica preservada.
+
+Filtros históricos, por ordem
+1. Contar células por (timepoint, Oligo), incluindo inicialmente os grupos NA.
+2. Retirar grupos com timepoint ou Oligo ausentes. Não preencher nenhum campo.
+3. Transformar as contagens em log10(n).
+4. Aplicar limites de 1,5 a 4,5 à escala ANTES de calcular as caixas. Isto exclui
+   grupos: não é apenas zoom. Para contagens inteiras positivas, ficam 32–31622.
+
+Na entrada fixada: 2 066 grupos / 1 241 018 células antes dos filtros;
+843 grupos / 85 130 células excluídos por campos ausentes;
+18 grupos / 304 células excluídos pela escala;
+1 205 grupos / 1 155 584 células nas contagens usadas pelo gráfico histórico.
+A comparação sem corte de escala usa 1 223 grupos / 1 155 888 células.
+Não são criados grupos zero que não existam nos dados.
+
+Encontrar e interpretar as saídas
+Na pasta figures-tables:
+- boxplot-historical.png: operações históricas, com títulos e eixos legíveis novos.
+- boxplot-without-scale-cut.png: comparação descritiva, mantendo os grupos pequenos.
+- groups-before-filters.csv: grupos, contagens, log10, elegibilidade e motivo.
+- groups-used-historical.csv / excluded-groups.csv: grupos usados e excluídos.
+- filter-summary-by-time.csv: contagens em cada etapa, incluindo tempo NA.
+- box-statistics-log10.csv: quartis, medianas, extremos e pontos além dos bigodes,
+  para cada tempo e modo. Todos estes valores estão em log10.
+- independent-validation.json: conferência independente em Python/NumPy.
+- receipt.json / session-info.txt: regras, hashes e versões da geração.
+
+O recibo decisivo é receipt.json na RAIZ da execução, não apenas o das figuras.
+completed exige terminar todas as etapas e a conferência independente. failed ou
+running significa execução incompleta. Consultar extract.log, metadata.log,
+render.log e verify.log. A pasta parcial é preservada; escolher um novo destino
+após resolver o erro. O comando não instala pacotes, descarrega dados ou sobrescreve
+saídas existentes. Não existe continuação automática de uma execução parcial.
+
+O metadata.csv na raiz é grande. Usar R/Python para consulta integral; não assumir
+que uma folha de cálculo apresenta todas as 1 241 018 linhas. Os CSV de resumo
+são pequenos. Vírgula separadora, ponto decimal, NA significa ausência, não zero.
+
+Limites
+Oligo não é um substituto global de embryo: 77 010 células têm Oligo mas não têm
+tempo nem embryo. Nos grupos com tempo conhecido, a comparação preparatória
+confirmou correspondência 1:1 e contagens iguais. Isso não autoriza imputação.
+O campo embryo não é usado para agrupar ou filtrar este gráfico.
+
+Caixas: quartis type 7 de log10(n), mediana e bigodes até 1,5 vezes o intervalo
+interquartil. Pontos além dos bigodes não são eliminados, salvo pelo corte da
+escala histórica. Eixos temporais categóricos; distâncias entre tempos no desenho
+não são proporcionais. Os eixos horizontais diferem entre as duas imagens.
+As contagens não estimam abundância no animal nem demonstram independência
+biológica, crescimento, causalidade ou significância estatística. Não há testes
+inferenciais. O gráfico não é uma reprodução pixel a pixel da figura académica.
+
+O leitor foi validado com fixtures produzidas pelo R e com os 25 campos comuns
+do CSV público. Essa prova cobre colData, não os ensaios/matrizes ou todo o objeto.
+R 4.6.1 e pacotes fixados pelo conjunto; não é o ambiente histórico original.
+A matriz de expressão, PCA, UMAP, notebooks, figuras e artigo originais não mudam.
+
+Testes locais (na pasta reproduction; usar os runtimes preparados)
+python -m unittest test_oligo_integration
+Rscript --vanilla oligo-boxplot/test_oligo.R "<biblioteca R>" "oligo-boxplot"
+O verificador do comando principal reconta todas as células e confere os filtros,
+resumos e as 36 caixas independentemente do código R, com tolerância 1e-12.
+O download de teste usa transferência simulada; não é nova prova de disponibilidade
+online. A validação de integração reutiliza o objeto real já descarregado.

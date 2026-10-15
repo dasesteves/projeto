@@ -136,3 +136,9 @@ Desenha coordenadas fornecidas, não recalcula UMAP. Verifica as tabelas em R.
 Não altera nem substitui resultados académicos. Consultar os limites em
 reference-maps/LEIA-ME.txt. Dependências Python adicionais em requirements.txt
 dentro dessa pasta; não são instaladas automaticamente.
+
+BOXPLOT POR TEMPO E OLIGO
+Percurso opcional em oligo_boxplot.py; ver a secção dedicada em README.md e
+oligo-boxplot/LEIA-ME.txt. O download reference-object é separado: não altera
+os downloads habituais. Extrai metadados do objeto fixado, não matrizes.
+Filtros históricos e comparação sem corte são distintos; nenhuma imputação.

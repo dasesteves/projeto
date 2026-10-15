@@ -4,6 +4,7 @@ Este percurso separado executa uma parte delimitada da análise: agregação de
 estimativas do modelo, gráficos das tabelas, normalização, PCA global e UMAPs
 para 18, 24, 36, 48 e 72h. Inclui também um percurso independente para contar
 as células dos metadados de referência e desenhar as coordenadas pré-calculadas.
+O boxplot por tempo/Oligo tem um percurso próprio, com filtros históricos auditáveis.
 Não substitui o artigo, os notebooks ou as figuras académicas, nem reproduz todos
 os métodos do projeto (por exemplo, Monocle e Slingshot).
 
@@ -13,6 +14,8 @@ os métodos do projeto (por exemplo, Monocle e Slingshot).
   Não exige a matriz de contagens, a PCA nem os UMAPs.
 - **Contagens e mapas da referência:** seguir [esta secção](#contagens-e-mapas-da-referência).
   Desenha coordenadas fornecidas pelo estudo; não recalcula UMAP.
+- **Boxplot por tempo e Oligo:** seguir [esta secção](#boxplot-por-tempo-e-oligo).
+  Extrai os metadados do objeto de referência; não recalcula expressão ou UMAP.
 - **Agregação, PCA e UMAPs:** seguir a sequência completa abaixo.
 
 | | Mapas da referência | UMAPs recalculados por tempo |
@@ -27,8 +30,8 @@ Nenhum destes percursos demonstra equivalência com as imagens históricas.
 ## Antes de começar
 
 - Windows x64. Python 3.10+ para o percurso principal e os gráficos de estimativas;
-  **Python 3.12 para os mapas de referência**, com NumPy e Matplotlib indicados
-  na respetiva secção. O Python não é instalado por este conjunto.
+  **Python 3.12 para os mapas de referência e boxplot**, com as dependências
+  indicadas na respetiva secção (o boxplot não requer Matplotlib). O Python não é instalado por este conjunto.
 - Windows PowerShell (`powershell.exe`), usado para verificar a assinatura do R.
 - Internet para obter o instalador R, os pacotes e os dados públicos.
 - Memória e disco **do percurso PCA/UMAP**: validado num computador com 32 GB de RAM; o objeto R chega a
@@ -237,9 +240,93 @@ percurso são recalculados por tempo num subconjunto pigmentar e têm populaçõ
 e sistemas de coordenadas diferentes. Não comparar diretamente as posições.
 
 Não se demonstram trajetórias, movimento celular, equivalência com o objeto
-`reference_cds` ou com as figuras históricas. Não há boxplot por `Oligo`.
+`reference_cds` inteiro ou com as figuras históricas. O boxplot por `Oligo`
+é um [percurso separado](#boxplot-por-tempo-e-oligo).
 As células sem tempo são contadas e exportadas, mas não desenhadas nos mapas.
 [Fonte, rastreabilidade e limites completos](reference-maps/LEIA-ME.txt).
+
+## Boxplot por tempo e Oligo
+
+Este percurso produz o gráfico com os filtros históricos e uma comparação sem
+corte da escala. As tabelas mostram cada grupo, exclusão e estatística das caixas.
+Não exige executar PCA/UMAP. Reutiliza o **R e a biblioteca preparados nos passos
+iniciais**, sem alterações aos resultados académicos.
+
+**0. R e pacotes:** se ainda não estão preparados, executar apenas estes comandos
+na pasta `reproduction`, um de cada vez, parando se algum falhar:
+
+```powershell
+python download_exact.py runtime --output C:/repro/installer
+python install_r_windows.py --installer C:/repro/installer/R-4.6.1-win.exe --output C:/repro/runtime
+python download_exact.py packages --output C:/repro/packages
+python restore_windows.py --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --archives C:/repro/packages --library C:/repro/library
+```
+
+Se R 4.6.1 já existe, omitir os dois primeiros comandos e usar o seu `Rscript.exe`.
+Se a biblioteca já foi restaurada, reutilizá-la. Este percurso verifica as **135
+versões do ambiente partilhado**, embora o gráfico use diretamente apenas uma
+parte dos pacotes; não é uma instalação mínima. Não executar `download_exact.py
+data`, agregação, PCA ou UMAP para este boxplot. Os efeitos do instalador no
+registo do Windows continuam os descritos em [Executar](#executar).
+
+**1. Python:** se já preparou o ambiente dos mapas de referência, pode reutilizá-lo.
+Caso contrário, com Python 3.12 disponível, criar este ambiente uma única vez:
+
+```powershell
+python -m venv C:/repro/python-oligo
+& "C:/repro/python-oligo/Scripts/python.exe" -m pip install -r oligo-boxplot/requirements.txt
+```
+
+Nos comandos seguintes, substituir o executável pelo do ambiente dos mapas se o
+reutilizar. O comando não instala dependências automaticamente.
+
+**2. Obter o objeto que contém Oligo:** o CSV público habitual não contém esse campo.
+O download é opcional e separado dos restantes dados:
+
+```powershell
+python download_exact.py reference-object --output C:/repro/oligo-object
+```
+
+O recibo do download deve indicar `verified`. São cerca de **4,23 GB**; escolher
+uma pasta nova fora do repositório. Se já tiver o objeto exato, reutilizar o caminho
+no comando seguinte: não é necessário descarregá-lo novamente. Não descomprimir;
+o ficheiro contém duas camadas gzip, tratadas pelo módulo. Reservar espaço para
+esse objeto, a extração de metadados e as saídas; o mínimo de RAM/disco não foi
+medido. A leitura é sequencial e não materializa as matrizes de expressão.
+
+**3. Extrair, desenhar e verificar:**
+
+```powershell
+& "C:/repro/python-oligo/Scripts/python.exe" oligo_boxplot.py --object C:/repro/oligo-object/GSE202639_reference_cds.RDS.gz --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --output C:/repro/oligo-run
+```
+
+Parar se algum comando falhar. Usar sempre um destino novo. O `receipt.json` na
+raiz de `oligo-run` deve indicar `completed`; isso exige também a verificação
+independente de contagens, exclusões, quartis, bigodes e pontos. Não editar hashes
+para aceitar outros dados. A extração é específica para o objeto fixado.
+
+Abrir **`C:/repro/oligo-run/figures-tables`**:
+
+| Saída | Conteúdo |
+| --- | --- |
+| `boxplot-historical.png` | Grupos por tempo/Oligo, sem campos ausentes; limite de log10(n) entre 1,5 e 4,5 antes dos quartis. |
+| `boxplot-without-scale-cut.png` | Comparação descritiva sem corte da escala, não uma substituição histórica. |
+| `groups-before-filters.csv` | Todos os grupos, contagens e razões de exclusão. |
+| `groups-used-historical.csv`, `excluded-groups.csv` | Seleções explícitas, sem imputação. |
+| `filter-summary-by-time.csv` | Grupos e células antes/depois de cada filtro. |
+| `box-statistics-log10.csv` | Estatísticas efetivas de cada caixa, nas duas versões. |
+
+Na fonte fixada, faltam campos de agrupamento em **85 130 células**. A escala
+histórica exclui ainda **18 grupos (304 células)** antes de calcular as caixas;
+ficam **1 205 grupos**, cujas contagens somam **1 155 584 células**. Isso não é
+apenas zoom. Os pontos além dos bigodes continuam representados quando dentro
+da escala. As escalas horizontais das duas figuras diferem: comparar os valores,
+não as larguras aparentes entre imagens.
+
+São contagens de células recuperadas, não abundância no animal nem prova de
+independência biológica. Não usar Oligo para preencher embryo ou tempo. Não há
+reconstituição de píxeis históricos, novas inferências ou alterações aos originais.
+[Proveniência, formatos, filtros e limites completos](oligo-boxplot/LEIA-ME.txt).
 
 ## Evidência e limites
 

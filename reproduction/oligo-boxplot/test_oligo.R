@@ -1,0 +1,30 @@
+args<-commandArgs(TRUE)
+.libPaths(c(args[1],.libPaths()))
+source(file.path(args[2],'render.R'))
+mk<-function(ns) data.frame(cell=paste0('c',seq_len(sum(ns))),timepoint=18,
+ Oligo=rep(paste0('o',seq_along(ns)),ns),embryo=rep(paste0('e',seq_along(ns)),ns))
+x<-mk(c(10,20,100,1000,10000));a<-audit_metadata(x)
+stopifnot(nrow(a$groups)==5,sum(a$groups$historical_eligible)==3,
+ sum(a$groups$cells[!a$groups$historical_eligible])==30)
+ph<-make_boxplot(a$groups,TRUE);pu<-make_boxplot(a$groups,FALSE)
+sh<-box_statistics(ph);su<-box_statistics(pu)
+stopifnot(sh$middle==3,su$middle==2)
+x<-mk(c(31,32,31622,31623));a<-audit_metadata(x)
+stopifnot(identical(sort(a$groups$cells[a$groups$historical_eligible]),c(32L,31622L)))
+x<-data.frame(cell=letters[1:5],timepoint=c(18,24,NA,18,18),
+ Oligo=c('same','same','same',NA,'known'),embryo=c('a','b',NA,'d',NA))
+a<-audit_metadata(x)
+stopifnot(nrow(a$groups)==5,sum(a$groups$cells)==5,
+ sum(a$groups$missing_group)==2,sum(a$groups$cells[!a$groups$missing_group])==3)
+# embryo must never be used to impute missing groups or to exclude a valid Oligo.
+stopifnot(a$groups[Oligo=='known' & !is.na(Oligo),missing_group]==FALSE)
+must_fail<-function(z) stopifnot(inherits(try(audit_metadata(z),silent=TRUE),'try-error'))
+y<-x;y$cell[2]<-y$cell[1];must_fail(y)
+y<-x;y$timepoint[1]<-Inf;must_fail(y)
+y<-x;y$Oligo[1]<-'';must_fail(y)
+existing<-tempdir()
+stopifnot(inherits(try(run_module('unused',existing),silent=TRUE),'try-error'))
+bad<-tempfile(fileext='.csv');write.csv(mk(c(2,3)),bad,row.names=FALSE)
+destination<-tempfile()
+stopifnot(inherits(try(run_module(bad,destination),silent=TRUE),'try-error'),!file.exists(destination))
+cat('PASS: censoring before quartiles; integer boundaries; missing groups; no embryo imputation/filter; duplicate and invalid-input rejection.\n')

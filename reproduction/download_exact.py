@@ -36,11 +36,11 @@ def fetch(item, target):
 
 def main():
     p = argparse.ArgumentParser(description='Download exact public inputs; never use a local cache or substitute versions.')
-    p.add_argument('kind', choices=['packages','data','runtime'])
+    p.add_argument('kind', choices=['packages','data','runtime','reference-object'])
     p.add_argument('--output', required=True, type=pathlib.Path)
     p.add_argument('--only', help='Download just this manifest filename (data only)')
     args = p.parse_args()
-    items = json.loads((KIT / {'packages':'windows-packages.json','data':'data-downloads.json','runtime':'r-runtime.json'}[args.kind]).read_text(encoding='utf-8-sig'))
+    items = json.loads((KIT / {'packages':'windows-packages.json','data':'data-downloads.json','runtime':'r-runtime.json','reference-object':'oligo-boxplot/source.json'}[args.kind]).read_text(encoding='utf-8-sig'))
     if args.only:
         if args.kind != 'data': p.error('--only is supported for data only')
         items = [item for item in items if item['file'] == args.only]
