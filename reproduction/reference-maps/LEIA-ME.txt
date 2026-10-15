@@ -1,0 +1,71 @@
+CONTAGENS E MAPAS DA REFERÊNCIA
+
+Percurso separado do conjunto de reprodução; originais académicos preservados.
+Instruções de ambiente, obtenção dos dados e execução: ../README.md,
+secção Contagens e mapas da referência. Saídas geradas apenas localmente.
+
+O que foi preparado
+- reference-cells-by-time.png: contagem das 1 241 018 células do CSV, em 18
+  tempos e uma categoria separada para as 85 130 células sem tempo.
+- reference-map-18h/24h/36h/48h/72h.png: cinco vistas das coordenadas fornecidas.
+  Fundo comum de 1 155 888 células com tempo; cada tempo é desenhado por cima.
+- cells-by-time.csv: contagens e indicação de inclusão nos mapas.
+- reference-coordinates.csv: todas as células, ordem de origem, três coordenadas
+  originais e map_eligible. Sem tempo é NA e map_eligible=False.
+- map-membership-summary.csv: tamanho do fundo, realce e exclusão de cada mapa.
+- receipt.json: hash da fonte, versões, limites dos eixos e ordem de desenho.
+- independent-validation.txt e validation-session.txt: conferência em R.
+
+Como conferir as células de cada mapa
+No CSV de coordenadas, filtrar map_eligible=True para o fundo e timepoint igual
+a 18, 24, 36, 48 ou 72 para o realce. Este realce é um subconjunto do fundo:
+não somar ambos para obter o total de células. source_row começa em 1 na primeira
+linha de dados do CSV original, sem contar o cabeçalho. A ordem é determinística,
+igual à origem; não há amostragem, deslocamento aleatório ou transformação das
+coordenadas. Os dois eixos têm escala igual e limites comuns nos cinco mapas.
+
+Fonte e âmbito
+GSE202639_reference_cell_metadata.csv.gz. Pode ser reutilizado do percurso
+principal ou obtido separadamente pelo download seletivo descrito no README.
+SHA-256 do CSV descomprimido:
+546a8b8a47e6b746e0a652a90a09a29c7b8f64227e3eac259d1ef64daeb0ebf0
+Fonte: Saunders, Srivatsan e colaboradores; GEO GSE202639 / ZSCAPE.
+https://cole-trapnell-lab.github.io/zscape/get-started/
+https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202639/suppl/GSE202639_reference_cell_metadata.csv.gz
+A comparação local prévia GEO/ZSCAPE confirmou IDs, ordem e coordenadas
+para este CSV; não estabelece equivalência com o objeto reference_cds.
+
+Diferença face aos UMAPs recalculados
+Este módulo DESENHA umap3d_1 e umap3d_2 já presentes no CSV, isto é, duas das
+três dimensões de uma projeção calculada pelo estudo de origem. A terceira
+coordenada é preservada na tabela, mas não representada nas figuras.
+Não executa UMAP, PCA, normalização ou aprendizagem de trajetórias.
+Os UMAPs Seurat por tempo do outro módulo foram recalculados num subconjunto
+pigmentar. Aqui representa-se a referência inteira com tempo, incluindo todos
+os rótulos presentes, sem novos filtros biológicos. Não são mapas equivalentes.
+
+Limites de interpretação
+As barras contam células observadas no ficheiro, não animais, abundância
+populacional, taxas de crescimento ou réplicas independentes. O espaçamento
+das barras é categórico, não proporcional ao intervalo entre tempos.
+O realce temporal mostra onde estão as células na projeção comum; não demonstra
+movimento, linhagem ou causalidade. A redução para duas dimensões e a sobreposição
+de pontos limitam a leitura de distâncias e densidades.
+As 85 130 células sem tempo permanecem na tabela e na contagem; são excluídas
+dos mapas explicitamente. Não há imputação de tempos.
+Não se demonstrou equivalência com colData(reference_cds), Oligo ou com os PNG
+históricos. Não foi produzido boxplot por Oligo. Os mapas de 18/36h são novas
+saídas deste módulo, não ficheiros históricos recuperados. Os restantes também
+são novos desenhos, preservando os ficheiros académicos.
+
+Executar e verificar
+Usar reference_maps.py na pasta reproduction, conforme ../README.md.
+O comando verifica o hash da fonte, as versões Python diretas e o ambiente R;
+gera saídas e executa verify.R antes de indicar completed no recibo exterior.
+Não instala pacotes nem descarrega dados. Não modificar o CSV de origem.
+Uma pasta parcial ou apenas o recibo do desenho não prova validação completa.
+
+O verificador R compara todos os IDs, ordem, três coordenadas, ausências,
+contagens e subconjuntos dos cinco mapas. Não certifica os modelos de origem.
+O ambiente de preparação foi Python 3.12.14, NumPy 2.3.4, Matplotlib 3.10.7,
+R 4.6.1 e a biblioteca isolada do conjunto. A portabilidade não foi certificada.

@@ -128,3 +128,11 @@ Consultar VALIDACAO.txt para o que foi efetivamente testado nesta distribuição
 MÓDULO OPCIONAL DE GRÁFICOS DAS TABELAS
 Consultar a secção dedicada em README.md e estimates-abundance/LEIA-ME.txt.
 É independente da PCA/UMAP e usa os CSV já presentes no repositório.
+
+
+CONTAGENS E MAPAS DE REFERÊNCIA
+Percurso independente em reference_maps.py; instruções em README.md.
+Desenha coordenadas fornecidas, não recalcula UMAP. Verifica as tabelas em R.
+Não altera nem substitui resultados académicos. Consultar os limites em
+reference-maps/LEIA-ME.txt. Dependências Python adicionais em requirements.txt
+dentro dessa pasta; não são instaladas automaticamente.

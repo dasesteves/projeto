@@ -38,9 +38,14 @@ def main():
     p = argparse.ArgumentParser(description='Download exact public inputs; never use a local cache or substitute versions.')
     p.add_argument('kind', choices=['packages','data','runtime'])
     p.add_argument('--output', required=True, type=pathlib.Path)
+    p.add_argument('--only', help='Download just this manifest filename (data only)')
     args = p.parse_args()
-    args.output.mkdir(parents=True, exist_ok=False)
     items = json.loads((KIT / {'packages':'windows-packages.json','data':'data-downloads.json','runtime':'r-runtime.json'}[args.kind]).read_text(encoding='utf-8-sig'))
+    if args.only:
+        if args.kind != 'data': p.error('--only is supported for data only')
+        items = [item for item in items if item['file'] == args.only]
+        if not items: p.error('Unknown data filename')
+    args.output.mkdir(parents=True, exist_ok=False)
     receipt = {'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(), 'kind':args.kind, 'status':'running', 'cache_used':False, 'files':[]}
     path = args.output / 'download-receipt.json'
     def save(): path.write_text(json.dumps(receipt, indent=2, ensure_ascii=False), encoding='utf-8')

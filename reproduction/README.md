@@ -1,8 +1,9 @@
-# Reproduzir a agregação, os gráficos das tabelas, a PCA e os UMAPs
+# Percursos de reprodução
 
 Este percurso separado executa uma parte delimitada da análise: agregação de
 estimativas do modelo, gráficos das tabelas, normalização, PCA global e UMAPs
-para 18, 24, 36, 48 e 72h.
+para 18, 24, 36, 48 e 72h. Inclui também um percurso independente para contar
+as células dos metadados de referência e desenhar as coordenadas pré-calculadas.
 Não substitui o artigo, os notebooks ou as figuras académicas, nem reproduz todos
 os métodos do projeto (por exemplo, Monocle e Slingshot).
 
@@ -10,11 +11,24 @@ os métodos do projeto (por exemplo, Monocle e Slingshot).
 
 - **Só os quatro gráficos e as tabelas:** seguir [esta secção](#gráficos-das-estimativas-e-da-abundância-celular).
   Não exige a matriz de contagens, a PCA nem os UMAPs.
+- **Contagens e mapas da referência:** seguir [esta secção](#contagens-e-mapas-da-referência).
+  Desenha coordenadas fornecidas pelo estudo; não recalcula UMAP.
 - **Agregação, PCA e UMAPs:** seguir a sequência completa abaixo.
+
+| | Mapas da referência | UMAPs recalculados por tempo |
+| --- | --- | --- |
+| Entrada | Metadados com coordenadas pré-calculadas | Matriz de contagens e metadados; PCA global |
+| População desenhada | Fundo comum de 1 155 888 células com tempo | Subconjunto pigmentar: 337, 2 059, 3 926, 4 928 e 3 297 células, respetivamente |
+| Operação | Desenhar `umap3d_1` e `umap3d_2` fornecidos | Calcular UMAP separadamente para 18, 24, 36, 48 e 72h |
+| Eixos | Comuns aos cinco mapas de referência | Próprios de cada UMAP; não comparáveis diretamente entre tempos |
+
+Nenhum destes percursos demonstra equivalência com as imagens históricas.
 
 ## Antes de começar
 
-- Windows x64 e Python 3.10 ou superior. O Python não é instalado por este conjunto.
+- Windows x64. Python 3.10+ para o percurso principal e os gráficos de estimativas;
+  **Python 3.12 para os mapas de referência**, com NumPy e Matplotlib indicados
+  na respetiva secção. O Python não é instalado por este conjunto.
 - Windows PowerShell (`powershell.exe`), usado para verificar a assinatura do R.
 - Internet para obter o instalador R, os pacotes e os dados públicos.
 - Memória e disco **do percurso PCA/UMAP**: validado num computador com 32 GB de RAM; o objeto R chega a
@@ -34,7 +48,8 @@ não existir ou abrir a Microsoft Store, instalar Python de python.org antes de
 prosseguir; se apenas `py -3` funcionar, usá-lo em vez de `python` em todos os comandos.
 
 Os exemplos usam `C:/repro`; substituir esse prefixo por uma pasta com permissão
-de escrita, mantendo-o consistente. Colocar caminhos entre aspas se tiverem espaços.
+de escrita, mantendo-o consistente. Colocar caminhos entre aspas se tiverem espaços. No PowerShell, um executável
+entre aspas exige `&` antes do caminho, por exemplo: `& "C:/a minha pasta/python.exe" --version`.
 Não usar uma pasta já ocupada por outra execução.
 
 Se já houver R 4.6.1 x64 instalado, podem omitir-se os dois primeiros comandos e
@@ -152,12 +167,93 @@ Nenhum modelo é reajustado; os limites da faixa vêm da tabela e o limiar de p
 é nominal. As figuras são novas apresentações, não substituições das académicas.
 [Interpretação, rastreabilidade e limites completos](estimates-abundance/LEIA-ME.txt).
 
+## Contagens e mapas da referência
+
+Este percurso usa apenas `reference_cell_metadata.csv`. Não precisa da matriz
+de contagens, da agregação, da PCA nem dos UMAPs recalculados. Os originais
+académicos permanecem separados; os resultados são escritos numa pasta nova.
+
+Reutilizar R 4.6.1 e a biblioteca isolada do conjunto. Se ainda não existem,
+seguir os quatro comandos de preparação do ambiente na secção dos gráficos
+das estimativas acima. O comando verifica as 135 versões do ambiente partilhado;
+o verificador das tabelas usa diretamente `data.table`.
+
+Este módulo acrescenta NumPy 2.3.4 e Matplotlib 3.10.7. Usar **Python 3.12**
+(validado com 3.12.14) numa biblioteca separada. Na pasta `reproduction`, preparar
+uma única vez; a instalação requer Internet e não é feita automaticamente:
+
+```powershell
+python -m venv C:/repro/python-reference
+& "C:/repro/python-reference/Scripts/python.exe" -m pip install -r reference-maps/requirements.txt
+```
+
+Confirmar primeiro que `python --version` indica 3.12. Se já existe um ambiente
+com as duas versões indicadas, reutilizá-lo. As dependências transitivas de Python
+não estão fixadas por este ficheiro; não se promete igualdade dos PNG em qualquer
+ambiente. A conferência independente dos valores tabulares é obrigatória e faz
+parte do comando seguinte. Não é preciso ativar o ambiente virtual.
+
+Se o CSV já foi descarregado no percurso principal, reutilizá-lo. Caso contrário,
+descarregar **só os metadados**, sem obter a matriz de contagens:
+
+```powershell
+python download_exact.py data --only GSE202639_reference_cell_metadata.csv.gz --output C:/repro/reference-data
+```
+
+O recibo do download deve indicar `verified`: tanto o arquivo como o CSV
+descomprimido são conferidos por SHA-256. Depois executar, ajustando `--input`
+se reutilizar outro caminho:
+
+```powershell
+& "C:/repro/python-reference/Scripts/python.exe" reference_maps.py --input C:/repro/reference-data/reference_cell_metadata.csv --rscript C:/repro/runtime/R-4.6.1/bin/Rscript.exe --library C:/repro/library --output C:/repro/reference-maps
+```
+
+Parar se algum comando falhar. O `receipt.json` na raiz da pasta de saída deve
+indicar `completed`: isso exige o desenho e a verificação independente em R.
+O recibo dentro de `figures-tables` descreve apenas o desenho, não basta por si
+só. Consultar `execution.log` e `verification.log` em caso de erro.
+O comando recusa destinos existentes; nunca escrever sobre uma execução anterior.
+O consumo mínimo de memória/disco deste módulo não foi medido.
+
+### Encontrar e interpretar as saídas de referência
+
+Abrir `C:/repro/reference-maps/figures-tables`. Os seis PNG e três CSV são gerados
+localmente; não estão incluídos no repositório. Os CSV usam vírgula e decimal
+ponto; preservar `NA` como ausência, não como zero. A tabela de coordenadas
+contém 1 241 018 linhas de dados: para consultá-la integralmente, usar R ou
+Python, em vez de assumir que uma pré-visualização numa folha de cálculo
+mostra todas as linhas. As duas tabelas de resumo são pequenas.
+
+| Saída | Como conferir e interpretar |
+| --- | --- |
+| `reference-cells-by-time.png` | `cells-by-time.csv`: todas as 1 241 018 células, incluindo 85 130 sem tempo numa categoria própria. São células no ficheiro, não animais ou abundância populacional. |
+| `reference-map-18h.png`, `24h`, `36h`, `48h`, `72h` | Os nomes completos seguem `reference-map-<tempo>h.png`. `map-membership-summary.csv` dá o fundo comum e os realces. O realce está incluído no fundo, não se somam. |
+| `reference-coordinates.csv` | Preserva todos os IDs, ordem e três coordenadas. `map_eligible=True` seleciona as 1 155 888 células com tempo; `source_row` começa em 1, sem o cabeçalho. |
+| `independent-validation.txt` | Confirma IDs, ordem, três coordenadas, ausências, contagens e seleções; versões R em `validation-session.txt`. |
+
+**São duas dimensões de uma projeção 3D fornecida, não novos UMAPs.** Os cinco
+mapas usam os mesmos eixos e fundo de referência. Os UMAPs Seurat do outro
+percurso são recalculados por tempo num subconjunto pigmentar e têm populações
+e sistemas de coordenadas diferentes. Não comparar diretamente as posições.
+
+Não se demonstram trajetórias, movimento celular, equivalência com o objeto
+`reference_cds` ou com as figuras históricas. Não há boxplot por `Oligo`.
+As células sem tempo são contadas e exportadas, mas não desenhadas nos mapas.
+[Fonte, rastreabilidade e limites completos](reference-maps/LEIA-ME.txt).
+
 ## Evidência e limites
 
-O percurso foi executado com R 4.6.1, 135 versões de pacotes fixadas, downloads
+O percurso de agregação/PCA/UMAP foi executado com R 4.6.1, 135 versões de pacotes fixadas, downloads
 novos e uma biblioteca nova. A agregação e as coordenadas coincidiram com a
 reprodução moderna anterior no mesmo Windows. **Não se demonstrou equivalência
 numérica com as figuras históricas nem portabilidade para outro sistema.**
+
+O módulo de referência foi executado no mesmo Windows, reutilizando o CSV,
+R e a biblioteca já preparados. A execução pelo comando integrado produziu seis
+PNG e três CSV idênticos ao candidato anterior. A conferência independente em R
+validou os IDs, a ordem, as três coordenadas, as contagens e as seleções temporais.
+O download seletivo foi testado sem rede, substituindo apenas a transferência;
+não se repetiu a obtenção online nem uma instalação limpa de Python nesta revisão.
 
 A PCA preserva 22 757 células, incluindo 1 323 sem tempo. Os cinco UMAPs usam
 337, 2 059, 3 926, 4 928 e 3 297 células. São projeções separadas: os eixos não

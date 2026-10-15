@@ -56,3 +56,11 @@ Recusa de destino existente confirmada. Fontes LF/CRLF aceites após
 normalização explícita apenas das terminações de linha para conferir hashes.
 A evidência limita-se às tabelas fornecidas; sem novos modelos/biologia.
 Validação anterior à integração; originais académicos preservados.
+
+
+CONTAGENS E MAPAS DE REFERÊNCIA
+Percurso independente em reference_maps.py; instruções em README.md.
+Desenha coordenadas fornecidas, não recalcula UMAP. Verifica as tabelas em R.
+Não altera nem substitui resultados académicos. Consultar os limites em
+reference-maps/LEIA-ME.txt. Dependências Python adicionais em requirements.txt
+dentro dessa pasta; não são instaladas automaticamente.
