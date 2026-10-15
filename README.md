@@ -6,6 +6,8 @@ Projeto académico de análise e visualização de transcriptómica de célula �
 
 [**Ler o artigo final**](Artigo%20Final.pdf) · [Ver os resultados](Results/) · [Consultar os scripts](Scripts/) · [**Reproduzir a análise**](reproduction/README.md)
 
+Para gerar os **quatro gráficos de estimativas e variabilidade da abundância**, com tabelas verificáveis, segue o [módulo dedicado](reproduction/README.md#gráficos-das-estimativas-e-da-abundância-celular). As saídas são criadas localmente, sem substituir as figuras académicas.
+
 ## Autoria e fontes
 
 O artigo final é assinado por **Diogo Esteves e David Henriques**. David Henriques (CSIC IIM, Vigo) orientou o projeto, realizado na unidade curricular de Projeto, com o professor **Miguel Rocha**.
