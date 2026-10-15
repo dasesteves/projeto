@@ -1,3 +1,5 @@
+**Português** · [English](README.en.md)
+
 # Resultados e visualizações
 
 Figuras do projeto de transcriptómica de células de pigmentação de peixe-zebra. Para os métodos, contexto e interpretação, consulta o [artigo final](../Artigo%20Final.pdf).

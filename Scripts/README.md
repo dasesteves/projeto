@@ -1,27 +1,24 @@
+**Português** · [English](README.en.md)
+
 # Scripts
 
-## Description
+Notebooks e código para processamento, análise e visualização de dados de transcriptómica de célula única de células de pigmentação de peixe-zebra.
 
-This folder contains all the scripts used for data processing, analysis, and visualization related to the single-cell transcriptomic analysis of zebrafish pigment cells.
+## Conteúdo
 
-## Contents
+- **analise_remota_scripts.Rmd:** análise remota de dados de transcriptómica de célula única.
+- **memory_optimization_scripts.Rmd:** técnicas de otimização de memória para conjuntos de dados de RNA-seq de célula única de grande dimensão.
+- **UMAP_simple.Rmd:** redução de dimensionalidade com UMAP.
+- **[Saunders Rep](Saunders%20Rep/):** notebook, saída HTML guardada e ficheiros de apoio à análise baseada no estudo de Saunders e colaboradores.
 
-- **analise_remota_scripts.Rmd:** Script for remote analysis of single-cell transcriptomics data.
-- **memory_optimization_scripts.Rmd:** Script focused on memory optimization techniques for handling large single-cell RNA-seq datasets.
-- **UMAP_simple.Rmd:** Script for performing UMAP dimensionality reduction on single-cell RNA-seq data.
-- **[Saunders Rep](Saunders%20Rep/):** Notebook, saved HTML output and supporting files for the Saunders analysis.
+## Condições de reprodução
 
-## Usage
+São notebooks de análise; não está documentada uma ordem única de execução para toda a pasta. Lê as secções de configuração e carregamento de dados do notebook que pretendes utilizar.
 
-These are analysis notebooks, with no single execution order documented for the whole folder. Read the setup and data-loading sections of the notebook you intend to use.
+- `UMAP_simple.Rmd` instala pacotes R e Python, descarrega dados do GEO e usa o documento ativo do RStudio para definir a pasta de trabalho. Referencia `raw_counts` sem carregar esse objeto e inspeciona `cell_metadata` antes da respetiva secção de carregamento. Exige, por isso, preparação antes de executar numa sessão nova.
+- O [notebook Saunders](Saunders%20Rep/) usa caminhos relativos `data/` e `output/`. O respetivo README documenta a pasta de trabalho e as dependências necessárias.
+- O repositório não tem `renv.lock` nem outro ficheiro que fixe as versões dos pacotes R. Regista `sessionInfo()` ao reproduzir uma análise; as versões originais não estão estabelecidas aqui.
 
-- `UMAP_simple.Rmd` installs R and Python packages, downloads GEO data and uses the active RStudio document to set the working directory. It references `raw_counts` without loading that object, and inspects `cell_metadata` before its loading section. It therefore needs preparation before execution in a fresh session.
-- The [Saunders notebook](Saunders%20Rep/) uses relative `data/` and `output/` paths. Its README records the working-directory and dependency requirements.
-- The repository has no `renv.lock` or other file fixing the R package versions. Record `sessionInfo()` when reproducing an analysis; the original package versions are not established here.
+Esta revisão documental não reexecutou as análises nem validou os resultados históricos. Alguns scripts podem exigir memória e capacidade de processamento consideráveis; consulta também os cabeçalhos de cada script.
 
-This documentation review did not rerun the analyses or validate the historical results.
-
-## Notes
-
-- Ensure you have the necessary computational resources, as some scripts may require significant memory and processing power.
-- Refer to the individual script headers for specific instructions and details.
+[Voltar ao projeto](../README.md) · [Resultados e limitações](../Results/)

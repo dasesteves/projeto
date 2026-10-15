@@ -10,7 +10,7 @@ This folder contains LaTeX files and related images for the final article on the
 - **000012.png:** Image file used in the article.
 - **000016.png:** Image file used in the article.
 - **000018.png:** Image file used in the article.
-- **expression_of_genes_in_pigment_cells_over_time.png:** Plot showing gene expression in pigment cells over time.
+- **expression_of_genes_in_pigment_cells_over_time.png:** Historical plot of aggregated beta-binomial model estimates. Its original “Mean Expression” axis is not a direct measurement of gene expression; see the [provenance and limitations](../Results/README.en.md#provenance-and-limitations-of-this-figure).
 - **fig_umap_18h_optimized.png:** UMAP plot of cells at 18 hours.
 - **fig_umap_24h_optimized.png:** UMAP plot of cells at 24 hours.
 - **fig_umap_36h_optimized.png:** UMAP plot of cells at 36 hours.

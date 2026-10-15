@@ -1,8 +1,16 @@
+**Português** · [English](README.en.md)
+
 # Células de pigmentação de peixe-zebra
 
 Projeto académico de análise e visualização de transcriptómica de célula única, desenvolvido por **Diogo Esteves** no mestrado em Bioinformática da Universidade do Minho. O trabalho explora linhagens celulares e a expressão de marcadores associados à diferenciação das células de pigmentação.
 
 [**Ler o artigo final**](Artigo%20Final.pdf) · [Ver os resultados](Results/) · [Consultar os scripts](Scripts/)
+
+## Autoria e fontes
+
+O artigo final é assinado por **Diogo Esteves e David Henriques**. David Henriques (CSIC IIM, Vigo) orientou o projeto, realizado na unidade curricular de Projeto, com o professor **Miguel Rocha**.
+
+O trabalho utiliza dados e código de **Saunders e colaboradores**; o artigo identifica a série pública [GSE202639](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202639). As análises e visualizações académicas aqui reunidas não representam a geração desses dados. A [nota de proveniência](Results/#origem-e-limites-desta-figura) distingue os dados de origem, o cálculo e os limites da figura destacada.
 
 ## Uma das visualizações
 
@@ -21,6 +29,8 @@ Projeto académico de análise e visualização de transcriptómica de célula �
 A apresentação não está disponível: o ficheiro PPTX guardado contém apenas dois bytes e não é uma apresentação válida. Para consultar a entrega, usa o artigo final acima.
 
 As figuras e o artigo são os materiais históricos do trabalho. A análise não foi reexecutada nesta revisão da documentação; os scripts não constituem um ambiente de reprodução fechado.
+
+[Perfil de Diogo Esteves](https://github.com/dasesteves) · [Apresentação em inglês](README.en.md)
 
 <details>
 <summary>Contexto académico e descrição original</summary>
