@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadConfig } from "../src/config.js";
+import { loadConfig, loadHttpConfig } from "../src/config.js";
 
 describe("loadConfig", () => {
   it("requires base URL and API key", () => {
@@ -32,5 +32,33 @@ describe("loadConfig", () => {
     });
     expect(cfg.verifyTls).toBe(false);
     expect(cfg.timeoutMs).toBe(15000);
+  });
+});
+
+describe("loadHttpConfig", () => {
+  it("defaults to Docker-friendly Streamable HTTP settings", () => {
+    const cfg = loadHttpConfig({});
+    expect(cfg).toEqual({
+      host: "0.0.0.0",
+      port: 8080,
+      path: "/mcp",
+      stateless: false,
+      allowedHosts: undefined,
+    });
+  });
+
+  it("parses overrides", () => {
+    const cfg = loadHttpConfig({
+      MCP_HOST: "127.0.0.1",
+      MCP_PORT: "3000",
+      MCP_PATH: "mcp",
+      MCP_STATELESS: "true",
+      MCP_ALLOWED_HOSTS: "localhost, app.local",
+    });
+    expect(cfg.host).toBe("127.0.0.1");
+    expect(cfg.port).toBe(3000);
+    expect(cfg.path).toBe("/mcp");
+    expect(cfg.stateless).toBe(true);
+    expect(cfg.allowedHosts).toEqual(["localhost", "app.local"]);
   });
 });

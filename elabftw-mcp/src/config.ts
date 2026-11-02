@@ -6,6 +6,16 @@ export type ElabConfig = {
   timeoutMs: number;
 };
 
+export type HttpConfig = {
+  host: string;
+  port: number;
+  path: string;
+  /** When true, use one-shot transports (no MCP session IDs). Default false. */
+  stateless: boolean;
+  /** Optional Host header allow-list when binding 0.0.0.0 */
+  allowedHosts?: string[];
+};
+
 function requireEnv(env: NodeJS.ProcessEnv, name: string): string {
   const value = env[name]?.trim();
   if (!value) {
@@ -41,5 +51,32 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ElabConfig {
     apiKey,
     verifyTls,
     timeoutMs,
+  };
+}
+
+function normalizePath(raw: string): string {
+  const trimmed = raw.trim() || "/mcp";
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
+
+export function loadHttpConfig(env: NodeJS.ProcessEnv = process.env): HttpConfig {
+  const host = (env.MCP_HOST ?? "0.0.0.0").trim() || "0.0.0.0";
+  const portRaw = env.MCP_PORT ?? "8080";
+  const port = Number(portRaw);
+  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+    throw new Error("MCP_PORT must be an integer between 1 and 65535");
+  }
+  const path = normalizePath(env.MCP_PATH ?? "/mcp");
+  const stateless = (env.MCP_STATELESS ?? "false").toLowerCase() === "true";
+  const allowed = env.MCP_ALLOWED_HOSTS?.split(",")
+    .map((h) => h.trim())
+    .filter(Boolean);
+
+  return {
+    host,
+    port,
+    path,
+    stateless,
+    allowedHosts: allowed?.length ? allowed : undefined,
   };
 }

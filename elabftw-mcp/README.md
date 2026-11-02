@@ -4,11 +4,14 @@ MCP (Model Context Protocol) server that talks to an [elabFTW](https://www.elabf
 
 This package lives under `elabftw-mcp/` in the academic `projeto` repo as a focused scaffold — it does not change the zebrafish analysis content.
 
+**Default for WebUI / containers:** Streamable HTTP on port `8080` (`POST/GET/DELETE /mcp`).  
+**Also supported:** stdio (local Cursor, or `docker run -i`).
+
 ## Requirements
 
-- Node.js 18+
+- Node.js 18+ **or** Docker / Docker Compose
 - An elabFTW API key (Settings → API keys)
-- Network access to your elabFTW base URL
+- Network access from the MCP process to your elabFTW base URL
 
 ## Configuration (environment)
 
@@ -16,12 +19,85 @@ This package lives under `elabftw-mcp/` in the academic `projeto` repo as a focu
 | --- | --- | --- |
 | `ELABFTW_BASE_URL` | yes | Instance root, e.g. `https://eln.example.org` (trailing slash and `/api/v2` suffix are normalized) |
 | `ELABFTW_API_KEY` | yes | API key sent as the `Authorization` header |
-| `ELABFTW_VERIFY_TLS` | no | Default `true`. Set `false` only for local self-signed setups (ops still often use `NODE_TLS_REJECT_UNAUTHORIZED=0` with Node fetch) |
+| `ELABFTW_VERIFY_TLS` | no | Default `true`. Set `false` only for local self-signed setups |
 | `ELABFTW_TIMEOUT_MS` | no | HTTP timeout in ms (default `60000`) |
+| `MCP_HOST` | no | HTTP bind address (default `0.0.0.0`) |
+| `MCP_PORT` | no | HTTP listen port (default `8080`) |
+| `MCP_PATH` | no | MCP endpoint path (default `/mcp`) |
+| `MCP_STATELESS` | no | `true` for one-shot transports; default `false` (stateful sessions) |
+| `MCP_ALLOWED_HOSTS` | no | Comma-separated Host allow-list when binding `0.0.0.0` |
+| `MCP_PUBLISH_PORT` | no | Host port for Compose publish (default `8080`) |
 
-Copy `.env.example` for a template. **Do not commit secrets.**
+```bash
+cd elabftw-mcp
+cp .env.example .env
+# edit .env — set ELABFTW_BASE_URL and ELABFTW_API_KEY
+```
 
-## Install & run
+**Do not commit `.env` or secrets.**
+
+## Run with Docker (recommended for WebUI)
+
+Streamable HTTP is the container default so a browser/WebUI or remote MCP client can call `http://localhost:8080/mcp`.
+
+```bash
+cd elabftw-mcp
+cp .env.example .env   # then fill ELABFTW_* values
+docker compose up --build -d
+curl -s http://localhost:8080/health
+docker compose logs -f elabftw-mcp
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+
+### Point a WebUI / MCP client at the container
+
+Use the Streamable HTTP URL:
+
+```text
+http://localhost:8080/mcp
+```
+
+(or `http://<host>:${MCP_PUBLISH_PORT}/mcp` if you changed the publish port).
+
+`GET /health` returns a small JSON status (not part of the MCP protocol).
+
+### Stdio via Docker (interactive)
+
+For clients that spawn a stdio MCP process:
+
+```bash
+docker build -t elabftw-mcp:local .
+docker run --rm -i --env-file .env elabftw-mcp:local node dist/index.js
+```
+
+Cursor-style config example:
+
+```json
+{
+  "mcpServers": {
+    "elabftw": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--env-file",
+        "/absolute/path/to/elabftw-mcp/.env",
+        "elabftw-mcp:local",
+        "node",
+        "dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+## Run locally (without Docker)
 
 ```bash
 cd elabftw-mcp
@@ -29,24 +105,23 @@ npm install
 npm run build
 export ELABFTW_BASE_URL=https://eln.example.org
 export ELABFTW_API_KEY=your-api-key
+
+# Streamable HTTP (WebUI)
+npm run start:http
+
+# or stdio
 npm start
 ```
 
-Development (TypeScript via `tsx`):
+Development:
 
 ```bash
-npm run dev
+npm run dev:http   # Streamable HTTP via tsx
+npm run dev        # stdio via tsx
+npm test           # mocked smoke tests (no live instance)
 ```
 
-Smoke tests (mocked HTTP, no live instance):
-
-```bash
-npm test
-```
-
-## Connect from an MCP client (Cursor example)
-
-Add a stdio server entry that points at the built entrypoint and injects env:
+### Connect from Cursor (local stdio)
 
 ```json
 {
@@ -54,23 +129,6 @@ Add a stdio server entry that points at the built entrypoint and injects env:
     "elabftw": {
       "command": "node",
       "args": ["/absolute/path/to/projeto/elabftw-mcp/dist/index.js"],
-      "env": {
-        "ELABFTW_BASE_URL": "https://eln.example.org",
-        "ELABFTW_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
-
-Or run without building:
-
-```json
-{
-  "mcpServers": {
-    "elabftw": {
-      "command": "npx",
-      "args": ["tsx", "/absolute/path/to/projeto/elabftw-mcp/src/index.ts"],
       "env": {
         "ELABFTW_BASE_URL": "https://eln.example.org",
         "ELABFTW_API_KEY": "your-api-key"
@@ -106,7 +164,8 @@ API reference: [elabFTW API v2](https://doc.elabftw.net/api/v2/).
 
 ## Design notes
 
-- Secrets only via environment variables.
+- Secrets only via environment variables / Compose `env_file`.
+- Container default transport is **Streamable HTTP** (MCP sessions enabled unless `MCP_STATELESS=true`).
 - Uploads use `multipart/form-data` field `file` (optional `comment`), matching the official API.
 - `content_base64` supports agents that cannot share a host filesystem with the MCP process.
 - Live verification against a real instance needs `ELABFTW_BASE_URL` + `ELABFTW_API_KEY`; CI uses mocks in `tests/`.
